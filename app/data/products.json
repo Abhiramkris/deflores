@@ -1,0 +1,146 @@
+[
+  {
+    "id": "1",
+    "title": "Mint Sequin Lehenga",
+    "price": "₹28,500",
+    "images": [
+      "/crop_green.png",
+      "/crop_green.png",
+      "/crop_green.png",
+      "/crop_green.png"
+    ],
+    "colors": [
+      { "name": "Mint", "hex": "#a3ebd6" },
+      { "name": "Ivory", "hex": "#fffff0" },
+      { "name": "Emerald", "hex": "#046342" }
+    ],
+    "sizes": ["S", "M", "L", "XL"],
+    "description": "Mint Sequin Lehenga features premium georgette fabric adorned with hand-stitched glistening sequins, structured on traditional circular draping geometry. Includes a matching sleeveless choli and a delicate sheer net dupatta.",
+    "rating": 4.9,
+    "reviewCount": 41,
+    "shipping": {
+      "discount": "₹3,000 Disc 10%",
+      "package": "Luxury Festive Packaging",
+      "deliveryTime": "5-7 Working Days",
+      "estimationArrive": "18 - 20 October 2026"
+    },
+    "reviews": [
+      {
+        "author": "Alexander Stewart",
+        "date": "13/12/2024",
+        "rating": 5,
+        "quote": "The sequin work is absolutely spectacular. Fitted perfectly and felt premium. Love the design details!",
+        "images": ["/crop_green.png", "/crop_white.png", "/crop_red.png"]
+      },
+      {
+        "author": "Simson Wili",
+        "date": "13/12/2024",
+        "rating": 5,
+        "quote": "Highly recommended bespoke wear. Fast shipping and custom-like fit out of the box.",
+        "images": ["/crop_green.png", "/crop_white.png"]
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "title": "Ivory Embroidered Festive Chic",
+    "price": "₹24,000",
+    "images": [
+      "/crop_white.png",
+      "/crop_white.png",
+      "/crop_white.png",
+      "/crop_white.png"
+    ],
+    "colors": [
+      { "name": "Ivory", "hex": "#fdfaf2" },
+      { "name": "Rose", "hex": "#ffb6c1" }
+    ],
+    "sizes": ["S", "M", "L"],
+    "description": "Crafted in premium silk cotton, this Ivory set represents elegant symmetry. Detailed floral threadwork wraps across the bodice and tiered skirt panels, providing structural ease and lightweight summer comfort.",
+    "rating": 4.8,
+    "reviewCount": 29,
+    "shipping": {
+      "discount": "₹2,400 Disc 10%",
+      "package": "Luxury Festive Packaging",
+      "deliveryTime": "5-7 Working Days",
+      "estimationArrive": "18 - 20 October 2026"
+    },
+    "reviews": [
+      {
+        "author": "Meera Sen",
+        "date": "10/12/2024",
+        "rating": 5,
+        "quote": "Incredibly comfortable and classy. The embroidery is finely stitched. Fits true to size.",
+        "images": ["/crop_white.png"]
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "title": "Scarlet Draped Georgette Gown",
+    "price": "₹22,500",
+    "images": [
+      "/crop_red.png",
+      "/crop_red.png",
+      "/crop_red.png",
+      "/crop_red.png"
+    ],
+    "colors": [
+      { "name": "Scarlet", "hex": "#cc0000" },
+      { "name": "Crimson", "hex": "#990000" }
+    ],
+    "sizes": ["S", "M", "L", "XL"],
+    "description": "A striking georgette silhouette featuring elegant cowl draping and sheer details. Designed to accentuate formal movement while remaining completely lightweight and clean.",
+    "rating": 4.9,
+    "reviewCount": 33,
+    "shipping": {
+      "discount": "₹2,250 Disc 10%",
+      "package": "Luxury Festive Packaging",
+      "deliveryTime": "5-7 Working Days",
+      "estimationArrive": "18 - 20 October 2026"
+    },
+    "reviews": [
+      {
+        "author": "Ananya Sharma",
+        "date": "08/12/2024",
+        "rating": 5,
+        "quote": "Breathtaking color and cowl style. Drapes beautifully and flows with movement.",
+        "images": ["/crop_red.png"]
+      }
+    ]
+  },
+  {
+    "id": "4",
+    "title": "Emerald Designer Lehenga Set",
+    "price": "₹32,000",
+    "images": [
+      "/crop_green.png",
+      "/crop_green.png",
+      "/crop_green.png",
+      "/crop_green.png"
+    ],
+    "colors": [
+      { "name": "Emerald", "hex": "#046342" },
+      { "name": "Gold", "hex": "#ffd700" }
+    ],
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "description": "Premium emerald green georgette lehenga set featuring intricate zari embroidery and circular border accents. Designed for optimal visual depth and architectural fit.",
+    "rating": 5.0,
+    "reviewCount": 18,
+    "shipping": {
+      "discount": "₹3,200 Disc 10%",
+      "package": "Luxury Festive Packaging",
+      "deliveryTime": "5-7 Working Days",
+      "estimationArrive": "18 - 20 October 2026"
+    },
+    "reviews": [
+      {
+        "author": "Priya Patel",
+        "date": "05/12/2024",
+        "rating": 5,
+        "quote": "Flawless heavy border detail. Absolutely gorgeous for reception evening.",
+        "images": ["/crop_green.png"]
+      }
+    ]
+  }
+]
