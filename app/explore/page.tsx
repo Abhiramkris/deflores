@@ -1,8 +1,38 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import productsData from "../data/products.json";
+
+interface Product {
+  id: string;
+  title: string;
+  price: string;
+  description: string;
+  images: string[];
+}
 
 export default function ExplorePage() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("/api/products");
+        const data = await res.json();
+        if (data.success) {
+          setProducts(data.products);
+        }
+      } catch (err) {
+        console.error("Error fetching explore catalog:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
+
   return (
     <div className="w-full bg-white/70 backdrop-blur-xs text-zinc-900 font-sans py-24 md:py-32">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
@@ -28,48 +58,49 @@ export default function ExplorePage() {
           <div className="w-16 h-[1px] bg-zinc-300" />
         </div>
 
-        {/* Product List Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-          {productsData.map((item) => (
-            <Link 
-              key={item.id}
-              href={`/product/${item.id}`}
-              className="product-card flex flex-col group cursor-pointer bg-white/40 border border-zinc-200/20 rounded-2xl overflow-hidden shadow-xs hover:shadow-md hover:border-zinc-300/30 transition-all p-1.5"
-            >
-              {/* Product Image Frame */}
-              <div className="product-image-container aspect-[3/4] w-full bg-zinc-50 relative rounded-xl">
-                <Image 
-                  src={item.images[0]} 
-                  alt={item.title}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  sizes="(max-width: 768px) 100vw, 25vw"
-                />
-              </div>
-
-              {/* Product details */}
-              <div className="p-4 space-y-2 text-left mt-auto">
-                <div className="flex justify-between items-start gap-2">
-                  <h3 className="text-[11px] tracking-widest font-bold uppercase text-zinc-900 line-clamp-1">
-                    {item.title}
-                  </h3>
-                  <span className="text-[10px] font-medium text-zinc-500 tracking-wider">
-                    {item.price}
-                  </span>
+        {loading ? (
+          <div className="text-center font-serif text-lg py-24">Syncing catalog details...</div>
+        ) : (
+          /* Product List Grid */
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+            {products.map((item) => (
+              <Link 
+                key={item.id}
+                href={`/product/${item.id}`}
+                className="product-card flex flex-col group cursor-pointer bg-white/40 border border-zinc-200/20 rounded-2xl overflow-hidden shadow-xs hover:shadow-md hover:border-zinc-300/30 transition-all p-1.5"
+              >
+                {/* Product Image Frame */}
+                <div className="product-image-container aspect-[3/4] w-full bg-zinc-50 relative rounded-xl">
+                  <Image 
+                    src={item.images[0]} 
+                    alt={item.title}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, 25vw"
+                  />
                 </div>
-                <p className="text-[10px] text-zinc-500 font-light leading-relaxed line-clamp-2">
-                  {item.description}
-                </p>
-                <div className="pt-2">
-                  <span className="text-[9px] font-bold tracking-widest uppercase text-zinc-900 border-b border-zinc-950 pb-0.5 hover:opacity-75 transition-opacity">
-                    Inquire Details
-                  </span>
-                </div>
-              </div>
 
-            </Link>
-          ))}
-        </div>
+                {/* Product details */}
+                <div className="p-4 space-y-2 text-left mt-auto">
+                  <div className="flex justify-between items-start gap-2">
+                    <h3 className="text-[11px] tracking-widest font-bold uppercase text-zinc-900 line-clamp-1">
+                      {item.title}
+                    </h3>
+                  </div>
+                  <p className="text-[10px] text-zinc-500 font-light leading-relaxed line-clamp-2 font-sans mt-1">
+                    {item.description}
+                  </p>
+                  <div className="pt-2">
+                    <span className="text-[9px] font-bold tracking-widest uppercase text-zinc-900 border-b border-zinc-950 pb-0.5 hover:opacity-75 transition-opacity">
+                      Inquire Details
+                    </span>
+                  </div>
+                </div>
+
+              </Link>
+            ))}
+          </div>
+        )}
 
       </div>
     </div>

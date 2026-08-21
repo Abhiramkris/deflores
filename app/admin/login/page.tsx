@@ -1,17 +1,68 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function AdminLoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [otp, setOtp] = useState("");
+  const [step, setStep] = useState<"email" | "otp">("email");
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const [success, setSuccess] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleRequestOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email && password) {
-      setSuccess(true);
+    setLoading(true);
+    setErrorMsg("");
+
+    try {
+      const res = await fetch("/api/auth/otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "send", email }),
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        setStep("otp");
+      } else {
+        setErrorMsg(data.error || "Failed to request verification code.");
+      }
+    } catch (err) {
+      setErrorMsg("Network error. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setErrorMsg("");
+
+    try {
+      const res = await fetch("/api/auth/otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "verify", email, otp }),
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        setSuccess(true);
+        setTimeout(() => {
+          router.push("/admin/dashboard");
+        }, 1500);
+      } else {
+        setErrorMsg(data.error || "Invalid verification code.");
+      }
+    } catch (err) {
+      setErrorMsg("Verification failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -36,25 +87,26 @@ export default function AdminLoginPage() {
             System Access
           </span>
           <h1 className="font-serif text-3xl font-light tracking-wide text-zinc-950">
-            Admin Login
+            Admin Portal
           </h1>
           <div className="w-12 h-[1px] bg-zinc-300 mx-auto" />
         </div>
 
-        {/* Form fields (Email and Password only) */}
+        {errorMsg && (
+          <div className="mb-6 p-3 bg-red-50 text-red-700 text-xs font-semibold tracking-wider rounded-md">
+            {errorMsg}
+          </div>
+        )}
+
         {success ? (
           <div className="py-8 space-y-4 text-center">
             <div className="text-emerald-600 font-semibold text-xs tracking-wider animate-pulse uppercase">
               Access Approved. Entering Workspace...
             </div>
-            <Link href="/" className="inline-block text-[10px] font-bold tracking-widest uppercase text-zinc-400 hover:text-zinc-950 transition-colors underline pt-4">
-              Return to storefront
-            </Link>
           </div>
-        ) : (
-          <form onSubmit={handleLogin} className="space-y-6 text-left">
-            
-            {/* Email field */}
+        ) : step === "email" ? (
+          /* Step 1: Input Email */
+          <form onSubmit={handleRequestOtp} className="space-y-6 text-left">
             <div className="space-y-2">
               <label className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">
                 Email Address
@@ -69,29 +121,50 @@ export default function AdminLoginPage() {
               />
             </div>
 
-            {/* Password field */}
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">
-                Password
-              </label>
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full border border-zinc-200 text-xs px-4 py-3 tracking-wider text-zinc-950 placeholder:text-zinc-300 focus:outline-none focus:border-zinc-500 rounded-none bg-transparent"
-              />
-            </div>
-
-            {/* Login button */}
             <button
               type="submit"
-              className="w-full bg-zinc-950 text-white text-[10px] font-bold tracking-widest uppercase py-3.5 hover:bg-zinc-800 transition-colors pt-4"
+              disabled={loading}
+              className="w-full bg-zinc-950 text-white text-[10px] font-bold tracking-widest uppercase py-3.5 hover:bg-zinc-800 transition-colors disabled:opacity-50"
             >
-              Sign In
+              {loading ? "Requesting Code..." : "Request Login OTP"}
+            </button>
+          </form>
+        ) : (
+          /* Step 2: Input OTP */
+          <form onSubmit={handleVerifyOtp} className="space-y-6 text-left">
+            <div className="space-y-2">
+              <label className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">
+                Enter Verification OTP
+              </label>
+              <input
+                type="text"
+                maxLength={6}
+                required
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                placeholder="123456"
+                className="w-full border border-zinc-200 text-xs px-4 py-3 tracking-wider text-zinc-950 placeholder:text-zinc-300 focus:outline-none focus:border-zinc-500 rounded-none bg-transparent font-mono text-center text-lg"
+              />
+              <p className="text-[10px] text-zinc-400 text-center pt-1 font-light">
+                A verification code was requested for {email}
+              </p>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-zinc-950 text-white text-[10px] font-bold tracking-widest uppercase py-3.5 hover:bg-zinc-800 transition-colors disabled:opacity-50"
+            >
+              {loading ? "Verifying..." : "Verify & Sign In"}
             </button>
 
+            <button
+              type="button"
+              onClick={() => setStep("email")}
+              className="w-full text-center text-[9px] font-bold tracking-widest uppercase text-zinc-400 hover:text-zinc-950 transition-colors pt-2"
+            >
+              Change Email
+            </button>
           </form>
         )}
 

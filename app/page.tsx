@@ -24,91 +24,119 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [hasAutoOpened]);
 
-  const handleSubscribeSubmit = (e: React.FormEvent) => {
+  const [galleryImages, setGalleryImages] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchHomeGallery = async () => {
+      try {
+        const res = await fetch("/api/gallery");
+        const data = await res.json();
+        if (data.success) {
+          setGalleryImages(data.images.slice(0, 6));
+        }
+      } catch (err) {
+        console.error("Home gallery fetch failed:", err);
+      }
+    };
+    fetchHomeGallery();
+  }, []);
+
+  const handleSubscribeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (emailInput.trim()) {
-      setIsSubscribed(true);
-      setTimeout(() => {
-        // Redirect to Instagram after a short delay
-        window.location.href = "https://www.instagram.com/de_flores_official";
-      }, 1500);
+      try {
+        const deviceId = localStorage.getItem("device_id") || "";
+        const res = await fetch("/api/newsletter/subscribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: emailInput, deviceId })
+        });
+        if (res.ok) {
+          localStorage.setItem("subscriber_email", emailInput.trim());
+          setIsSubscribed(true);
+          setTimeout(() => {
+            setIsPopupOpen(false);
+          }, 2000);
+        }
+      } catch (err) {
+        console.error("Subscription failed:", err);
+      }
     }
   };
 
   const marqueeItems = [
-    "PRET", "WESTERN", "BRIDAL", "INDO WESTERN", "OCCASIONAL WEAR",
-    "PRET", "WESTERN", "BRIDAL", "INDO WESTERN", "OCCASIONAL WEAR",
-    "PRET", "WESTERN", "BRIDAL", "INDO WESTERN", "OCCASIONAL WEAR"
+    "RHYTHM", "PULSE", "WHISPER", "RESONANCE", "BESPOKE COUTURE",
+    "RHYTHM", "PULSE", "WHISPER", "RESONANCE", "BESPOKE COUTURE"
   ];
 
   return (
-    <div className="w-full bg-transparent text-zinc-900 font-sans">
+    <div className="w-full bg-[#fbfbfa] text-zinc-900 font-sans selection:bg-zinc-950 selection:text-white">
       
-      {/* 1. HERO SECTION */}
-      <section className="relative w-full h-[85vh] bg-zinc-100 overflow-hidden flex items-end">
-        {/* Clean full screen image backdrop */}
+      {/* 1. HERO SECTION (Clean, Minimal, High-Fashion) */}
+      <section className="relative w-full h-[95vh] bg-zinc-950 overflow-hidden flex items-end">
         <div 
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/hero/herosection.png')" }}
+          className="absolute inset-0 bg-cover bg-center brightness-[0.82] transition-transform duration-[3s] scale-105"
+          style={{ backgroundImage: "url('/newimages/IMG_1066.JPG')" }}
         />
-        {/* Subtle vignette gradient to preserve text readability */}
-        <div className="absolute inset-0 bg-black/15 z-1" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent z-1" />
 
-        <div className="max-w-7xl mx-auto w-full px-6 md:px-12 pb-16 relative z-10 grid grid-cols-1 md:grid-cols-2 items-end gap-8">
-          
-          {/* Left Column Text */}
-          <div className="space-y-6 text-white text-left animate-fade-in-up">
-            <h1 className="font-serif text-5xl md:text-7xl font-light leading-none tracking-wide text-white drop-shadow-xs animate-text-reveal">
-              NEW <br />
-              COLLECTION
+        {/* Floating Minimal Header Elements */}
+        <div className="absolute top-8 left-8 right-8 z-20 flex justify-between items-center mix-blend-difference text-white">
+          <span className="text-[10px] tracking-[0.25em] font-semibold uppercase">DEFLORES STUDIO</span>
+          <span className="text-[10px] tracking-[0.25em] font-semibold uppercase">EST. 2024</span>
+        </div>
+
+        <div className="max-w-7xl mx-auto w-full px-6 md:px-12 pb-24 relative z-10 grid grid-cols-1 md:grid-cols-2 items-end gap-12">
+          <div className="space-y-6 text-white text-left">
+            <p className="text-[10px] tracking-[0.3em] font-bold text-zinc-300 uppercase">THE INVISIBLE ECHO</p>
+            <h1 className="font-serif text-5xl md:text-8xl font-light leading-[0.9] tracking-[-0.03em]">
+              5 TALES OF <br />
+              BEING
             </h1>
-            <div className="pt-2">
+            <div className="pt-4">
               <Link 
-                href="#ready-to-wear" 
-                className="text-xs font-semibold tracking-widest uppercase text-white pb-1.5 border-b border-white hover:opacity-85 transition-opacity"
+                href="#tales" 
+                className="text-[10px] font-bold tracking-[0.2em] uppercase text-white pb-2 border-b border-white hover:text-zinc-200 hover:border-zinc-200 transition-colors"
               >
-                Shop now
+                DISCOVER THE CHAPTERS
               </Link>
             </div>
           </div>
 
-          {/* Right Column Text */}
-          <div className="text-white md:text-right space-y-2 animate-fade-in-up [animation-delay:200ms]">
-            <div className="font-serif text-4xl md:text-6xl font-light tracking-wide text-white drop-shadow-xs">
+          <div className="text-white md:text-right space-y-3">
+            <div className="font-serif text-3xl md:text-5xl font-light tracking-wide">
               24/25
             </div>
-            <div className="text-[10px] md:text-xs tracking-[0.2em] font-semibold uppercase text-zinc-200">
-              SUMMER-FALL DRESS & SWIMSUITS
+            <div className="text-[9px] md:text-[10px] tracking-[0.25em] font-semibold uppercase text-zinc-300">
+              HIGH VALUE WOMEN CUSTOM DRESS CATEGORIES
             </div>
           </div>
-
         </div>
       </section>
 
-      {/* 2. INFINITE SCROLLING MARQUEE (Below Hero) */}
-      <div className="marquee-container">
+      {/* 2. INFINITE SCROLLING MARQUEE */}
+      <div className="marquee-container bg-zinc-950 py-5 text-white border-y border-white/10">
         <div className="marquee-content">
           {marqueeItems.map((item, idx) => (
-            <div key={idx} className="marquee-item">
+            <div key={idx} className="marquee-item font-serif tracking-[0.3em] text-[11px] font-light">
               <Image 
                 src="/floral.svg" 
-                alt="Floral ornament" 
-                width={14} 
-                height={16} 
-                className="inline-block opacity-80"
+                alt="Ornament" 
+                width={12} 
+                height={14} 
+                className="inline-block opacity-70 invert"
               />
               <span>{item}</span>
             </div>
           ))}
-          {/* Repeat once more for infinite scrolling seamless look */}
           {marqueeItems.map((item, idx) => (
-            <div key={`dup-${idx}`} className="marquee-item">
+            <div key={`dup-${idx}`} className="marquee-item font-serif tracking-[0.3em] text-[11px] font-light">
               <Image 
                 src="/floral.svg" 
-                alt="Floral ornament" 
-                width={14} 
-                height={16} 
-                className="inline-block opacity-80"
+                alt="Ornament" 
+                width={12} 
+                height={14} 
+                className="inline-block opacity-70 invert"
               />
               <span>{item}</span>
             </div>
@@ -116,35 +144,153 @@ export default function Home() {
         </div>
       </div>
 
+      {/* 3. TALES OF BEING (The 4 Women High Value Custom Dress Categories) */}
+      <section id="tales" className="py-24 md:py-36 bg-[#f7f6f2] border-b border-zinc-200/40">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-24">
+          
+          <div className="max-w-xl mx-auto text-center space-y-6">
+            <span className="text-[9px] tracking-[0.3em] font-bold text-zinc-400 uppercase">[ INTRODUCING ]</span>
+            <h2 className="font-serif text-4xl md:text-5xl font-light text-zinc-900 tracking-wide uppercase">
+              The Bespoke Chapters
+            </h2>
+            <p className="text-xs text-zinc-500 font-light leading-relaxed tracking-wide">
+              Before the gesture, there is a silhouette. Before the stitch, an idea. We gather these custom stories and transform them into couture dress collections tailored perfectly to your body.
+            </p>
+          </div>
 
-      {/* 3. READY-TO-WEAR SECTION */}
-      <section id="ready-to-wear" className="py-20 md:py-28 bg-transparent border-b border-zinc-200/20">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
+            
+            {/* Category 1: Rhythm */}
+            <div className="space-y-6 text-left group">
+              <div className="relative aspect-[3/4] w-full bg-zinc-100 overflow-hidden rounded-xl">
+                <Image 
+                  src="/newimages/IMG_1058.JPG" 
+                  alt="Rhythm Collection"
+                  fill
+                  className="object-cover transition-transform duration-1000 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, 45vw"
+                />
+                <div className="absolute top-6 left-6 text-white font-mono text-[10px] tracking-widest bg-zinc-950/40 backdrop-blur-xs px-3 py-1.5 rounded-full">
+                  [ 01 ] RHYTHM
+                </div>
+              </div>
+              <div className="space-y-3">
+                <h3 className="font-serif text-2xl tracking-wide uppercase text-zinc-900 font-normal">
+                  Rhythm
+                </h3>
+                <p className="text-[10px] tracking-[0.2em] font-bold text-zinc-400 uppercase">NOMADIC BESPOKE GOWNS</p>
+                <p className="text-xs text-zinc-500 font-light leading-relaxed">
+                  Freedom dancing beyond boundaries. Flowing silk georgette, structured corsetry, and layered tiers for the modern high-value woman.
+                </p>
+              </div>
+            </div>
+
+            {/* Category 2: Pulse */}
+            <div className="space-y-6 text-left group md:translate-y-12">
+              <div className="relative aspect-[3/4] w-full bg-zinc-100 overflow-hidden rounded-xl">
+                <Image 
+                  src="/newimages/IMG_1060.JPG" 
+                  alt="Pulse Collection"
+                  fill
+                  className="object-cover transition-transform duration-1000 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, 45vw"
+                />
+                <div className="absolute top-6 left-6 text-white font-mono text-[10px] tracking-widest bg-zinc-950/40 backdrop-blur-xs px-3 py-1.5 rounded-full">
+                  [ 02 ] PULSE
+                </div>
+              </div>
+              <div className="space-y-3">
+                <h3 className="font-serif text-2xl tracking-wide uppercase text-zinc-900 font-normal">
+                  Pulse
+                </h3>
+                <p className="text-[10px] tracking-[0.2em] font-bold text-zinc-400 uppercase">SACRED VELVET & SILK COUTURE</p>
+                <p className="text-xs text-zinc-500 font-light leading-relaxed">
+                  A heavy heartbeat etched in fabric. Rich hand-embroidered velvet, structured silhouettes, and deep textures designed for custom bridal wear.
+                </p>
+              </div>
+            </div>
+
+            {/* Category 3: Whisper */}
+            <div className="space-y-6 text-left group">
+              <div className="relative aspect-[3/4] w-full bg-zinc-100 overflow-hidden rounded-xl">
+                <Image 
+                  src="/newimages/IMG_1062.JPG" 
+                  alt="Whisper Collection"
+                  fill
+                  className="object-cover transition-transform duration-1000 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, 45vw"
+                />
+                <div className="absolute top-6 left-6 text-white font-mono text-[10px] tracking-widest bg-zinc-950/40 backdrop-blur-xs px-3 py-1.5 rounded-full">
+                  [ 03 ] WHISPER
+                </div>
+              </div>
+              <div className="space-y-3">
+                <h3 className="font-serif text-2xl tracking-wide uppercase text-zinc-900 font-normal">
+                  Whisper
+                </h3>
+                <p className="text-[10px] tracking-[0.2em] font-bold text-zinc-400 uppercase">FINE DRAPED SILKS & SAREES</p>
+                <p className="text-xs text-zinc-500 font-light leading-relaxed">
+                  The poetry of living materials. Delicate satin drapes, liquid silk flows, and custom handloom weaves that change under light.
+                </p>
+              </div>
+            </div>
+
+            {/* Category 4: Resonance */}
+            <div className="space-y-6 text-left group md:translate-y-12">
+              <div className="relative aspect-[3/4] w-full bg-zinc-100 overflow-hidden rounded-xl">
+                <Image 
+                  src="/newimages/IMG_1064.JPG" 
+                  alt="Resonance Collection"
+                  fill
+                  className="object-cover transition-transform duration-1000 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, 45vw"
+                />
+                <div className="absolute top-6 left-6 text-white font-mono text-[10px] tracking-widest bg-zinc-950/40 backdrop-blur-xs px-3 py-1.5 rounded-full">
+                  [ 04 ] RESONANCE
+                </div>
+              </div>
+              <div className="space-y-3">
+                <h3 className="font-serif text-2xl tracking-wide uppercase text-zinc-900 font-normal">
+                  Resonance
+                </h3>
+                <p className="text-[10px] tracking-[0.2em] font-bold text-zinc-400 uppercase">CONTEMPORARY INDO-WESTERN</p>
+                <p className="text-xs text-zinc-500 font-light leading-relaxed">
+                  Sculpted forms that capture the eye. Innovative drapes, asymmetrical custom cuts, and high-fashion hybrid styling.
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      {/* 4. READY-TO-WEAR DRESS CATALOG */}
+      <section className="py-24 md:py-32 bg-transparent">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           
-          {/* Header Row */}
-          <div className="flex justify-between items-end mb-12 pb-4 border-b border-zinc-100 animate-fade-in-up">
-            <h2 className="font-serif text-2xl md:text-3xl tracking-widest uppercase text-zinc-950 font-normal">
-              Ready-To-Wear
+          <div className="flex justify-between items-end mb-12 pb-4 border-b border-zinc-200">
+            <h2 className="font-serif text-3xl tracking-widest uppercase text-zinc-950 font-normal">
+              Signature Outfits
             </h2>
             <Link 
               href="#gallery" 
               className="group flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-zinc-900 hover:opacity-60 transition-all"
             >
-              See more 
+              See Lookbook 
               <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
             </Link>
           </div>
 
-          {/* 4-Column Product Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
             {[
-              { id: 1, img: "/crop_green.png", title: "MINT GLITTER SEQUIN LEHENGA", price: "₹28,500" },
-              { id: 2, img: "/crop_white.png", title: "IVORY EMBROIDERED FESTIVE CHIC", price: "₹24,000" },
-              { id: 3, img: "/crop_red.png", title: "SCARLET DRAPED GEORGETTE GOWN", price: "₹22,500" },
-              { id: 4, img: "/crop_green.png", title: "EMERALD DESIGNER LEHENGA SET", price: "₹32,000" }
+              { id: 1, img: "/newimages/IMG_1059.JPG", title: "MINT GLITTER SEQUIN LEHENGA", price: "₹28,500" },
+              { id: 2, img: "/newimages/IMG_1061.JPG", title: "IVORY EMBROIDERED FESTIVE CHIC", price: "₹24,000" },
+              { id: 3, img: "/newimages/IMG_1063.JPG", title: "SCARLET DRAPED GEORGETTE GOWN", price: "₹22,500" },
+              { id: 4, img: "/newimages/IMG_1065.JPG", title: "EMERALD DESIGNER LEHENGA SET", price: "₹32,000" }
             ].map((item) => (
               <Link href={`/product/${item.id}`} key={item.id} className="product-card flex flex-col group cursor-pointer">
-                <div className="product-image-container aspect-[3/4] w-full mb-4 bg-zinc-50 relative">
+                <div className="product-image-container aspect-[3/4] w-full mb-4 bg-zinc-100 overflow-hidden relative rounded-lg">
                   <Image 
                     src={item.img} 
                     alt={item.title}
@@ -168,127 +314,51 @@ export default function Home() {
         </div>
       </section>
 
-
-      {/* 4. NEW COLLECTIONS SECTION */}
-      <section className="py-16 md:py-24 bg-transparent">
+      {/* 5. GALLERY SECTION */}
+      <section id="gallery" className="py-24 bg-transparent border-t border-zinc-200/20 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           
-          {/* Header Row */}
-          <div className="flex justify-between items-end mb-12 pb-4 border-b border-zinc-100">
-            <h2 className="font-serif text-2xl md:text-3xl tracking-widest uppercase text-zinc-950 font-normal">
-              New Collections
-            </h2>
-            <Link 
-              href="#gallery" 
-              className="group flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-zinc-900 hover:opacity-60 transition-all"
-            >
-              See more 
-              <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
-            </Link>
-          </div>
-
-          {/* Editorial Split Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-start">
-            
-            {/* Left tall image */}
-            <div className="lg:col-span-5 relative aspect-[3/4.5] w-full bg-zinc-50 overflow-hidden">
-              <Image
-                src="/crop_white.png"
-                alt="Tall Editorial Model Shot"
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 40vw"
-              />
-            </div>
-
-            {/* Right block */}
-            <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
-              
-              {/* Inside Medium Image */}
-              <div className="md:col-span-6 relative aspect-[3/4] w-full bg-zinc-50 overflow-hidden">
-                <Image
-                  src="/crop_red.png"
-                  alt="Detail Model Gown Shot"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 30vw"
-                />
-              </div>
-
-              {/* Inside description text block */}
-              <div className="md:col-span-6 flex flex-col justify-center space-y-6 py-4 text-left">
-                <p className="text-xs md:text-sm text-zinc-800 leading-relaxed font-light tracking-wide">
-                  A strictly elegance, you might call it. White summer dresses blowing voluminous in the arctic world.
-                </p>
-                <p className="text-xs md:text-sm text-zinc-500 leading-relaxed font-light tracking-wide">
-                  Oversized hybrids of romantic summer dresses and white lacy gowns; one-piece swimsuit that turn out to be made from DeFlores new mycelium-derived lace-mimicking alternative.
-                </p>
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-      </section>
-
-
-      {/* 5. GALLERY SECTION (Replaces Shoes for Women) */}
-      <section id="gallery" className="py-20 md:py-28 bg-transparent border-t border-zinc-200/20 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
-          
-          {/* Header Row */}
-          <div className="flex justify-between items-end mb-12 pb-4 border-b border-zinc-100 animate-fade-in-up">
-            <h2 className="font-serif text-2xl md:text-3xl tracking-widest uppercase text-zinc-950 font-normal">
-              Gallery
-            </h2>
-            <div className="text-[10px] tracking-widest font-semibold uppercase text-zinc-400">
+          <div className="flex justify-between items-end mb-12 pb-4 border-b border-zinc-200">
+            <h2 className="font-serif text-3xl tracking-widest uppercase text-zinc-950 font-normal">
               Editorial Exposé
+            </h2>
+            <div className="text-[9px] tracking-widest font-semibold uppercase text-zinc-400">
+              DEFLORES LOOKBOOK
             </div>
           </div>
 
-          {/* 6-Column Placeholder Gallery Grid (Fades out at the bottom) */}
-          <div className="relative animate-fade-in-up">
+          <div className="relative">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              {[
-                { id: 1, img: "/gallery_purple.jpg", title: "HAUTE COUTURE" },
-                { id: 2, img: "/gallery_purple.jpg", title: "PINK SHADOW" },
-                { id: 3, img: "/gallery_purple.jpg", title: "MUSTARD SHADOW" },
-                { id: 4, img: "/gallery_purple.jpg", title: "DETAIL FOCUS" },
-                { id: 5, img: "/gallery_purple.jpg", title: "DETAIL LACE" },
-                { id: 6, img: "/gallery_purple.jpg", title: "EMBROIDERED BACK" }
-              ].map((item) => (
-                <div key={item.id} className="relative aspect-[3/4.5] w-full bg-zinc-100 overflow-hidden group">
+              {galleryImages.map((item) => (
+                <div key={item.id} className="relative aspect-[3/4.5] w-full bg-zinc-100 overflow-hidden group rounded-lg">
                   <Image 
-                    src={item.img} 
-                    alt={item.title}
+                    src={item.imageUrl} 
+                    alt={item.description || "Gallery Photo"}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-105 brightness-95"
                     sizes="(max-width: 768px) 50vw, 16vw"
                   />
                   <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
                     <span className="text-[9px] tracking-widest uppercase text-white font-semibold">
-                      {item.title}
+                      {item.description || "HAUTE COUTURE"}
                     </span>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Blurring Line Overlay */}
             <div className="gallery-blur-overlay" />
 
-            {/* Centered Show More Button */}
             <div className="absolute bottom-6 left-0 right-0 z-20 flex justify-center">
-              <button 
-                onClick={() => setIsPopupOpen(true)}
+              <Link 
+                href="/gallery"
                 className="px-8 py-3.5 bg-zinc-950 text-white text-[10px] font-bold tracking-widest uppercase flex items-center gap-2 hover:bg-zinc-800 transition-all shadow-md active:scale-95"
               >
                 Show More
                 <svg className="w-3.5 h-3.5 animate-bounce" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                 </svg>
-              </button>
+              </Link>
             </div>
 
           </div>
@@ -296,10 +366,9 @@ export default function Home() {
         </div>
       </section>
 
-
-      {/* 6. METRICS & MARQUEE OF STATS */}
-      <section className="py-16 md:py-24 bg-transparent border-t border-zinc-200/20">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 animate-fade-in-up">
+      {/* 6. METRICS */}
+      <section className="py-24 bg-[#fbfbfa] border-t border-zinc-200/20">
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
             {[
               { num: "98%", label: "CLIENT SATISFACTION" },
@@ -307,7 +376,7 @@ export default function Home() {
               { num: "10+", label: "YEARS OF ARTISANAL LEGACY" }
             ].map((stat, idx) => (
               <div key={idx} className="space-y-3">
-                <div className="font-serif text-5xl md:text-6xl font-light tracking-wide text-zinc-950 animate-text-reveal">
+                <div className="font-serif text-5xl md:text-6xl font-light tracking-wide text-zinc-950">
                   {stat.num}
                 </div>
                 <div className="text-[10px] tracking-widest font-semibold uppercase text-zinc-500">
@@ -319,19 +388,17 @@ export default function Home() {
         </div>
       </section>
 
-
-      {/* 7. CUSTOM DESIGN CTA BANNER (Ref 1 Lookbook Style) */}
+      {/* 7. BESPOKE DESIGN CTA */}
       <section className="pb-24 bg-transparent">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="bg-[#eae3d8]/40 border border-[#eae3d8]/60 backdrop-blur-xs rounded-2xl p-8 md:p-12 lg:p-16 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
-            {/* Left description text */}
             <div className="lg:col-span-6 space-y-6 text-left animate-fade-in-up">
               <span className="font-sans text-[10px] font-bold tracking-[0.25em] uppercase text-zinc-500 block">
                 Bespoke Design Service
               </span>
-              <h3 className="font-serif text-3xl md:text-5xl font-light leading-tight text-zinc-950 animate-text-reveal">
-                Timeless Designs<br />For Every Moment
+              <h3 className="font-serif text-3xl md:text-5xl font-light leading-tight text-zinc-950">
+                Bespoke Fitting<br />For Every Silhouette
               </h3>
               <p className="text-zinc-600 text-xs md:text-sm leading-relaxed font-light tracking-wide max-w-md">
                 Collaborate with our head designers to craft a bespoke couture creation tailored specifically to your measurements, palette choice, and occasion silhouette.
@@ -347,14 +414,13 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right overlapping images block */}
             <div className="lg:col-span-6 grid grid-cols-3 gap-3 md:gap-4">
               {[
-                { img: "/crop_green.png", alt: "Mint dress model" },
-                { img: "/crop_white.png", alt: "White dress model" },
-                { img: "/crop_red.png", alt: "Red dress model" }
+                { img: "/newimages/IMG_1059.JPG", alt: "Mint Dress custom fit" },
+                { img: "/newimages/IMG_1061.JPG", alt: "Ivory Dress custom fit" },
+                { img: "/newimages/IMG_1063.JPG", alt: "Scarlet Dress custom fit" }
               ].map((item, idx) => (
-                <div key={idx} className="relative aspect-[3/4.5] w-full bg-zinc-100 overflow-hidden shadow-sm">
+                <div key={idx} className="relative aspect-[3/4.5] w-full bg-zinc-100 overflow-hidden shadow-sm rounded-lg">
                   <Image
                     src={item.img}
                     alt={item.alt}
@@ -370,16 +436,15 @@ export default function Home() {
         </div>
       </section>
 
-
-      {/* 8. TESTIMONIALS SECTION */}
-      <section className="py-20 md:py-28 bg-transparent border-t border-zinc-200/20">
+      {/* 8. TESTIMONIALS */}
+      <section className="py-24 bg-transparent border-t border-zinc-200/20">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           
-          <div className="text-center space-y-4 mb-16 animate-fade-in-up">
+          <div className="text-center space-y-4 mb-16">
             <span className="font-sans text-[10px] font-bold tracking-[0.2em] uppercase text-zinc-500 block">
               Testimonials
             </span>
-            <h2 className="font-serif text-3xl md:text-4xl tracking-widest uppercase text-zinc-950 font-normal animate-text-reveal">
+            <h2 className="font-serif text-3xl md:text-4xl tracking-widest uppercase text-zinc-950 font-normal">
               Client Diaries
             </h2>
             <div className="w-12 h-[1px] bg-zinc-300 mx-auto" />
@@ -414,7 +479,7 @@ export default function Home() {
                     ))}
                   </div>
                   <p className="font-serif italic text-zinc-700 text-xs md:text-sm leading-relaxed">
-                    \"{item.quote}\"
+                    "{item.quote}"
                   </p>
                 </div>
                 <div className="mt-8 pt-4 border-t border-zinc-200/30 flex justify-between items-center">
@@ -432,73 +497,11 @@ export default function Home() {
         </div>
       </section>
 
-
-      {/* 9. B&W EDITORIAL SPLIT SECTION (Ref 2 Style) */}
-      <section className="py-16 md:py-24 bg-transparent border-t border-zinc-200/20">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-8 md:space-y-12">
-          
-          {/* Banner Row 1: Left Model (B&W) / Right Text */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-0 overflow-hidden rounded-xl border border-zinc-200/40 shadow-xs bg-white/40 backdrop-blur-xs animate-fade-in-up">
-            {/* Image (B&W) */}
-            <div className="md:col-span-7 relative aspect-video md:aspect-auto md:h-[350px] bg-zinc-100 overflow-hidden">
-              <Image
-                src="/crop_white.png"
-                alt="Model Portrait in Black & White"
-                fill
-                className="object-cover filter grayscale contrast-125 brightness-90 hover:scale-105 transition-transform duration-700"
-                sizes="(max-width: 768px) 100vw, 60vw"
-              />
-            </div>
-            {/* Text */}
-            <div className="md:col-span-5 p-8 md:p-12 flex flex-col justify-center items-start text-left space-y-4">
-              <h3 className="font-serif text-3xl font-light text-zinc-950 tracking-wide animate-text-reveal">
-                Style Stories
-              </h3>
-              <p className="text-zinc-500 text-xs tracking-wider uppercase font-semibold">
-                How to Style a Bridal Silhouette
-              </p>
-              <p className="text-zinc-600 text-xs leading-relaxed font-light tracking-wide">
-                Discover custom layering techniques to elevate traditional drapes into contemporary masterpieces.
-              </p>
-            </div>
-          </div>
-
-          {/* Banner Row 2: Left Text / Right Detail texture (B&W) */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-0 overflow-hidden rounded-xl border border-zinc-200/40 shadow-xs bg-white/40 backdrop-blur-xs animate-fade-in-up [animation-delay:200ms]">
-            {/* Text (on left on desktop) */}
-            <div className="md:col-span-5 p-8 md:p-12 flex flex-col justify-center items-start text-left space-y-4 order-2 md:order-1">
-              <h3 className="font-serif text-3xl font-light text-zinc-950 tracking-wide animate-text-reveal">
-                Fabric & Craftsmanship
-              </h3>
-              <p className="text-zinc-500 text-xs tracking-wider uppercase font-semibold">
-                Quality and tradition in weave
-              </p>
-              <p className="text-zinc-600 text-xs leading-relaxed font-light tracking-wide">
-                Every thread is selected for structure and density, ensuring the signature DeFlores silhouette remains intact.
-              </p>
-            </div>
-            {/* Image (on right on desktop) */}
-            <div className="md:col-span-7 relative aspect-video md:aspect-auto md:h-[350px] bg-zinc-100 overflow-hidden order-1 md:order-2">
-              <Image
-                src="/gallery_purple.jpg"
-                alt="Fabric Detail Close-Up in Black & White"
-                fill
-                className="object-cover filter grayscale contrast-150 brightness-95 hover:scale-105 transition-transform duration-700"
-                sizes="(max-width: 768px) 100vw, 60vw"
-              />
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-
-      {/* 6. POPUP DIALOG / INTERSTITIAL MODAL */}
+      {/* POPUP DIALOG */}
       {isPopupOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-          <div className="w-full max-w-md bg-white border border-zinc-200 p-8 md:p-10 shadow-2xl relative text-center">
+          <div className="w-full max-w-md bg-white border border-zinc-200 p-8 md:p-10 shadow-2xl relative text-center rounded-xl">
             
-            {/* Close Button */}
             <button 
               onClick={() => setIsPopupOpen(false)}
               className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-950 transition-colors"
@@ -509,7 +512,6 @@ export default function Home() {
               </svg>
             </button>
 
-            {/* Modal Content */}
             <div className="space-y-6">
               <h3 className="font-serif text-2xl tracking-widest uppercase text-zinc-950">
                 Subscribe
@@ -525,12 +527,12 @@ export default function Home() {
               ) : (
                 <form onSubmit={handleSubscribeSubmit} className="space-y-4">
                   <input
-                    type="email"
-                    required
-                    placeholder="YOUR EMAIL ADDRESS"
-                    value={emailInput}
-                    onChange={(e) => setEmailInput(e.target.value)}
-                    className="w-full border border-zinc-200 text-xs px-4 py-3 tracking-wider text-zinc-950 text-center placeholder:text-zinc-300 focus:outline-none focus:border-zinc-500 rounded-none bg-transparent"
+                     type="email"
+                     required
+                     placeholder="YOUR EMAIL ADDRESS"
+                     value={emailInput}
+                     onChange={(e) => setEmailInput(e.target.value)}
+                     className="w-full border border-zinc-200 text-xs px-4 py-3 tracking-wider text-zinc-950 text-center placeholder:text-zinc-300 focus:outline-none focus:border-zinc-500 rounded-none bg-transparent"
                   />
                   <div className="grid grid-cols-2 gap-4">
                     <button 
@@ -543,7 +545,7 @@ export default function Home() {
                       href="https://www.instagram.com/de_flores_official"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="bg-white border border-zinc-950 text-zinc-950 text-[10px] font-bold tracking-widest uppercase py-3.5 hover:bg-zinc-50 transition-colors flex items-center justify-center"
+                      className="bg-white border border-zinc-950 text-zinc-950 text-[10px] font-bold tracking-widest uppercase py-3.5 hover:bg-zinc-50 transition-colors flex items-center justify-center animate-pulse"
                     >
                       Continue
                     </a>
