@@ -33,11 +33,10 @@ export default function Navbar() {
     <header className="w-full z-50">
       {/* 1. Black announcement bar */}
       <div className="w-full bg-black text-white py-2 px-6 md:px-12 flex justify-between items-center text-[10px] tracking-widest uppercase font-medium">
-        <div className="hidden sm:block">EN/INR</div>
-        <div className="mx-auto sm:mx-0">5% discount when subscribing to news</div>
+        <div className="hidden sm:block">EN/EUR</div>
+        <div className="mx-auto sm:mx-0">5 tales of being — DeFlore Studio</div>
         <div className="hidden sm:flex gap-6">
           <Link href="#contact" className="hover:opacity-75 transition-opacity">Contact</Link>
-          <Link href="#about" className="hover:opacity-75 transition-opacity">About</Link>
         </div>
       </div>
 
@@ -93,7 +92,7 @@ export default function Navbar() {
           {/* Center Brand Logo (Always Centered) */}
           <div className="absolute left-1/2 -translate-x-1/2">
             <Link href="/" className="font-serif text-xl sm:text-2xl md:text-3xl font-light tracking-[0.2em] uppercase text-zinc-950">
-              DeFlores
+              DeFlore
             </Link>
           </div>
 
@@ -111,10 +110,6 @@ export default function Navbar() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
             </button>
-            {/* Shining Explore Button */}
-            <Link href="/explore" className="shining-explore-btn hidden md:inline-flex ml-2">
-              Explore
-            </Link>
           </div>
 
         </div>
