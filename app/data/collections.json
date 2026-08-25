@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "num": "01",
+    "tag": "RED CARPET",
+    "category": "CELEB GOWN",
+    "image": "/newimages/IMG_1058.JPG",
+    "desc": "Red carpet designs, custom fit silhouettes, and hand-embroidered structures engineered to stand out."
+  },
+  {
+    "id": 2,
+    "num": "02",
+    "tag": "BRIDAL WEAR",
+    "category": "LEHENGA",
+    "image": "/newimages/IMG_1060.JPG",
+    "desc": "Bespoke bridal wear, flowing silk georgette lehengas, structured corsetry, and layered tiers."
+  },
+  {
+    "id": 3,
+    "num": "03",
+    "tag": "HERITAGE COUTURE",
+    "category": "PAKISTANI",
+    "image": "/newimages/IMG_1062.JPG",
+    "desc": "Traditional hand-stitched borders, long flowy kurtas, intricate threads, and heritage craftsmanship."
+  },
+  {
+    "id": 4,
+    "num": "04",
+    "tag": "INDO-WESTERN",
+    "category": "RECEPTION",
+    "image": "/new_images2/IMG_1076.JPG",
+    "desc": "Contemporary Indo-Western silhouettes, liquid silk flows, and high-fashion hybrid styling for evening events."
+  },
+  {
+    "id": 5,
+    "num": "05",
+    "tag": "DRAPED SILKS",
+    "category": "SAREE",
+    "image": "/new_images2/IMG_1077.JPG",
+    "desc": "Delicate draped silks, satin gathers, and custom handloom weaves that catch light in a beautiful rhythm."
+  }
+]

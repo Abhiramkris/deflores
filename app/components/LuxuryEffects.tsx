@@ -44,36 +44,7 @@ export default function LuxuryEffects() {
     };
   }, [isVisible]);
 
-  // 2. Ambient Audio Controller
-  const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  useEffect(() => {
-    // Royalty-free loopable background music (SoundHelix minimal ambient audio)
-    audioRef.current = new Audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3");
-    audioRef.current.loop = true;
-    audioRef.current.volume = 0.2;
-    
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
-    };
-  }, []);
-
-  const toggleSound = () => {
-    if (!audioRef.current) return;
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play().catch((err) => {
-        console.log("Browser auto-play restriction block:", err);
-      });
-    }
-    setIsPlaying(!isPlaying);
-  };
-
-  // 3. Cookie Consent Banner
+  // 2. Cookie Consent Banner
   const [showCookies, setShowCookies] = useState(false);
 
   useEffect(() => {
@@ -105,28 +76,6 @@ export default function LuxuryEffects() {
           }}
         />
       )}
-
-      {/* Floating Audio Controller */}
-      <div className="fixed bottom-6 left-6 z-40 bg-zinc-950/80 backdrop-blur-md text-white border border-white/10 px-4 py-3 rounded-full flex items-center gap-3.5 shadow-lg select-none">
-        <button 
-          onClick={toggleSound}
-          className="flex items-center gap-2.5 text-[9px] font-bold tracking-[0.25em] uppercase hover:opacity-85 transition-opacity"
-        >
-          {isPlaying ? (
-            <span className="text-[10px] text-emerald-400">● SOUND ON</span>
-          ) : (
-            <span className="text-[10px] text-zinc-400">○ SOUND OFF</span>
-          )}
-          
-          {/* Animated sound bars */}
-          <div className="flex items-end gap-[2px] h-3 w-5">
-            <div className={`w-[2px] bg-white rounded-full transition-all duration-300 ${isPlaying ? "animate-[sound-bar-1_0.8s_infinite_alternate]" : "h-1"}`} style={{ height: isPlaying ? undefined : "4px" }} />
-            <div className={`w-[2px] bg-white rounded-full transition-all duration-300 ${isPlaying ? "animate-[sound-bar-2_0.5s_infinite_alternate]" : "h-2"}`} style={{ height: isPlaying ? undefined : "6px" }} />
-            <div className={`w-[2px] bg-white rounded-full transition-all duration-300 ${isPlaying ? "animate-[sound-bar-3_0.7s_infinite_alternate]" : "h-1"}`} style={{ height: isPlaying ? undefined : "3px" }} />
-            <div className={`w-[2px] bg-white rounded-full transition-all duration-300 ${isPlaying ? "animate-[sound-bar-4_0.6s_infinite_alternate]" : "h-2.5"}`} style={{ height: isPlaying ? undefined : "5px" }} />
-          </div>
-        </button>
-      </div>
 
       {/* Cookie Consent Banner */}
       {showCookies && (
