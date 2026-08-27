@@ -74,12 +74,12 @@ export default function Home() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const carouselImages = [
-    "/new_images2/IMG_1076.JPG",
-    "/new_images2/IMG_1077.JPG",
-    "/new_images2/IMG_1078.JPG",
-    "/new_images2/IMG_1080.JPG",
-    "/new_images2/IMG_1081.JPG",
-    "/new_images2/IMG_1082.JPG"
+    "/new_images2/IMG_1076.webp",
+    "/new_images2/IMG_1077.webp",
+    "/new_images2/IMG_1078.webp",
+    "/new_images2/IMG_1080.webp",
+    "/new_images2/IMG_1081.webp",
+    "/new_images2/IMG_1082.webp"
   ];
 
   useEffect(() => {
@@ -395,7 +395,7 @@ export default function Home() {
           {/* Left Column: Story Image */}
           <div className="lg:col-span-5 relative aspect-[3/4.2] w-full overflow-hidden rounded-[2rem] bg-zinc-200 shadow-lg group">
             <Image 
-              src="/newimages/IMG_1061.JPG" 
+              src="/newimages/IMG_1061.webp" 
               alt="Artisanal Legacy"
               fill
               className="object-cover transition-transform duration-1000 group-hover:scale-105 brightness-95"
@@ -605,7 +605,7 @@ export default function Home() {
       <section className="relative w-full h-[60vh] overflow-hidden my-16 bg-zinc-950">
         <div 
           className="absolute inset-0 bg-cover bg-center bg-fixed brightness-[0.65]"
-          style={{ backgroundImage: "url('/new_images2/IMG_1078.JPG')" }}
+          style={{ backgroundImage: "url('/new_images2/IMG_1078.webp')" }}
         />
         <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
           <div className="text-center text-white space-y-4 max-w-xl px-6">
@@ -669,7 +669,7 @@ export default function Home() {
           {/* Background image */}
           <div 
             className="absolute inset-0 bg-cover bg-center brightness-[0.8] hover:scale-105 transition-transform duration-[3s]"
-            style={{ backgroundImage: "url('/newimages/IMG_1064.JPG')" }}
+            style={{ backgroundImage: "url('/newimages/IMG_1064.webp')" }}
           />
           <div className="absolute inset-0 bg-black/10 z-0" />
 
