@@ -57,7 +57,7 @@ interface Product {
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<"stats" | "product" | "gallery" | "newsletter" | "logs" | "reviews">("stats");
+  const [activeTab, setActiveTab] = useState<"stats" | "product" | "gallery" | "newsletter" | "logs" | "reviews" | "categories">("stats");
   const [activeLogSubTab, setActiveLogSubTab] = useState<"admin" | "user">("admin");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
@@ -69,6 +69,11 @@ export default function AdminDashboard() {
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Categories management state
+  const [adminCategories, setAdminCategories] = useState<any[]>([]);
+  const [selectedCatIdx, setSelectedCatIdx] = useState<number>(0);
+  const [isSavingCat, setIsSavingCat] = useState(false);
 
   // Forms states
   const [pId, setPId] = useState("");
@@ -116,6 +121,13 @@ export default function AdminDashboard() {
         setSelectedProductIds([]);
       } else {
         router.push("/admin/login");
+      }
+
+      // Fetch categories for management
+      const catRes = await fetch("/api/categories");
+      const catData = await catRes.json();
+      if (catData.success && catData.categories) {
+        setAdminCategories(catData.categories);
       }
     } catch (err) {
       router.push("/admin/login");
@@ -462,6 +474,15 @@ export default function AdminDashboard() {
                 icon: (
                   <svg className="w-4 h-4 stroke-current fill-none" strokeWidth="2" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499c-.107-.218-.284-.348-.508-.348s-.401.13-.508.348L8.27 7.747l-4.69.682c-.24.035-.418.2-.468.435-.05.235.04.482.23.652l3.393 3.308-.8 4.672c-.04.24.06.48.265.626.205.146.475.148.68.006l4.195-2.206 4.196 2.206c.205.142.475.14.68-.006.205-.146.305-.386.265-.626l-.8-4.672 3.393-3.308c.19-.17.28-.417.23-.652-.05-.235-.228-.4-.468-.435l-4.69-.682-2.197-4.248z" />
+                  </svg>
+                ) 
+              },
+              { 
+                id: "categories", 
+                label: "Categories & Sub-Categories", 
+                icon: (
+                  <svg className="w-4 h-4 stroke-current fill-none" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
                   </svg>
                 ) 
               }
@@ -1480,6 +1501,224 @@ export default function AdminDashboard() {
                 </table>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* TAB 6: Categories & Sub-Categories Manager */}
+        {activeTab === "categories" && (
+          <div className="space-y-8 text-left">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-end border-b border-zinc-200 pb-5 gap-4">
+              <div className="space-y-2">
+                <h2 className="font-serif text-3xl font-light text-zinc-950">Categories & Sub-Categories Manager</h2>
+                <p className="text-xs text-zinc-500 leading-relaxed font-light tracking-wide">
+                  Edit homepage main categories, tags, images, and customize their respective sub-categories.
+                </p>
+              </div>
+              <button
+                onClick={async () => {
+                  try {
+                    setIsSavingCat(true);
+                    const res = await fetch("/api/categories", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ action: "update_all", categories: adminCategories }),
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                      setMessage("Categories and Sub-categories saved successfully!");
+                      setIsError(false);
+                    } else {
+                      setMessage(data.error || "Failed to save categories");
+                      setIsError(true);
+                    }
+                  } catch (err: any) {
+                    setMessage(err.message || "Failed saving categories");
+                    setIsError(true);
+                  } finally {
+                    setIsSavingCat(false);
+                    setTimeout(() => setMessage(""), 4000);
+                  }
+                }}
+                disabled={isSavingCat}
+                className="bg-zinc-950 text-white text-[10px] font-bold tracking-widest uppercase px-6 py-3 rounded-lg hover:bg-zinc-800 transition-all cursor-pointer shadow-md disabled:opacity-50 self-start md:self-auto"
+              >
+                {isSavingCat ? "Saving..." : "Save All Categories"}
+              </button>
+            </div>
+
+            {/* Category Selector Tabs */}
+            <div className="flex flex-wrap gap-2 border-b border-zinc-200 pb-3">
+              {adminCategories.map((cat, idx) => (
+                <button
+                  key={cat.key || idx}
+                  onClick={() => setSelectedCatIdx(idx)}
+                  className={`px-5 py-2.5 rounded-lg text-xs font-bold tracking-wider uppercase transition-all ${
+                    selectedCatIdx === idx
+                      ? "bg-zinc-950 text-white shadow-xs"
+                      : "bg-white text-zinc-600 border border-zinc-200 hover:border-zinc-400"
+                  }`}
+                >
+                  {cat.num || `0${idx + 1}`}. {cat.title} ({cat.subcategories?.length || 0})
+                </button>
+              ))}
+            </div>
+
+            {/* Current Category Form & Sub-Categories Manager */}
+            {adminCategories[selectedCatIdx] && (
+              <div className="space-y-8">
+                {/* Main Category Metadata */}
+                <div className="bg-white border border-zinc-200 p-6 md:p-8 rounded-xl space-y-6 shadow-xs">
+                  <h3 className="text-sm font-bold tracking-wider uppercase text-zinc-900 border-b border-zinc-150 pb-3">
+                    Main Category Information: {adminCategories[selectedCatIdx].title}
+                  </h3>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-2">Category Title</label>
+                      <input
+                        type="text"
+                        value={adminCategories[selectedCatIdx].title || ""}
+                        onChange={(e) => {
+                          const updated = [...adminCategories];
+                          updated[selectedCatIdx].title = e.target.value;
+                          setAdminCategories(updated);
+                        }}
+                        className="w-full border border-zinc-200 text-xs px-4 py-2.5 rounded-lg focus:outline-none focus:border-zinc-950 bg-transparent"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-2">Tag Badge</label>
+                      <input
+                        type="text"
+                        value={adminCategories[selectedCatIdx].tag || ""}
+                        onChange={(e) => {
+                          const updated = [...adminCategories];
+                          updated[selectedCatIdx].tag = e.target.value;
+                          setAdminCategories(updated);
+                        }}
+                        className="w-full border border-zinc-200 text-xs px-4 py-2.5 rounded-lg focus:outline-none focus:border-zinc-950 bg-transparent"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-2">Banner Image Path / URL</label>
+                      <input
+                        type="text"
+                        value={adminCategories[selectedCatIdx].image || ""}
+                        onChange={(e) => {
+                          const updated = [...adminCategories];
+                          updated[selectedCatIdx].image = e.target.value;
+                          setAdminCategories(updated);
+                        }}
+                        className="w-full border border-zinc-200 text-xs px-4 py-2.5 rounded-lg focus:outline-none focus:border-zinc-950 bg-transparent font-mono"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-2">Display Number</label>
+                      <input
+                        type="text"
+                        value={adminCategories[selectedCatIdx].num || ""}
+                        onChange={(e) => {
+                          const updated = [...adminCategories];
+                          updated[selectedCatIdx].num = e.target.value;
+                          setAdminCategories(updated);
+                        }}
+                        className="w-full border border-zinc-200 text-xs px-4 py-2.5 rounded-lg focus:outline-none focus:border-zinc-950 bg-transparent font-mono"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-2">Category Description</label>
+                    <textarea
+                      rows={2}
+                      value={adminCategories[selectedCatIdx].description || ""}
+                      onChange={(e) => {
+                        const updated = [...adminCategories];
+                        updated[selectedCatIdx].description = e.target.value;
+                        setAdminCategories(updated);
+                      }}
+                      className="w-full border border-zinc-200 text-xs p-4 rounded-lg focus:outline-none focus:border-zinc-950 bg-transparent resize-none leading-relaxed"
+                    />
+                  </div>
+                </div>
+
+                {/* Sub-Categories Editor */}
+                <div className="bg-white border border-zinc-200 p-6 md:p-8 rounded-xl space-y-6 shadow-xs">
+                  <div className="flex justify-between items-center border-b border-zinc-150 pb-3">
+                    <h3 className="text-sm font-bold tracking-wider uppercase text-zinc-900">
+                      Sub-Categories for {adminCategories[selectedCatIdx].title} ({adminCategories[selectedCatIdx].subcategories?.length || 0})
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = [...adminCategories];
+                        const currentSubs = updated[selectedCatIdx].subcategories || [];
+                        updated[selectedCatIdx].subcategories = [
+                          ...currentSubs,
+                          { title: "New Sub-Category", desc: "Description for this new sub-category." }
+                        ];
+                        setAdminCategories(updated);
+                      }}
+                      className="bg-zinc-100 hover:bg-zinc-200 text-zinc-900 text-[9px] font-bold tracking-widest uppercase px-4 py-2 rounded-md transition-colors"
+                    >
+                      + Add Sub-Category
+                    </button>
+                  </div>
+
+                  <div className="space-y-4">
+                    {adminCategories[selectedCatIdx].subcategories?.map((sub: any, subIdx: number) => (
+                      <div key={subIdx} className="border border-zinc-200/80 p-5 rounded-xl space-y-3 bg-zinc-50/50 relative group">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase">SUB-CATEGORY #{subIdx + 1}</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = [...adminCategories];
+                              updated[selectedCatIdx].subcategories = updated[selectedCatIdx].subcategories.filter((_: any, i: number) => i !== subIdx);
+                              setAdminCategories(updated);
+                            }}
+                            className="text-red-600 hover:text-red-800 text-[10px] font-bold tracking-widest uppercase"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div className="md:col-span-1">
+                            <label className="block text-[9px] font-bold tracking-widest text-zinc-400 uppercase mb-1">Title</label>
+                            <input
+                              type="text"
+                              value={sub.title || ""}
+                              onChange={(e) => {
+                                const updated = [...adminCategories];
+                                updated[selectedCatIdx].subcategories[subIdx].title = e.target.value;
+                                setAdminCategories(updated);
+                              }}
+                              className="w-full border border-zinc-200 text-xs px-3 py-2 rounded-md focus:outline-none focus:border-zinc-950 bg-white font-semibold"
+                            />
+                          </div>
+                          <div className="md:col-span-2">
+                            <label className="block text-[9px] font-bold tracking-widest text-zinc-400 uppercase mb-1">Description</label>
+                            <input
+                              type="text"
+                              value={sub.desc || ""}
+                              onChange={(e) => {
+                                const updated = [...adminCategories];
+                                updated[selectedCatIdx].subcategories[subIdx].desc = e.target.value;
+                                setAdminCategories(updated);
+                              }}
+                              className="w-full border border-zinc-200 text-xs px-3 py-2 rounded-md focus:outline-none focus:border-zinc-950 bg-white"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 

@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import collectionsData from "./data/collections.json";
+import initialCategories from "./data/categories.json";
 
 // Reusable scroll-reveal line-by-line text animation component
 function AnimatedLineText({
@@ -66,12 +66,25 @@ export default function Home() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [emailInput, setEmailInput] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [activeAccordion, setActiveAccordion] = useState<number | null>(1); // 02. Men's Collection expanded by default
+  const [activeAccordion, setActiveAccordion] = useState<number | null>(0); // 01. Lehenga expanded by default
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [scrollY, setScrollY] = useState(0);
   const [activeSwatch, setActiveSwatch] = useState<string | null>(null);
   const [isVideoMuted, setIsVideoMuted] = useState(true);
+  const [categories, setCategories] = useState<any[]>(initialCategories);
+  const [activeCategoryModal, setActiveCategoryModal] = useState<any | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    fetch("/api/categories")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.categories) && data.categories.length > 0) {
+          setCategories(data.categories);
+        }
+      })
+      .catch((err) => console.warn("Notice: Syncing categories:", err));
+  }, []);
 
   const carouselImages = [
     "/new_images2/IMG_1076.webp",
@@ -256,12 +269,12 @@ export default function Home() {
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-          {collectionsData.map((item) => (
-            <Link 
-              href="/explore"
-              key={item.id}
-              className="relative aspect-[3/4.2] w-full overflow-hidden rounded-[2rem] group shadow-lg bg-zinc-950 block"
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          {categories.map((item: any) => (
+            <div 
+              key={item.key || item.id}
+              onClick={() => setActiveCategoryModal(item)}
+              className="relative aspect-[3/4.2] w-full overflow-hidden rounded-[2rem] group shadow-lg bg-zinc-950 block cursor-pointer"
             >
               {/* Parallax Background Image */}
               <div 
@@ -274,37 +287,42 @@ export default function Home() {
               />
               
               {/* Dark Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-black/35 transition-opacity duration-500 group-hover:from-black/90" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/35 transition-opacity duration-500 group-hover:from-black/95" />
 
               {/* Number Tag on Top-Right */}
-              <div className="absolute top-6 right-6 text-white/50 text-[10px] font-mono tracking-widest z-10">
-                /{item.num}
+              <div className="absolute top-6 right-6 text-white/70 text-[10px] font-mono tracking-widest z-10 bg-black/40 px-2.5 py-1 rounded-full backdrop-blur-xs border border-white/10">
+                /{item.num || "01"}
               </div>
 
               {/* Content Panel (Bottom aligned) */}
-              <div className="absolute inset-x-0 bottom-0 p-8 flex flex-col justify-end text-left space-y-4 translate-y-6 group-hover:translate-y-0 transition-transform duration-500 z-10">
+              <div className="absolute inset-x-0 bottom-0 p-7 flex flex-col justify-end text-left space-y-3 z-10">
                 {/* Tag */}
                 <span className="text-[10px] tracking-[0.3em] font-bold text-[#ca8a3a] uppercase">
-                  {item.tag}
+                  {item.tag || "COUTURE"}
                 </span>
                 
                 {/* Category Title - HIGHLY HIGHLIGHTED */}
-                <h3 className="text-xl sm:text-2xl font-bold tracking-[0.15em] text-white uppercase leading-none">
-                  {item.category}
+                <h3 className="text-2xl sm:text-3xl font-bold tracking-[0.12em] text-white uppercase leading-none">
+                  {item.title}
                 </h3>
                 
-                {/* Description - Fades in and slides up on hover */}
-                <p className="text-[11px] sm:text-xs text-zinc-300 font-light leading-relaxed tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-75 max-w-sm">
-                  {item.desc}
+                {/* Sub-categories Badge */}
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full text-[9px] font-bold tracking-widest uppercase text-zinc-300 w-fit">
+                  <span>{item.subcategories?.length || 0} SUB-CATEGORIES AVAILABLE</span>
+                </div>
+
+                {/* Description */}
+                <p className="text-[11px] text-zinc-300 font-light leading-relaxed tracking-wide opacity-80 line-clamp-2">
+                  {item.description}
                 </p>
 
                 {/* Explore arrow link */}
-                <div className="pt-1 flex items-center gap-2 text-[10px] font-bold tracking-widest text-[#ca8a3a] uppercase">
-                  EXPLORE CATEGORY 
-                  <span className="transform group-hover:translate-x-1.5 transition-transform duration-300">→</span>
+                <div className="pt-2 flex items-center justify-between text-[10px] font-bold tracking-widest text-[#ca8a3a] uppercase border-t border-white/10">
+                  <span>VIEW SUB-CATEGORIES</span>
+                  <span className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-[#ca8a3a] group-hover:text-zinc-950 transition-all duration-300">→</span>
                 </div>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       </section>
@@ -340,23 +358,26 @@ export default function Home() {
 
             {/* Accordion / List */}
             <div className="border-t border-zinc-300/60 divide-y divide-zinc-300/60">
-              {accordionItems.map((item) => {
-                const isOpen = activeAccordion === item.id;
+              {categories.map((item: any, idx: number) => {
+                const isOpen = activeAccordion === idx;
                 return (
-                  <div key={item.id} className="py-6 transition-all duration-300">
+                  <div key={item.key || idx} className="py-6 transition-all duration-300">
                     <button
-                      onClick={() => setActiveAccordion(isOpen ? null : item.id)}
+                      onClick={() => setActiveAccordion(isOpen ? null : idx)}
                       className="w-full flex items-center justify-between text-left group"
                     >
-                      <div className="flex items-center gap-6">
-                        <span className="text-xs font-mono tracking-wider text-zinc-400">{item.num}</span>
-                        <span className={`text-sm sm:text-base font-bold tracking-widest uppercase transition-colors ${isOpen ? "text-[#ca8a3a]" : "text-zinc-900 group-hover:text-zinc-600"}`}>
+                      <div className="flex items-center gap-4 sm:gap-6">
+                        <span className="text-xs font-mono tracking-wider text-zinc-400">{item.num || `0${idx + 1}`}</span>
+                        <span className={`text-base sm:text-lg font-bold tracking-widest uppercase transition-colors ${isOpen ? "text-[#ca8a3a]" : "text-zinc-900 group-hover:text-zinc-600"}`}>
                           {item.title}
+                        </span>
+                        <span className="text-[9px] font-bold tracking-widest uppercase px-2.5 py-0.5 rounded-full bg-zinc-200 text-zinc-600 hidden sm:inline-block">
+                          {item.subcategories?.length || 0} SUB-CATEGORIES
                         </span>
                       </div>
                       
                       {/* Arrow / Chevron Icon */}
-                      <div className="w-6 h-6 flex items-center justify-center rounded-full border border-zinc-300 group-hover:border-zinc-500 transition-colors">
+                      <div className="w-7 h-7 flex items-center justify-center rounded-full border border-zinc-300 group-hover:border-zinc-500 transition-colors">
                         {isOpen ? (
                           <svg className="w-3.5 h-3.5 text-[#ca8a3a]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
@@ -372,12 +393,31 @@ export default function Home() {
                     {/* Collapsible Content */}
                     <div 
                       className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                        isOpen ? "max-h-40 opacity-100 mt-4" : "max-h-0 opacity-0"
+                        isOpen ? "max-h-[800px] opacity-100 mt-6" : "max-h-0 opacity-0"
                       }`}
                     >
-                      <p className="text-xs sm:text-sm text-zinc-500 font-light leading-relaxed pl-12 max-w-2xl tracking-wide">
-                        {item.content}
-                      </p>
+                      <div className="pl-4 sm:pl-10 space-y-5">
+                        <p className="text-xs sm:text-sm text-zinc-600 font-light leading-relaxed tracking-wide max-w-3xl">
+                          {item.description}
+                        </p>
+                        
+                        {/* Sub-categories Grid inside Accordion */}
+                        {item.subcategories && item.subcategories.length > 0 && (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
+                            {item.subcategories.map((sub: any, subIdx: number) => (
+                              <div key={subIdx} className="bg-white/60 border border-zinc-300/60 p-4 rounded-2xl space-y-1.5 hover:border-[#ca8a3a] hover:bg-white transition-all shadow-xs">
+                                <div className="text-xs font-bold tracking-wider text-zinc-900 uppercase flex items-center gap-2">
+                                  <span className="w-2 h-2 rounded-full bg-[#ca8a3a]" />
+                                  {sub.title}
+                                </div>
+                                <p className="text-[11px] text-zinc-500 font-light leading-relaxed">
+                                  {sub.desc}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 );
@@ -752,7 +792,71 @@ export default function Home() {
                 </form>
               )}
             </div>
+          </div>
+        </div>
+      )}
 
+      {/* INTERACTIVE SUB-CATEGORY MODAL */}
+      {activeCategoryModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="relative w-full max-w-4xl bg-[#f4f2ee] rounded-[2.5rem] overflow-hidden shadow-2xl border border-zinc-300 max-h-[90vh] flex flex-col">
+            {/* Top Banner Header */}
+            <div className="relative h-56 sm:h-64 bg-zinc-950 overflow-hidden flex flex-col justify-end p-6 sm:p-8">
+              <div 
+                className="absolute inset-0 bg-cover bg-center brightness-[0.35]"
+                style={{ backgroundImage: `url('${activeCategoryModal.image}')` }}
+              />
+              <button 
+                onClick={() => setActiveCategoryModal(null)}
+                className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/20 hover:bg-white text-white hover:text-zinc-950 flex items-center justify-center backdrop-blur-md transition-all z-20 text-base font-bold shadow-lg"
+              >
+                ✕
+              </button>
+              <div className="relative z-10 space-y-2 text-left">
+                <span className="text-[10px] tracking-[0.3em] font-bold text-[#ca8a3a] uppercase">
+                  {activeCategoryModal.tag || "COLLECTION"}
+                </span>
+                <h2 className="text-3xl sm:text-5xl font-bold tracking-tight uppercase text-white leading-none">
+                  {activeCategoryModal.title}
+                </h2>
+                <p className="text-xs sm:text-sm text-zinc-300 font-light max-w-xl leading-relaxed">
+                  {activeCategoryModal.description}
+                </p>
+              </div>
+            </div>
+
+            {/* Sub-categories List Body */}
+            <div className="p-6 sm:p-8 overflow-y-auto flex-1 space-y-6 text-left">
+              <div className="flex justify-between items-center border-b border-zinc-300/60 pb-3">
+                <span className="text-xs font-bold tracking-widest uppercase text-zinc-900">
+                  SUB-CATEGORIES ({activeCategoryModal.subcategories?.length || 0})
+                </span>
+                <Link
+                  href={`/explore`}
+                  onClick={() => setActiveCategoryModal(null)}
+                  className="text-[10px] font-bold tracking-widest uppercase text-[#ca8a3a] hover:underline"
+                >
+                  View Catalog →
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {activeCategoryModal.subcategories?.map((sub: any, idx: number) => (
+                  <div key={idx} className="bg-white/80 border border-zinc-300/60 p-5 rounded-2xl space-y-2 hover:shadow-md hover:border-[#ca8a3a] transition-all">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-sm font-bold tracking-wide uppercase text-zinc-900 flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-[#ca8a3a]" />
+                        {sub.title}
+                      </h4>
+                      <span className="text-[9px] font-mono text-zinc-400">/{String(idx + 1).padStart(2, '0')}</span>
+                    </div>
+                    <p className="text-xs text-zinc-600 font-light leading-relaxed">
+                      {sub.desc}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       )}
