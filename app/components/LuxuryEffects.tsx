@@ -1,50 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 export default function LuxuryEffects() {
-  // 1. Mouse Custom Cursor Tracking with Negative Difference Effect
-  const [mousePos, setMousePos] = useState({ x: -100, y: -100 });
-  const [isHoveringClickable, setIsHoveringClickable] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const updateMouse = (e: MouseEvent) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
-      if (!isVisible) setIsVisible(true);
-    };
-
-    const handleMouseLeave = () => {
-      setIsVisible(false);
-    };
-
-    const handleMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (
-        target.tagName === "A" || 
-        target.tagName === "BUTTON" || 
-        target.closest("a") || 
-        target.closest("button") ||
-        target.classList.contains("cursor-pointer")
-      ) {
-        setIsHoveringClickable(true);
-      } else {
-        setIsHoveringClickable(false);
-      }
-    };
-
-    window.addEventListener("mousemove", updateMouse);
-    document.addEventListener("mouseleave", handleMouseLeave);
-    window.addEventListener("mouseover", handleMouseOver);
-
-    return () => {
-      window.removeEventListener("mousemove", updateMouse);
-      document.removeEventListener("mouseleave", handleMouseLeave);
-      window.removeEventListener("mouseover", handleMouseOver);
-    };
-  }, [isVisible]);
-
-  // 2. Cookie Consent Banner
+  // Cookie Consent Banner
   const [showCookies, setShowCookies] = useState(false);
 
   useEffect(() => {
@@ -63,20 +22,6 @@ export default function LuxuryEffects() {
 
   return (
     <>
-      {/* custom negative effect cursor */}
-      {isVisible && (
-        <div 
-          className="fixed pointer-events-none z-50 rounded-full bg-white mix-blend-difference transition-all duration-150 ease-out hidden md:block"
-          style={{
-            left: `${mousePos.x}px`,
-            top: `${mousePos.y}px`,
-            width: isHoveringClickable ? "44px" : "14px",
-            height: isHoveringClickable ? "44px" : "14px",
-            transform: "translate(-50%, -50%)",
-          }}
-        />
-      )}
-
       {/* Cookie Consent Banner */}
       {showCookies && (
         <div className="fixed bottom-6 right-6 z-40 max-w-sm bg-zinc-950 text-white border border-white/10 p-5 rounded-xl shadow-2xl animate-fade-in-up">
