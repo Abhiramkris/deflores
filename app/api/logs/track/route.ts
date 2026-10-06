@@ -29,11 +29,10 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    if (error.code === "ECONNREFUSED" || error.message?.includes("connect")) {
-      console.warn("⚠️ [Database Offline] Client tracking event received but SQL server is unreachable.");
-      return NextResponse.json({ success: false, warning: "Database connection offline" }, { status: 200 });
-    }
-    console.error("Tracking API Error:", error);
-    return NextResponse.json({ error: error.message || "Server Error" }, { status: 500 });
+    console.warn("⚠️ [Database Tracking Warning] Unable to save tracking log:", error.message || error);
+    return NextResponse.json(
+      { success: false, warning: "Database connection offline or unreachable" },
+      { status: 200 }
+    );
   }
 }
