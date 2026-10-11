@@ -379,27 +379,31 @@ export default function HomePage() {
             </h2>
           </div>
 
-          {/* Category Cards: 2-Column Grid Matching Reference Design */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto">
+          {/* Category Cards: Responsive 2-2-1 on Mobile, 5-Column Editorial on Desktop */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-6 items-center">
             {CATEGORIES.map((cat, index) => {
-              const isLast = index === 4;
+              const isLastOnMobile = index === 4;
 
               return (
                 <Link
                   key={cat.id}
                   href={`/collections?category=${cat.id}`}
-                  className={`group relative flex flex-col overflow-hidden rounded-[2.2rem] sm:rounded-[2.6rem] border border-white/10 shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_25px_60px_rgba(0,0,0,0.25)] ${
-                    isLast ? "md:col-span-2 md:max-w-[calc(50%-1rem)] md:mx-auto w-full" : "w-full"
+                  className={`group relative flex flex-col overflow-hidden rounded-2xl sm:rounded-3xl border border-white/10 shadow-xl transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl ${
+                    isLastOnMobile ? "col-span-2 md:col-span-1" : ""
                   }`}
                 >
-                  {/* Card Container: Aspect 3:4.2 matching reference */}
-                  <div className="relative w-full aspect-[3/4] sm:aspect-[3/4.2] overflow-hidden bg-zinc-900">
+                  {/* Card Container: 2-2-1 responsive aspect ratio */}
+                  <div
+                    className={`relative w-full overflow-hidden bg-zinc-900 ${
+                      isLastOnMobile ? "aspect-[16/9] md:aspect-[3/4.2]" : "aspect-[3/4] sm:aspect-[3/4.2]"
+                    }`}
+                  >
                     {/* Background Image with Hover Scale */}
                     <Image
                       src={cat.image}
                       alt={cat.name}
                       fill
-                      sizes="(max-width: 768px) 100vw, 50vw"
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                       className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-106"
                     />
 
@@ -407,30 +411,30 @@ export default function HomePage() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/40 transition-opacity duration-300 group-hover:from-black/90" />
 
                     {/* Card Content Overlay */}
-                    <div className="absolute inset-0 p-5 sm:p-7 md:p-8 flex flex-col justify-between z-10">
+                    <div className="absolute inset-0 p-3.5 sm:p-5 md:p-6 flex flex-col justify-between z-10">
                       {/* Top Bar: Pill Tag & Number */}
                       <div className="flex items-center justify-between">
                         {/* Pill Tag with Glowing Dot */}
-                        <span className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-[10px] sm:text-[11px] tracking-[0.22em] uppercase font-medium text-white shadow-sm">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-[9px] sm:text-[10px] tracking-[0.18em] uppercase font-medium text-white shadow-sm">
                           <span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" />
                           <span>{cat.tag}</span>
                         </span>
 
                         {/* Line & 2-Digit Number */}
-                        <div className="flex items-center gap-2.5 sm:gap-3 text-white/90 text-xs sm:text-sm font-medium tracking-widest font-mono">
-                          <span className="w-6 sm:w-8 h-[1px] bg-white/40" />
+                        <div className="flex items-center gap-1.5 sm:gap-2.5 text-white/90 text-[10px] sm:text-xs font-medium tracking-widest font-mono">
+                          <span className="w-4 sm:w-6 h-[1px] bg-white/40" />
                           <span>{cat.number}</span>
                         </div>
                       </div>
 
-                      {/* Bottom Bar: Serif Name & Circular Arrow Button */}
-                      <div className="flex items-end justify-between pt-8">
-                        <h3 className="font-serif text-3xl sm:text-5xl lg:text-[3.25rem] font-normal tracking-wide text-white leading-none drop-shadow-md">
+                      {/* Bottom Bar: Clean Category Title & Circular Arrow CTA (No Extra Text) */}
+                      <div className="flex items-end justify-between pt-4">
+                        <h3 className="font-serif text-xl sm:text-2xl md:text-3xl font-light tracking-wide text-white leading-none drop-shadow-md">
                           {cat.name}
                         </h3>
 
-                        <span className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white/20 backdrop-blur-md border border-white/25 flex items-center justify-center text-white group-hover:bg-white group-hover:text-black group-hover:scale-105 transition-all duration-300 shadow-xl shrink-0">
-                          <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.75] group-hover:translate-x-0.5 transition-transform" />
+                        <span className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-white/20 backdrop-blur-md border border-white/25 flex items-center justify-center text-white group-hover:bg-white group-hover:text-black group-hover:scale-105 transition-all duration-300 shadow-xl shrink-0">
+                          <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[1.75] group-hover:translate-x-0.5 transition-transform" />
                         </span>
                       </div>
                     </div>
