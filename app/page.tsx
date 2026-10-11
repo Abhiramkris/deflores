@@ -1,227 +1,294 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { Search, Menu, X, ArrowRight, Play, Volume2, VolumeX } from "lucide-react";
+import { Search, Menu, X, ArrowRight, Play, Volume2, VolumeX, ChevronLeft, ChevronRight, Sun, Moon } from "lucide-react";
 
 const HERO_SLIDES = [
   {
     id: 1,
     image: "/hero/herosection1.png",
-    tagline: "CROSS MOTION ——",
+    tagline: "Cross Motion",
     titleLine1: "Every Brand.",
     titleLine2: "Every Moment.",
-    blurBadge: "FASHION CONTENT ——",
+    year: "2026",
     description:
       "Combining human creativity and AI innovation to create fashion content built for modern audiences.",
   },
   {
     id: 2,
-    image: "/hero/herosection.png",
-    tagline: "TIMELESS LUXURY ——",
-    titleLine1: "Haute Couture.",
-    titleLine2: "Pure Elegance.",
-    blurBadge: "EDITORIAL ART ——",
+    image: "/hero/herosection2.png",
+    tagline: "Timeless Luxury",
+    titleLine1: "Every Brand.",
+    titleLine2: "Every Moment.",
+    year: "2026",
     description:
-      "Merging refined craftsmanship with contemporary digital narratives designed for discerning aesthetics.",
+      "Combining human creativity and AI innovation to create fashion content built for modern audiences.",
   },
   {
     id: 3,
     image: "/hero/herosection3.png",
-    tagline: "AVANT-GARDE ——",
-    titleLine1: "Next Genesis.",
-    titleLine2: "Future Form.",
-    blurBadge: "NEW HORIZONS ——",
+    tagline: "Haute Couture",
+    titleLine1: "Every Brand.",
+    titleLine2: "Every Moment.",
+    year: "2026",
     description:
-      "Sculpting bold visuals and bespoke tactile expressions crafted for tomorrow's iconic culture.",
+      "Combining human creativity and AI innovation to create fashion content built for modern audiences.",
   },
 ];
 
 export default function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isWhiteMode, setIsWhiteMode] = useState(true);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Auto carousel slide transition every 7 seconds
+  // Preload all 3 hero images into memory on initial mount
+  useEffect(() => {
+    HERO_SLIDES.forEach((s) => {
+      const img = new window.Image();
+      img.src = s.image;
+    });
+  }, []);
+
+  // Auto carousel cycling every 6 seconds
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
-    }, 7000);
+    }, 6000);
     return () => clearInterval(timer);
   }, []);
 
   const slide = HERO_SLIDES[currentSlide];
 
   return (
-    <main className="relative w-full h-screen overflow-hidden bg-black text-white select-none">
-      {/* 1. HERO BACKGROUND CAROUSEL (Full Screen, NO Darkening Overlay) */}
-      <div className="absolute inset-0 z-0">
-        {HERO_SLIDES.map((item, idx) => (
-          <div
-            key={item.id}
-            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-              idx === currentSlide ? "opacity-100 scale-100" : "opacity-0 scale-105 pointer-events-none"
-            } transition-transform duration-[7000ms] ease-out`}
-            style={{
-              backgroundImage: `url(${item.image})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-            }}
-          />
-        ))}
-      </div>
-
-      {/* 2. TOP NAVIGATION BAR */}
-      <header className="relative z-20 w-full pt-6 md:pt-8 px-6 sm:px-10 md:px-14 flex items-center justify-between">
+    <div
+      className={`min-h-screen w-full transition-colors duration-500 ${
+        isWhiteMode ? "bg-[#f8f9fa] text-zinc-900" : "bg-black text-white"
+      }`}
+    >
+      {/* TOP LUXURY NAVBAR */}
+      <header
+        className={`fixed top-0 left-0 right-0 z-40 px-6 sm:px-12 py-5 flex items-center justify-between transition-colors duration-300 ${
+          isWhiteMode
+            ? "bg-white/80 backdrop-blur-md border-b border-zinc-200/80 text-zinc-900"
+            : "bg-black/40 backdrop-blur-md border-b border-white/10 text-white"
+        }`}
+      >
         {/* Brand Logo */}
         <Link
           href="/"
-          className="font-serif tracking-[0.25em] text-2xl sm:text-3xl font-light uppercase text-white hover:opacity-90 transition-opacity"
+          className="font-serif tracking-[0.25em] text-2xl sm:text-3xl font-light uppercase hover:opacity-80 transition-opacity"
         >
           VÉLORA
         </Link>
 
-        {/* Center Nav Links - Desktop */}
-        <nav className="hidden md:flex items-center space-x-8 text-xs tracking-[0.2em] uppercase font-light text-white/90">
-          <Link href="/collections" className="hover:text-white transition-colors">
+        {/* Desktop Nav Links */}
+        <nav
+          className={`hidden md:flex items-center space-x-9 text-xs tracking-[0.22em] uppercase font-medium ${
+            isWhiteMode ? "text-zinc-600" : "text-white/80"
+          }`}
+        >
+          <Link href="/collections" className="hover:text-black dark:hover:text-white transition-colors">
             Collections
           </Link>
-          <Link href="/about" className="hover:text-white transition-colors">
+          <Link href="/about" className="hover:text-black dark:hover:text-white transition-colors">
             About
           </Link>
-          <Link href="/journal" className="hover:text-white transition-colors">
+          <Link href="/journal" className="hover:text-black dark:hover:text-white transition-colors">
             Journal
           </Link>
-          <Link href="/sustainability" className="hover:text-white transition-colors">
+          <Link href="/sustainability" className="hover:text-black dark:hover:text-white transition-colors">
             Sustainability
           </Link>
-          <Link href="/contact" className="hover:text-white transition-colors">
+          <Link href="/contact" className="hover:text-black dark:hover:text-white transition-colors">
             Contact
           </Link>
         </nav>
 
-        {/* Right Action Icons & Buttons */}
-        <div className="flex items-center space-x-4 sm:space-x-6">
+        {/* Right Nav Utilities */}
+        <div className="flex items-center space-x-4 sm:space-x-5">
+          {/* White / Dark Mode Toggle */}
+          <button
+            onClick={() => setIsWhiteMode(!isWhiteMode)}
+            className={`p-2 rounded-full transition-all ${
+              isWhiteMode
+                ? "bg-zinc-100 hover:bg-zinc-200 text-zinc-800"
+                : "bg-white/10 hover:bg-white/20 text-white"
+            }`}
+            title={isWhiteMode ? "Switch to Dark Mode" : "Switch to White Mode"}
+            aria-label="Toggle Theme Mode"
+          >
+            {isWhiteMode ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+          </button>
+
           {/* Search Trigger */}
           <button
             onClick={() => setIsSearchOpen(true)}
             aria-label="Search"
-            className="p-2 text-white/90 hover:text-white transition-colors"
+            className="p-2 hover:opacity-75 transition-opacity"
           >
-            <Search className="w-4 h-4 sm:w-5 sm:h-5 stroke-[1.5]" />
+            <Search className="w-4 h-4 sm:w-5 sm:h-5 stroke-[1.75]" />
           </button>
 
-          {/* Sign In Link - Desktop */}
+          {/* Sign In */}
           <Link
             href="/login"
-            className="hidden sm:inline-block text-xs uppercase tracking-[0.2em] font-light text-white/90 hover:text-white transition-colors"
+            className={`hidden sm:inline-block text-xs uppercase tracking-[0.2em] font-medium hover:opacity-75 transition-opacity ${
+              isWhiteMode ? "text-zinc-800" : "text-white/90"
+            }`}
           >
             Sign In
           </Link>
 
-          {/* Shop Now Pill Button */}
+          {/* Shop Now Pill */}
           <Link
             href="/collections"
-            className="border border-white/80 rounded-full px-5 sm:px-7 py-2 sm:py-2.5 text-xs uppercase tracking-[0.2em] font-light text-white backdrop-blur-md bg-white/5 hover:bg-white hover:text-black transition-all duration-300"
+            className={`rounded-full px-5 sm:px-6 py-2 text-xs uppercase tracking-[0.2em] font-medium transition-all duration-300 shadow-sm ${
+              isWhiteMode
+                ? "bg-zinc-950 text-white hover:bg-zinc-800"
+                : "border border-white/80 bg-white/10 text-white hover:bg-white hover:text-black"
+            }`}
           >
             Shop Now
           </Link>
 
-          {/* Mobile Menu Hamburger */}
+          {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 text-white"
-            aria-label="Toggle navigation menu"
+            className="md:hidden p-2"
+            aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </header>
 
-      {/* 3. HERO CONTENT WRAPPER */}
-      <div className="relative z-10 w-full h-[calc(100vh-80px)] px-6 sm:px-10 md:px-14 pb-8 sm:pb-12 flex flex-col justify-end">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 items-end">
-          {/* LEFT COLUMN: Badge, Big Headline, Paragraph, Carousel Indicator */}
-          <div className="lg:col-span-7 flex flex-col space-y-5 sm:space-y-6 max-w-2xl">
-            {/* Tagline Badge */}
-            <p className="text-xs tracking-[0.3em] uppercase font-light text-white drop-shadow-sm">
-              {slide.tagline}
-            </p>
-
-            {/* Headline with Serif Italic font matching reference */}
-            <h1 className="font-serif italic font-normal text-5xl sm:text-7xl md:text-8xl lg:text-[6.8rem] leading-[1.02] tracking-tight text-white drop-shadow-md">
-              <span className="block">{slide.titleLine1}</span>
-              <span className="block">{slide.titleLine2}</span>
-            </h1>
-
-            {/* Subtitle / Paragraph */}
-            <p className="text-sm sm:text-base font-light text-white/90 max-w-lg leading-relaxed drop-shadow-sm">
-              {slide.description}
-            </p>
-
-            {/* Slider Progress Indicator (01 ———— 03) */}
-            <div className="pt-4 flex items-center space-x-4">
-              <span className="font-serif text-sm tracking-widest text-white/90">
-                0{slide.id}
-              </span>
-              <div className="w-32 sm:w-40 h-[2px] bg-white/30 rounded-full overflow-hidden relative">
-                <div
-                  key={currentSlide}
-                  className="h-full bg-white rounded-full animate-progress"
-                  style={{ animationDuration: "7000ms" }}
-                />
-              </div>
-              <span className="font-serif text-sm tracking-widest text-white/60">
-                0{HERO_SLIDES.length}
-              </span>
+      {/* HERO SECTION CONTAINER */}
+      <main className="relative w-full h-screen pt-20 px-3 sm:px-6 md:px-8 pb-4 flex flex-col justify-center items-center">
+        {/* Full-bleed/Framed Hero Canvas matching latest reference */}
+        <div className="relative w-full h-full rounded-2xl sm:rounded-3xl lg:rounded-[2.5rem] overflow-hidden shadow-2xl bg-black">
+          {/* 3 PRELOADED HERO IMAGES WITH NEXT.JS IMAGE */}
+          {HERO_SLIDES.map((item, idx) => (
+            <div
+              key={item.id}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                idx === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
+              }`}
+            >
+              <Image
+                src={item.image}
+                alt={`Hero Slide ${item.id}`}
+                fill
+                priority={true}
+                sizes="100vw"
+                quality={90}
+                className="object-cover object-center"
+              />
             </div>
-          </div>
+          ))}
 
-          {/* RIGHT COLUMN: The Frosted Blur Div Card matching reference */}
-          <div className="lg:col-span-5 flex justify-start lg:justify-end">
-            <div className="w-full max-w-md backdrop-blur-2xl bg-white/10 border border-white/25 rounded-[2.2rem] sm:rounded-[2.6rem] p-7 sm:p-9 shadow-2xl flex flex-col space-y-6">
-              {/* Blur Card Badge */}
-              <p className="text-xs tracking-[0.25em] uppercase font-medium text-white/90">
-                {slide.blurBadge}
-              </p>
+          {/* SOFT RADIAL TINT FOR FASHION TYPOGRAPHY READABILITY */}
+          <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/50 via-transparent to-black/25 pointer-events-none" />
 
-              {/* Blur Card Body Text */}
-              <p className="text-sm font-light text-white/85 leading-relaxed">
-                {slide.description}
-              </p>
+          {/* HERO CONTENT - MATCHING REFERENCE IMAGE PRECISELY */}
+          <div className="relative z-20 w-full h-full p-6 sm:p-10 md:p-14 lg:p-16 flex flex-col justify-between text-white">
+            {/* TOP BAR: Tagline */}
+            <div className="flex items-center justify-between">
+              <span className="text-xs sm:text-sm tracking-[0.25em] font-light uppercase text-white/90 drop-shadow-sm">
+                {slide.tagline}
+              </span>
 
-              {/* Blur Card Actions */}
-              <div className="flex flex-wrap items-center gap-4 pt-2">
-                {/* Explore Collections Button */}
-                <Link
-                  href="/collections"
-                  className="inline-flex items-center space-x-2 bg-white text-black rounded-full px-6 py-3 text-xs uppercase tracking-[0.2em] font-medium hover:bg-neutral-200 transition-all duration-300 shadow-md"
-                >
-                  <span>Explore Collections</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-
-                {/* Watch Film CTA */}
+              {/* SLIDE SWITCHERS (01 / 02 / 03) TO INSTANTLY VIEW ALL 3 IMAGES */}
+              <div className="flex items-center space-x-2 bg-black/30 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20">
                 <button
-                  onClick={() => setIsVideoModalOpen(true)}
-                  className="inline-flex items-center space-x-2 text-xs uppercase tracking-[0.2em] font-light text-white hover:text-white/80 transition-colors group"
+                  onClick={() => setCurrentSlide((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
+                  className="p-1 hover:text-white/70 transition-colors"
+                  aria-label="Previous slide"
                 >
-                  <span className="w-10 h-10 rounded-full border border-white/60 flex items-center justify-center group-hover:border-white group-hover:bg-white/15 transition-all">
-                    <Play className="w-3.5 h-3.5 fill-white text-white ml-0.5" />
-                  </span>
-                  <span>Watch Film</span>
+                  <ChevronLeft className="w-3.5 h-3.5" />
                 </button>
+                {HERO_SLIDES.map((s, i) => (
+                  <button
+                    key={s.id}
+                    onClick={() => setCurrentSlide(i)}
+                    className={`text-xs px-2 py-0.5 rounded-full transition-all ${
+                      i === currentSlide
+                        ? "bg-white text-black font-semibold shadow-sm"
+                        : "text-white/70 hover:text-white"
+                    }`}
+                  >
+                    0{s.id}
+                  </button>
+                ))}
+                <button
+                  onClick={() => setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length)}
+                  className="p-1 hover:text-white/70 transition-colors"
+                  aria-label="Next slide"
+                >
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* MAIN ROW: LEFT HEADLINE & RIGHT DESCRIPTOR */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center my-auto">
+              {/* LEFT: Typography Headline */}
+              <div className="lg:col-span-8 space-y-3">
+                <h1 className="font-serif italic font-normal text-5xl sm:text-7xl md:text-8xl lg:text-[7.2rem] leading-[1.02] tracking-tight text-white drop-shadow-lg">
+                  <span className="block">{slide.titleLine1}</span>
+                  <span className="block font-sans not-italic font-light tracking-normal text-4xl sm:text-6xl md:text-7xl lg:text-[6.2rem]">
+                    {slide.titleLine2}
+                  </span>
+                </h1>
+              </div>
+
+              {/* RIGHT: Minimalist Fashion Editorial Paragraph */}
+              <div className="lg:col-span-4 flex justify-start lg:justify-end">
+                <p className="text-sm sm:text-base font-light text-white/90 leading-relaxed max-w-sm drop-shadow-md">
+                  {slide.description}
+                </p>
+              </div>
+            </div>
+
+            {/* CENTER 2 CTAS (NO EXTRA TEXT/CLUTTER) */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 py-4">
+              {/* CTA 1: Explore Collections */}
+              <Link
+                href="/collections"
+                className="w-full sm:w-auto inline-flex items-center justify-center space-x-3 bg-white text-zinc-950 rounded-full px-8 py-3.5 text-xs uppercase tracking-[0.25em] font-medium hover:bg-zinc-200 transition-all duration-300 shadow-xl hover:scale-[1.02]"
+              >
+                <span>Explore Collections</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+
+              {/* CTA 2: Watch Film Lightbox */}
+              <button
+                onClick={() => setIsVideoModalOpen(true)}
+                className="w-full sm:w-auto inline-flex items-center justify-center space-x-3 backdrop-blur-md bg-black/40 border border-white/40 text-white rounded-full px-8 py-3.5 text-xs uppercase tracking-[0.25em] font-medium hover:bg-white hover:text-black transition-all duration-300 shadow-xl hover:scale-[1.02]"
+              >
+                <Play className="w-3.5 h-3.5 fill-current" />
+                <span>Watch Film</span>
+              </button>
+            </div>
+
+            {/* BOTTOM BAR: YEAR */}
+            <div className="flex items-center justify-between text-xs tracking-widest text-white/70">
+              <span>{slide.year}</span>
+              <div className="flex items-center space-x-2">
+                <span className="w-12 h-[1px] bg-white/40" />
+                <span className="uppercase text-[10px] tracking-[0.3em]">Couture Digital</span>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </main>
 
-      {/* 4. VIDEO LIGHTBOX MODAL */}
+      {/* VIDEO LIGHTBOX MODAL */}
       {isVideoModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 sm:p-8 animate-fadeIn">
           <div className="relative w-full max-w-4xl bg-neutral-950 rounded-2xl overflow-hidden border border-white/20 shadow-2xl">
@@ -261,38 +328,38 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* 5. SEARCH MODAL OVERLAY */}
+      {/* SEARCH MODAL */}
       {isSearchOpen && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-24 bg-black/80 backdrop-blur-md px-6">
-          <div className="relative w-full max-w-xl bg-neutral-900/90 border border-white/20 rounded-2xl p-6 shadow-2xl">
-            <div className="flex items-center justify-between pb-4 border-b border-white/10">
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-24 bg-black/70 backdrop-blur-md px-6">
+          <div className="relative w-full max-w-xl bg-white text-zinc-900 border border-zinc-200 rounded-2xl p-6 shadow-2xl">
+            <div className="flex items-center justify-between pb-4 border-b border-zinc-200">
               <div className="flex items-center space-x-3 w-full">
-                <Search className="w-5 h-5 text-white/50" />
+                <Search className="w-5 h-5 text-zinc-400" />
                 <input
                   type="text"
                   placeholder="Search collections, pieces, editorial..."
                   autoFocus
-                  className="bg-transparent text-white placeholder-white/40 focus:outline-none w-full text-base font-light"
+                  className="bg-transparent text-zinc-900 placeholder-zinc-400 focus:outline-none w-full text-base font-light"
                 />
               </div>
               <button
                 onClick={() => setIsSearchOpen(false)}
-                className="p-1 text-white/60 hover:text-white"
+                className="p-1 text-zinc-500 hover:text-black"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="pt-4 flex flex-wrap gap-2 text-xs uppercase tracking-wider text-white/60">
+            <div className="pt-4 flex flex-wrap gap-2 text-xs uppercase tracking-wider text-zinc-500">
               <span>Trending:</span>
-              <Link href="/collections" className="hover:text-white underline">
+              <Link href="/collections" className="hover:text-black underline">
                 Velora Silk
               </Link>
               <span>•</span>
-              <Link href="/collections" className="hover:text-white underline">
+              <Link href="/collections" className="hover:text-black underline">
                 Couture Jackets
               </Link>
               <span>•</span>
-              <Link href="/collections" className="hover:text-white underline">
+              <Link href="/collections" className="hover:text-black underline">
                 Autumn 2026
               </Link>
             </div>
@@ -300,14 +367,18 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* 6. MOBILE NAVIGATION DRAWER */}
+      {/* MOBILE DRAWER */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-black/95 backdrop-blur-xl flex flex-col justify-between p-8 md:hidden animate-fadeIn">
+        <div
+          className={`fixed inset-0 z-50 flex flex-col justify-between p-8 md:hidden animate-fadeIn ${
+            isWhiteMode ? "bg-white text-zinc-900" : "bg-black text-white"
+          }`}
+        >
           <div className="flex items-center justify-between">
             <span className="font-serif tracking-[0.25em] text-2xl uppercase">VÉLORA</span>
             <button
               onClick={() => setIsMobileMenuOpen(false)}
-              className="p-2 text-white"
+              className="p-2"
               aria-label="Close menu"
             >
               <X className="w-6 h-6" />
@@ -318,58 +389,62 @@ export default function HomePage() {
             <Link
               href="/collections"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="hover:text-neutral-400 transition-colors"
+              className="hover:opacity-60 transition-opacity"
             >
               Collections
             </Link>
             <Link
               href="/about"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="hover:text-neutral-400 transition-colors"
+              className="hover:opacity-60 transition-opacity"
             >
               About
             </Link>
             <Link
               href="/journal"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="hover:text-neutral-400 transition-colors"
+              className="hover:opacity-60 transition-opacity"
             >
               Journal
             </Link>
             <Link
               href="/sustainability"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="hover:text-neutral-400 transition-colors"
+              className="hover:opacity-60 transition-opacity"
             >
               Sustainability
             </Link>
             <Link
               href="/contact"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="hover:text-neutral-400 transition-colors"
+              className="hover:opacity-60 transition-opacity"
             >
               Contact
             </Link>
           </nav>
 
-          <div className="flex flex-col space-y-4 pt-6 border-t border-white/20">
+          <div className="flex flex-col space-y-4 pt-6 border-t border-zinc-200">
             <Link
               href="/login"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="text-center py-3 border border-white/40 rounded-full text-xs uppercase tracking-[0.2em]"
+              className={`text-center py-3 border rounded-full text-xs uppercase tracking-[0.2em] ${
+                isWhiteMode ? "border-zinc-300" : "border-white/30"
+              }`}
             >
               Sign In
             </Link>
             <Link
               href="/collections"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="text-center py-3 bg-white text-black rounded-full text-xs uppercase tracking-[0.2em] font-medium"
+              className={`text-center py-3 rounded-full text-xs uppercase tracking-[0.2em] font-medium ${
+                isWhiteMode ? "bg-zinc-950 text-white" : "bg-white text-black"
+              }`}
             >
               Shop Now
             </Link>
           </div>
         </div>
       )}
-    </main>
+    </div>
   );
 }
