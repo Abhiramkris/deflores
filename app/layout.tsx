@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/navbar";
 import Footer from "./components/footer";
@@ -11,16 +11,23 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+const cormorant = Cormorant_Garamond({
+  variable: "--font-serif",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  style: ["normal", "italic"],
+});
+
 export const metadata: Metadata = {
-  title: "DeFlores - Modern Floral Architecture",
-  description: "An interactive digital showcase of luxury and modern floral styling.",
+  title: "VÉLORA - Haute Couture & Fashion Content",
+  description: "Combining human creativity and AI innovation to create fashion content built for modern audiences.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${inter.variable} h-full antialiased scroll-smooth`}
+      className={`${inter.variable} ${cormorant.variable} h-full antialiased scroll-smooth`}
     >
       <body className="min-h-full flex flex-col luxury-pattern-bg text-zinc-900 selection:bg-zinc-950 selection:text-white">
         <Tracker />
