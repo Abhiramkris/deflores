@@ -448,10 +448,11 @@ export default function HomePage() {
           <div className="mt-16 sm:mt-20 text-center">
             <Link
               href="/collections"
-              className={`inline-flex items-center space-x-3 rounded-full px-8 py-4 text-xs uppercase tracking-[0.25em] font-medium transition-all duration-300 shadow-md ${isWhiteMode
+              className={`inline-flex items-center space-x-3 rounded-full px-8 py-4 text-xs uppercase tracking-[0.25em] font-medium transition-all duration-300 shadow-md ${
+                isWhiteMode
                   ? "bg-zinc-950 text-white hover:bg-zinc-800"
                   : "bg-white text-zinc-950 hover:bg-zinc-200"
-                }`}
+              }`}
             >
               <span>Explore All Categories</span>
               <ArrowRight className="w-4 h-4" />
@@ -460,7 +461,112 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4. VIDEO LIGHTBOX MODAL */}
+      {/* 4. NEW SECTION: "WHAT WE DELIVER" (Matching Reference Design) */}
+      <section
+        className={`w-full py-20 sm:py-28 px-6 sm:px-12 lg:px-20 transition-colors duration-500 ${
+          isWhiteMode ? "bg-[#f5f3ec] text-zinc-900" : "bg-black text-white"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto">
+          {/* Top Metadata Bar */}
+          <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.25em] text-zinc-400 mb-10 border-b border-zinc-300/60 dark:border-white/10 pb-4">
+            <span>Capabilities & Values</span>
+            <span>Our Craft</span>
+            <span>02 / 2026</span>
+          </div>
+
+          {/* Section Heading */}
+          <div className="mb-12 sm:mb-16">
+            <h2
+              className={`text-4xl sm:text-6xl md:text-7xl font-light tracking-tight ${
+                isWhiteMode ? "text-zinc-950" : "text-white"
+              }`}
+            >
+              What We Deliver
+            </h2>
+          </div>
+
+          {/* Main 2-Column Grid: Image Left, Deliverables Right */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+            {/* Left Column: Portrait Editorial Image */}
+            <div className="lg:col-span-5">
+              <div className="relative w-full aspect-[4/5] overflow-hidden rounded-2xl sm:rounded-3xl shadow-2xl border border-black/5 dark:border-white/10">
+                <Image
+                  src="/gallery_purple.jpg"
+                  alt="What We Deliver - Couture Craftsmanship"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 40vw"
+                  className="object-cover object-center transition-transform duration-700 ease-out hover:scale-105"
+                />
+              </div>
+            </div>
+
+            {/* Right Column: 4 Editorial Deliverables */}
+            <div className="lg:col-span-7 flex flex-col space-y-7 sm:space-y-9">
+              {/* Item 1 */}
+              <div className="flex items-start space-x-4 sm:space-x-5">
+                <span className="w-1.5 h-1.5 rounded-[1px] bg-zinc-800 dark:bg-white mt-2.5 shrink-0" />
+                <p className={`text-sm sm:text-base leading-relaxed font-light ${isWhiteMode ? "text-zinc-700" : "text-zinc-300"}`}>
+                  <strong className={`font-semibold ${isWhiteMode ? "text-zinc-950" : "text-white"}`}>
+                    Bespoke Artisanal Tailoring
+                  </strong>{" "}
+                  — Every garment is meticulously designed and sculpted to your exact measurements, incorporating hand-guided zardozi embroidery, bespoke draping, and personalized fit consultations for a silhouette made exclusively for you.
+                </p>
+              </div>
+
+              {/* Item 2 */}
+              <div className="flex items-start space-x-4 sm:space-x-5">
+                <span className="w-1.5 h-1.5 rounded-[1px] bg-zinc-800 dark:bg-white mt-2.5 shrink-0" />
+                <p className={`text-sm sm:text-base leading-relaxed font-light ${isWhiteMode ? "text-zinc-700" : "text-zinc-300"}`}>
+                  <strong className={`font-semibold ${isWhiteMode ? "text-zinc-950" : "text-white"}`}>
+                    Heritage Craftsmanship Meets Modern Form
+                  </strong>{" "}
+                  — Revitalizing centuries-old handloom weaves and regal heritage techniques, re-engineered for contemporary global wardrobes and modern red-carpet occasions without compromising authenticity.
+                </p>
+              </div>
+
+              {/* Item 3 */}
+              <div className="flex items-start space-x-4 sm:space-x-5">
+                <span className="w-1.5 h-1.5 rounded-[1px] bg-zinc-800 dark:bg-white mt-2.5 shrink-0" />
+                <p className={`text-sm sm:text-base leading-relaxed font-light ${isWhiteMode ? "text-zinc-700" : "text-zinc-300"}`}>
+                  <strong className={`font-semibold ${isWhiteMode ? "text-zinc-950" : "text-white"}`}>
+                    Bridal & Occasion Trousseau Concierge
+                  </strong>{" "}
+                  — Full bridal concierge styling from statement reception lehengas and pure silk sarees to coordinated groom's sherwanis and festive party wear collections.
+                </p>
+              </div>
+
+              {/* Item 4 */}
+              <div className="flex items-start space-x-4 sm:space-x-5">
+                <span className="w-1.5 h-1.5 rounded-[1px] bg-zinc-800 dark:bg-white mt-2.5 shrink-0" />
+                <p className={`text-sm sm:text-base leading-relaxed font-light ${isWhiteMode ? "text-zinc-700" : "text-zinc-300"}`}>
+                  <strong className={`font-semibold ${isWhiteMode ? "text-zinc-950" : "text-white"}`}>
+                    Global White-Glove Delivery & Consultations
+                  </strong>{" "}
+                  — Seamless express insured delivery worldwide, paired with private video styling appointments, custom fabric swatches, and lifetime aftercare support.
+                </p>
+              </div>
+
+              {/* Section CTA */}
+              <div className="pt-4">
+                <Link
+                  href="/about"
+                  className={`inline-flex items-center space-x-3 text-xs uppercase tracking-[0.25em] font-medium border-b pb-1.5 transition-colors ${
+                    isWhiteMode
+                      ? "border-zinc-900 text-zinc-950 hover:text-zinc-600 hover:border-zinc-400"
+                      : "border-white text-white hover:text-white/70 hover:border-white/50"
+                  }`}
+                >
+                  <span>Discover Our Atelier</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. VIDEO LIGHTBOX MODAL */}
       {isVideoModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 sm:p-8 animate-fadeIn">
           <div className="relative w-full max-w-4xl bg-neutral-950 rounded-2xl overflow-hidden border border-white/20 shadow-2xl">
