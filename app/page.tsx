@@ -3,7 +3,20 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, Menu, X, ArrowRight, Play, Volume2, VolumeX, ChevronLeft, ChevronRight, Sun, Moon } from "lucide-react";
+import {
+  Search,
+  Menu,
+  X,
+  ArrowRight,
+  Play,
+  Volume2,
+  VolumeX,
+  ChevronLeft,
+  ChevronRight,
+  Sun,
+  Moon,
+  Sparkles,
+} from "lucide-react";
 
 const HERO_SLIDES = [
   {
@@ -38,6 +51,49 @@ const HERO_SLIDES = [
   },
 ];
 
+const CATEGORIES = [
+  {
+    id: "lehenga",
+    name: "Lehenga",
+    subtitle: "Bridal & Heritage",
+    image: "/hero/herosection1.png",
+    tag: "Haute Couture",
+    offset: "lg:translate-y-4",
+  },
+  {
+    id: "gown",
+    name: "Gown",
+    subtitle: "Evening Silhouettes",
+    image: "/hero/herosection3.png",
+    tag: "Red Carpet",
+    offset: "lg:-translate-y-6",
+  },
+  {
+    id: "saree",
+    name: "Saree",
+    subtitle: "Pure Silk Weaves",
+    image: "/new_images2/IMG_1077.webp",
+    tag: "Timeless Drapes",
+    offset: "lg:translate-y-8",
+  },
+  {
+    id: "mens-wear",
+    name: "Mens Wear",
+    subtitle: "Bespoke Royal Tailoring",
+    image: "/new_images2/IMG_1078.webp",
+    tag: "Sherwanis & Blazers",
+    offset: "lg:-translate-y-3",
+  },
+  {
+    id: "party-wear",
+    name: "Party Wear",
+    subtitle: "Contemporary Glamour",
+    image: "/newimages/IMG_1064.webp",
+    tag: "Cocktail Edit",
+    offset: "lg:translate-y-6",
+  },
+];
+
 export default function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isWhiteMode, setIsWhiteMode] = useState(true);
@@ -47,7 +103,7 @@ export default function HomePage() {
   const [isMuted, setIsMuted] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Preload all 3 hero images into memory on initial mount
+  // Preload hero images into browser cache
   useEffect(() => {
     HERO_SLIDES.forEach((s) => {
       const img = new window.Image();
@@ -55,7 +111,7 @@ export default function HomePage() {
     });
   }, []);
 
-  // Auto carousel cycling every 6 seconds
+  // Auto carousel cycling
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
@@ -67,15 +123,15 @@ export default function HomePage() {
 
   return (
     <div
-      className={`min-h-screen w-full transition-colors duration-500 ${
-        isWhiteMode ? "bg-[#f8f9fa] text-zinc-900" : "bg-black text-white"
+      className={`min-h-screen w-full transition-colors duration-500 font-sans ${
+        isWhiteMode ? "bg-[#faf9f6] text-zinc-900" : "bg-black text-white"
       }`}
     >
-      {/* TOP LUXURY NAVBAR */}
+      {/* 1. TOP LUXURY NAVBAR */}
       <header
-        className={`fixed top-0 left-0 right-0 z-40 px-6 sm:px-12 py-5 flex items-center justify-between transition-colors duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-50 px-6 sm:px-12 py-5 flex items-center justify-between transition-all duration-300 ${
           isWhiteMode
-            ? "bg-white/80 backdrop-blur-md border-b border-zinc-200/80 text-zinc-900"
+            ? "bg-white/85 backdrop-blur-md border-b border-zinc-200/80 text-zinc-900 shadow-sm"
             : "bg-black/40 backdrop-blur-md border-b border-white/10 text-white"
         }`}
       >
@@ -93,26 +149,26 @@ export default function HomePage() {
             isWhiteMode ? "text-zinc-600" : "text-white/80"
           }`}
         >
-          <Link href="/collections" className="hover:text-black dark:hover:text-white transition-colors">
+          <Link href="/collections" className="hover:text-black transition-colors">
             Collections
           </Link>
-          <Link href="/about" className="hover:text-black dark:hover:text-white transition-colors">
+          <Link href="/about" className="hover:text-black transition-colors">
             About
           </Link>
-          <Link href="/journal" className="hover:text-black dark:hover:text-white transition-colors">
+          <Link href="/journal" className="hover:text-black transition-colors">
             Journal
           </Link>
-          <Link href="/sustainability" className="hover:text-black dark:hover:text-white transition-colors">
+          <Link href="/sustainability" className="hover:text-black transition-colors">
             Sustainability
           </Link>
-          <Link href="/contact" className="hover:text-black dark:hover:text-white transition-colors">
+          <Link href="/contact" className="hover:text-black transition-colors">
             Contact
           </Link>
         </nav>
 
-        {/* Right Nav Utilities */}
+        {/* Right Nav Actions */}
         <div className="flex items-center space-x-4 sm:space-x-5">
-          {/* White / Dark Mode Toggle */}
+          {/* Mode Toggle */}
           <button
             onClick={() => setIsWhiteMode(!isWhiteMode)}
             className={`p-2 rounded-full transition-all ${
@@ -126,7 +182,7 @@ export default function HomePage() {
             {isWhiteMode ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
           </button>
 
-          {/* Search Trigger */}
+          {/* Search */}
           <button
             onClick={() => setIsSearchOpen(true)}
             aria-label="Search"
@@ -145,7 +201,7 @@ export default function HomePage() {
             Sign In
           </Link>
 
-          {/* Shop Now Pill */}
+          {/* Shop Now */}
           <Link
             href="/collections"
             className={`rounded-full px-5 sm:px-6 py-2 text-xs uppercase tracking-[0.2em] font-medium transition-all duration-300 shadow-sm ${
@@ -157,7 +213,7 @@ export default function HomePage() {
             Shop Now
           </Link>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="md:hidden p-2"
@@ -168,127 +224,228 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* HERO SECTION CONTAINER */}
-      <main className="relative w-full h-screen pt-20 px-3 sm:px-6 md:px-8 pb-4 flex flex-col justify-center items-center">
-        {/* Full-bleed/Framed Hero Canvas matching latest reference */}
-        <div className="relative w-full h-full rounded-2xl sm:rounded-3xl lg:rounded-[2.5rem] overflow-hidden shadow-2xl bg-black">
-          {/* 3 PRELOADED HERO IMAGES WITH NEXT.JS IMAGE */}
-          {HERO_SLIDES.map((item, idx) => (
-            <div
-              key={item.id}
-              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                idx === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
-              }`}
-            >
-              <Image
-                src={item.image}
-                alt={`Hero Slide ${item.id}`}
-                fill
-                priority={true}
-                sizes="100vw"
-                quality={90}
-                className="object-cover object-center"
-              />
-            </div>
-          ))}
+      {/* 2. TRUE FULL SCREEN HERO SECTION (100vh Edge-to-Edge) */}
+      <section className="relative w-full h-screen overflow-hidden bg-black select-none">
+        {/* Preloaded Background Images */}
+        {HERO_SLIDES.map((item, idx) => (
+          <div
+            key={item.id}
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+              idx === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
+            }`}
+          >
+            <Image
+              src={item.image}
+              alt={`Hero Slide ${item.id}`}
+              fill
+              priority={true}
+              sizes="100vw"
+              quality={90}
+              className="object-cover object-center"
+            />
+          </div>
+        ))}
 
-          {/* SOFT RADIAL TINT FOR FASHION TYPOGRAPHY READABILITY */}
-          <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/50 via-transparent to-black/25 pointer-events-none" />
+        {/* Soft Contrast Gradient */}
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-transparent to-black/30 pointer-events-none" />
 
-          {/* HERO CONTENT - MATCHING REFERENCE IMAGE PRECISELY */}
-          <div className="relative z-20 w-full h-full p-6 sm:p-10 md:p-14 lg:p-16 flex flex-col justify-between text-white">
-            {/* TOP BAR: Tagline */}
-            <div className="flex items-center justify-between">
-              <span className="text-xs sm:text-sm tracking-[0.25em] font-light uppercase text-white/90 drop-shadow-sm">
-                {slide.tagline}
-              </span>
+        {/* Hero Content Overlay */}
+        <div className="relative z-20 w-full h-full pt-28 sm:pt-32 px-6 sm:px-12 md:px-16 pb-12 flex flex-col justify-between text-white">
+          {/* Top Row: Tagline & Carousel Switcher */}
+          <div className="flex items-center justify-between">
+            <span className="text-xs sm:text-sm tracking-[0.3em] font-light uppercase text-white/90 drop-shadow">
+              {slide.tagline}
+            </span>
 
-              {/* SLIDE SWITCHERS (01 / 02 / 03) TO INSTANTLY VIEW ALL 3 IMAGES */}
-              <div className="flex items-center space-x-2 bg-black/30 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20">
-                <button
-                  onClick={() => setCurrentSlide((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
-                  className="p-1 hover:text-white/70 transition-colors"
-                  aria-label="Previous slide"
-                >
-                  <ChevronLeft className="w-3.5 h-3.5" />
-                </button>
-                {HERO_SLIDES.map((s, i) => (
-                  <button
-                    key={s.id}
-                    onClick={() => setCurrentSlide(i)}
-                    className={`text-xs px-2 py-0.5 rounded-full transition-all ${
-                      i === currentSlide
-                        ? "bg-white text-black font-semibold shadow-sm"
-                        : "text-white/70 hover:text-white"
-                    }`}
-                  >
-                    0{s.id}
-                  </button>
-                ))}
-                <button
-                  onClick={() => setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length)}
-                  className="p-1 hover:text-white/70 transition-colors"
-                  aria-label="Next slide"
-                >
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-
-            {/* MAIN ROW: LEFT HEADLINE & RIGHT DESCRIPTOR */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center my-auto">
-              {/* LEFT: Typography Headline */}
-              <div className="lg:col-span-8 space-y-3">
-                <h1 className="font-serif italic font-normal text-5xl sm:text-7xl md:text-8xl lg:text-[7.2rem] leading-[1.02] tracking-tight text-white drop-shadow-lg">
-                  <span className="block">{slide.titleLine1}</span>
-                  <span className="block font-sans not-italic font-light tracking-normal text-4xl sm:text-6xl md:text-7xl lg:text-[6.2rem]">
-                    {slide.titleLine2}
-                  </span>
-                </h1>
-              </div>
-
-              {/* RIGHT: Minimalist Fashion Editorial Paragraph */}
-              <div className="lg:col-span-4 flex justify-start lg:justify-end">
-                <p className="text-sm sm:text-base font-light text-white/90 leading-relaxed max-w-sm drop-shadow-md">
-                  {slide.description}
-                </p>
-              </div>
-            </div>
-
-            {/* CENTER 2 CTAS (NO EXTRA TEXT/CLUTTER) */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 py-4">
-              {/* CTA 1: Explore Collections */}
-              <Link
-                href="/collections"
-                className="w-full sm:w-auto inline-flex items-center justify-center space-x-3 bg-white text-zinc-950 rounded-full px-8 py-3.5 text-xs uppercase tracking-[0.25em] font-medium hover:bg-zinc-200 transition-all duration-300 shadow-xl hover:scale-[1.02]"
-              >
-                <span>Explore Collections</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-
-              {/* CTA 2: Watch Film Lightbox */}
+            {/* Quick Slide Switcher (01 / 02 / 03) */}
+            <div className="flex items-center space-x-2 bg-black/40 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/20">
               <button
-                onClick={() => setIsVideoModalOpen(true)}
-                className="w-full sm:w-auto inline-flex items-center justify-center space-x-3 backdrop-blur-md bg-black/40 border border-white/40 text-white rounded-full px-8 py-3.5 text-xs uppercase tracking-[0.25em] font-medium hover:bg-white hover:text-black transition-all duration-300 shadow-xl hover:scale-[1.02]"
+                onClick={() => setCurrentSlide((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
+                className="p-1 hover:text-white/70 transition-colors"
+                aria-label="Previous slide"
               >
-                <Play className="w-3.5 h-3.5 fill-current" />
-                <span>Watch Film</span>
+                <ChevronLeft className="w-3.5 h-3.5" />
+              </button>
+              {HERO_SLIDES.map((s, i) => (
+                <button
+                  key={s.id}
+                  onClick={() => setCurrentSlide(i)}
+                  className={`text-xs px-2.5 py-0.5 rounded-full transition-all ${
+                    i === currentSlide
+                      ? "bg-white text-black font-semibold shadow-sm"
+                      : "text-white/70 hover:text-white"
+                  }`}
+                >
+                  0{s.id}
+                </button>
+              ))}
+              <button
+                onClick={() => setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length)}
+                className="p-1 hover:text-white/70 transition-colors"
+                aria-label="Next slide"
+              >
+                <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
+          </div>
 
-            {/* BOTTOM BAR: YEAR */}
-            <div className="flex items-center justify-between text-xs tracking-widest text-white/70">
-              <span>{slide.year}</span>
-              <div className="flex items-center space-x-2">
-                <span className="w-12 h-[1px] bg-white/40" />
-                <span className="uppercase text-[10px] tracking-[0.3em]">Couture Digital</span>
-              </div>
+          {/* Middle Row: Left Headline & Right Paragraph */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center my-auto">
+            {/* Left Headline */}
+            <div className="lg:col-span-8 space-y-2">
+              <h1 className="font-serif italic font-normal text-5xl sm:text-7xl md:text-8xl lg:text-[7.5rem] leading-[1.02] tracking-tight text-white drop-shadow-lg">
+                <span className="block">{slide.titleLine1}</span>
+                <span className="block font-sans not-italic font-light tracking-normal text-4xl sm:text-6xl md:text-7xl lg:text-[6.5rem]">
+                  {slide.titleLine2}
+                </span>
+              </h1>
+            </div>
+
+            {/* Right Paragraph */}
+            <div className="lg:col-span-4 flex justify-start lg:justify-end">
+              <p className="text-sm sm:text-base font-light text-white/90 leading-relaxed max-w-sm drop-shadow-md">
+                {slide.description}
+              </p>
+            </div>
+          </div>
+
+          {/* Center 2 CTAs (Explore Collections & Watch Film) */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 py-2">
+            <Link
+              href="/collections"
+              className="w-full sm:w-auto inline-flex items-center justify-center space-x-3 bg-white text-zinc-950 rounded-full px-8 py-3.5 text-xs uppercase tracking-[0.25em] font-medium hover:bg-zinc-200 transition-all duration-300 shadow-2xl hover:scale-[1.02]"
+            >
+              <span>Explore Collections</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+
+            <button
+              onClick={() => setIsVideoModalOpen(true)}
+              className="w-full sm:w-auto inline-flex items-center justify-center space-x-3 backdrop-blur-md bg-black/40 border border-white/40 text-white rounded-full px-8 py-3.5 text-xs uppercase tracking-[0.25em] font-medium hover:bg-white hover:text-black transition-all duration-300 shadow-2xl hover:scale-[1.02]"
+            >
+              <Play className="w-3.5 h-3.5 fill-current" />
+              <span>Watch Film</span>
+            </button>
+          </div>
+
+          {/* Bottom Bar: Year & Tag */}
+          <div className="flex items-center justify-between text-xs tracking-widest text-white/70">
+            <span>{slide.year}</span>
+            <div className="flex items-center space-x-2">
+              <span className="w-12 h-[1px] bg-white/40" />
+              <span className="uppercase text-[10px] tracking-[0.3em]">Couture Digital</span>
             </div>
           </div>
         </div>
-      </main>
+      </section>
 
-      {/* VIDEO LIGHTBOX MODAL */}
+      {/* 3. NEW SECTION: "WHERE BRANDS SHINE" CATEGORIES (Responsive 2*2 on Mobile) */}
+      <section
+        className={`w-full py-20 sm:py-28 px-5 sm:px-10 lg:px-16 transition-colors duration-500 ${
+          isWhiteMode ? "bg-[#faf9f6]" : "bg-zinc-950"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto">
+          {/* Section Header Top Indicator */}
+          <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.25em] text-zinc-400 mb-8 border-b border-zinc-200/60 pb-4">
+            <span className="flex items-center gap-2">
+              <Sparkles className="w-3.5 h-3.5 text-zinc-500" />
+              Curated Edit
+            </span>
+            <span>Five Core Silhouettes</span>
+            <span>2026 Collection</span>
+          </div>
+
+          {/* Section Title Matching Reference */}
+          <div className="text-center mb-16 sm:mb-20">
+            <h2
+              className={`text-4xl sm:text-6xl md:text-7xl font-light tracking-tight ${
+                isWhiteMode ? "text-zinc-900" : "text-white"
+              }`}
+            >
+              Where Brands
+              <span className="block font-serif italic font-normal mt-1 sm:mt-2 text-5xl sm:text-7xl md:text-8xl">
+                Shine
+              </span>
+            </h2>
+          </div>
+
+          {/* Category Cards: Responsive 2x2 in Mobile, 5-col Masonry Stagger on Desktop */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-6 items-center">
+            {CATEGORIES.map((cat, index) => {
+              // 5th item on mobile spans across 2 columns to complete the 2x2 + 1 layout
+              const isLastOnMobile = index === 4;
+
+              return (
+                <Link
+                  key={cat.id}
+                  href={`/collections?category=${cat.id}`}
+                  className={`group relative flex flex-col overflow-hidden rounded-2xl sm:rounded-3xl transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl ${
+                    cat.offset
+                  } ${isLastOnMobile ? "col-span-2 md:col-span-1" : ""}`}
+                >
+                  {/* Card Image Container */}
+                  <div
+                    className={`relative w-full overflow-hidden rounded-2xl sm:rounded-3xl bg-zinc-200 ${
+                      isLastOnMobile ? "aspect-[16/9] sm:aspect-[3/4]" : "aspect-[3/4]"
+                    }`}
+                  >
+                    <Image
+                      src={cat.image}
+                      alt={cat.name}
+                      fill
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                      className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-108"
+                    />
+
+                    {/* Gradient Overlay on Card */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent transition-opacity group-hover:from-black/85" />
+
+                    {/* Card Top Tag */}
+                    <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
+                      <span className="text-[10px] tracking-[0.2em] uppercase font-medium bg-black/40 backdrop-blur-md text-white/90 border border-white/20 px-2.5 py-1 rounded-full">
+                        {cat.tag}
+                      </span>
+                    </div>
+
+                    {/* Card Bottom Content */}
+                    <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 z-10 flex flex-col justify-end text-white">
+                      <p className="text-[10px] sm:text-xs uppercase tracking-widest text-white/70 mb-1">
+                        {cat.subtitle}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-serif text-lg sm:text-2xl font-light tracking-wide">
+                          {cat.name}
+                        </h3>
+                        <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white group-hover:bg-white group-hover:text-black transition-all">
+                          <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Section Bottom CTA Pill */}
+          <div className="mt-16 sm:mt-20 text-center">
+            <Link
+              href="/collections"
+              className={`inline-flex items-center space-x-3 rounded-full px-8 py-4 text-xs uppercase tracking-[0.25em] font-medium transition-all duration-300 shadow-md ${
+                isWhiteMode
+                  ? "bg-zinc-950 text-white hover:bg-zinc-800"
+                  : "bg-white text-zinc-950 hover:bg-zinc-200"
+              }`}
+            >
+              <span>Explore All Categories</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. VIDEO LIGHTBOX MODAL */}
       {isVideoModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 sm:p-8 animate-fadeIn">
           <div className="relative w-full max-w-4xl bg-neutral-950 rounded-2xl overflow-hidden border border-white/20 shadow-2xl">
@@ -328,7 +485,7 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* SEARCH MODAL */}
+      {/* 5. SEARCH MODAL */}
       {isSearchOpen && (
         <div className="fixed inset-0 z-50 flex items-start justify-center pt-24 bg-black/70 backdrop-blur-md px-6">
           <div className="relative w-full max-w-xl bg-white text-zinc-900 border border-zinc-200 rounded-2xl p-6 shadow-2xl">
@@ -351,23 +508,23 @@ export default function HomePage() {
             </div>
             <div className="pt-4 flex flex-wrap gap-2 text-xs uppercase tracking-wider text-zinc-500">
               <span>Trending:</span>
-              <Link href="/collections" className="hover:text-black underline">
-                Velora Silk
+              <Link href="/collections?category=lehenga" className="hover:text-black underline">
+                Lehenga
               </Link>
               <span>•</span>
-              <Link href="/collections" className="hover:text-black underline">
-                Couture Jackets
+              <Link href="/collections?category=gown" className="hover:text-black underline">
+                Gown
               </Link>
               <span>•</span>
-              <Link href="/collections" className="hover:text-black underline">
-                Autumn 2026
+              <Link href="/collections?category=saree" className="hover:text-black underline">
+                Saree
               </Link>
             </div>
           </div>
         </div>
       )}
 
-      {/* MOBILE DRAWER */}
+      {/* 6. MOBILE DRAWER */}
       {isMobileMenuOpen && (
         <div
           className={`fixed inset-0 z-50 flex flex-col justify-between p-8 md:hidden animate-fadeIn ${
