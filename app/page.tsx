@@ -134,33 +134,29 @@ export default function HomePage() {
 
   return (
     <div
-      className={`min-h-screen w-full transition-colors duration-500 font-sans ${
-        isWhiteMode ? "bg-[#faf9f6] text-zinc-900" : "bg-black text-white"
-      }`}
+      className={`min-h-screen w-full transition-colors duration-500 font-sans ${isWhiteMode ? "bg-[#faf9f6] text-zinc-900" : "bg-black text-white"
+        }`}
     >
       {/* 1. TOP LUXURY NAVBAR: TRANSPARENT AT TOP, WHITE ON SCROLL */}
       <header
-        className={`fixed top-0 left-0 right-0 z-50 px-6 sm:px-12 flex items-center justify-between transition-all duration-300 ${
-          isScrolled
+        className={`fixed top-0 left-0 right-0 z-50 px-6 sm:px-12 flex items-center justify-between transition-all duration-300 ${isScrolled
             ? "bg-white/95 backdrop-blur-md border-b border-zinc-200/80 text-zinc-900 py-4 shadow-sm"
             : "bg-transparent border-b border-transparent text-white py-6 sm:py-7"
-        }`}
+          }`}
       >
         {/* Brand Logo */}
         <Link
           href="/"
-          className={`font-serif tracking-[0.25em] text-2xl sm:text-3xl font-light uppercase hover:opacity-80 transition-all ${
-            isScrolled ? "text-zinc-950" : "text-white drop-shadow-sm"
-          }`}
+          className={`font-serif tracking-[0.25em] text-2xl sm:text-3xl font-light uppercase hover:opacity-80 transition-all ${isScrolled ? "text-zinc-950" : "text-white drop-shadow-sm"
+            }`}
         >
           VÉLORA
         </Link>
 
         {/* Desktop Nav Links */}
         <nav
-          className={`hidden md:flex items-center space-x-9 text-xs tracking-[0.22em] uppercase font-medium transition-colors ${
-            isScrolled ? "text-zinc-600" : "text-white/90"
-          }`}
+          className={`hidden md:flex items-center space-x-9 text-xs tracking-[0.22em] uppercase font-medium transition-colors ${isScrolled ? "text-zinc-600" : "text-white/90"
+            }`}
         >
           <Link
             href="/collections"
@@ -199,11 +195,10 @@ export default function HomePage() {
           {/* Mode Toggle */}
           <button
             onClick={() => setIsWhiteMode(!isWhiteMode)}
-            className={`p-2 rounded-full transition-all ${
-              isScrolled
+            className={`p-2 rounded-full transition-all ${isScrolled
                 ? "bg-zinc-100 hover:bg-zinc-200 text-zinc-800"
                 : "bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm"
-            }`}
+              }`}
             title={isWhiteMode ? "Switch to Dark Mode" : "Switch to White Mode"}
             aria-label="Toggle Theme Mode"
           >
@@ -214,9 +209,8 @@ export default function HomePage() {
           <button
             onClick={() => setIsSearchOpen(true)}
             aria-label="Search"
-            className={`p-2 transition-opacity hover:opacity-75 ${
-              isScrolled ? "text-zinc-800" : "text-white"
-            }`}
+            className={`p-2 transition-opacity hover:opacity-75 ${isScrolled ? "text-zinc-800" : "text-white"
+              }`}
           >
             <Search className="w-4 h-4 sm:w-5 sm:h-5 stroke-[1.75]" />
           </button>
@@ -224,9 +218,8 @@ export default function HomePage() {
           {/* Sign In */}
           <Link
             href="/login"
-            className={`hidden sm:inline-block text-xs uppercase tracking-[0.2em] font-medium transition-colors ${
-              isScrolled ? "text-zinc-800 hover:text-black" : "text-white/90 hover:text-white"
-            }`}
+            className={`hidden sm:inline-block text-xs uppercase tracking-[0.2em] font-medium transition-colors ${isScrolled ? "text-zinc-800 hover:text-black" : "text-white/90 hover:text-white"
+              }`}
           >
             Sign In
           </Link>
@@ -234,11 +227,10 @@ export default function HomePage() {
           {/* Shop Now */}
           <Link
             href="/collections"
-            className={`rounded-full px-5 sm:px-6 py-2 text-xs uppercase tracking-[0.2em] font-medium transition-all duration-300 shadow-sm ${
-              isScrolled
+            className={`rounded-full px-5 sm:px-6 py-2 text-xs uppercase tracking-[0.2em] font-medium transition-all duration-300 shadow-sm ${isScrolled
                 ? "bg-zinc-950 text-white hover:bg-zinc-800"
                 : "border border-white/80 bg-white/10 text-white hover:bg-white hover:text-black backdrop-blur-sm"
-            }`}
+              }`}
           >
             Shop Now
           </Link>
@@ -246,9 +238,8 @@ export default function HomePage() {
           {/* Mobile Menu */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className={`md:hidden p-2 transition-colors ${
-              isScrolled ? "text-zinc-900" : "text-white"
-            }`}
+            className={`md:hidden p-2 transition-colors ${isScrolled ? "text-zinc-900" : "text-white"
+              }`}
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -262,9 +253,8 @@ export default function HomePage() {
         {HERO_SLIDES.map((item, idx) => (
           <div
             key={item.id}
-            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-              idx === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
-            }`}
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${idx === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
+              }`}
           >
             <Image
               src={item.image}
@@ -302,11 +292,10 @@ export default function HomePage() {
                 <button
                   key={s.id}
                   onClick={() => setCurrentSlide(i)}
-                  className={`text-xs px-2.5 py-0.5 rounded-full transition-all ${
-                    i === currentSlide
+                  className={`text-xs px-2.5 py-0.5 rounded-full transition-all ${i === currentSlide
                       ? "bg-white text-black font-semibold shadow-sm"
                       : "text-white/70 hover:text-white"
-                  }`}
+                    }`}
                 >
                   0{s.id}
                 </button>
@@ -321,8 +310,8 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Middle Row: Left Headline & Right Paragraph */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center my-auto">
+          {/* Middle Row: Left Headline & Right Paragraph (Hidden on Mobile view) */}
+          <div className="hidden sm:grid grid-cols-1 lg:grid-cols-12 gap-8 items-center my-auto">
             {/* Left Headline */}
             <div className="lg:col-span-8 space-y-2">
               <h1 className="font-serif italic font-normal text-5xl sm:text-7xl md:text-8xl lg:text-[7.5rem] leading-[1.02] tracking-tight text-white drop-shadow-lg">
@@ -342,7 +331,7 @@ export default function HomePage() {
           </div>
 
           {/* Center 2 CTAs (Explore Collections & Watch Film) */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 py-2">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 py-2 my-auto sm:my-0">
             <Link
               href="/collections"
               className="w-full sm:w-auto inline-flex items-center justify-center space-x-3 bg-white text-zinc-950 rounded-full px-8 py-3.5 text-xs uppercase tracking-[0.25em] font-medium hover:bg-zinc-200 transition-all duration-300 shadow-2xl hover:scale-[1.02]"
@@ -371,25 +360,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 3. NEW SECTION: "WHERE BRANDS SHINE" CATEGORIES (Responsive 2*2 on Mobile) */}
+      {/* 3. NEW SECTION: "WHERE BRANDS SHINE" CATEGORIES */}
       <section
-        className={`w-full py-20 sm:py-28 px-5 sm:px-10 lg:px-16 transition-colors duration-500 ${
+        className={`w-full py-16 sm:py-28 px-5 sm:px-10 lg:px-16 transition-colors duration-500 ${
           isWhiteMode ? "bg-[#faf9f6]" : "bg-zinc-950"
         }`}
       >
         <div className="max-w-7xl mx-auto">
-          {/* Section Header Top Indicator */}
-          <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.25em] text-zinc-400 mb-8 border-b border-zinc-200/60 pb-4">
-            <span className="flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-zinc-500" />
-              Curated Edit
-            </span>
-            <span>Five Core Silhouettes</span>
-            <span>2026 Collection</span>
-          </div>
-
           {/* Section Title Matching Reference */}
-          <div className="text-center mb-16 sm:mb-20">
+          <div className="text-center mb-12 sm:mb-20">
             <h2
               className={`text-4xl sm:text-6xl md:text-7xl font-light tracking-tight ${
                 isWhiteMode ? "text-zinc-900" : "text-white"
@@ -402,31 +381,22 @@ export default function HomePage() {
             </h2>
           </div>
 
-          {/* Category Cards: Responsive 2x2 in Mobile, 5-col Masonry Stagger on Desktop */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-6 items-center">
-            {CATEGORIES.map((cat, index) => {
-              // 5th item on mobile spans across 2 columns to complete the 2x2 + 1 layout
-              const isLastOnMobile = index === 4;
-
+          {/* Category Cards: Single column in mobile in 3:2 ratio, 5-col on desktop */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 items-center">
+            {CATEGORIES.map((cat) => {
               return (
                 <Link
                   key={cat.id}
                   href={`/collections?category=${cat.id}`}
-                  className={`group relative flex flex-col overflow-hidden rounded-2xl sm:rounded-3xl transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl ${
-                    cat.offset
-                  } ${isLastOnMobile ? "col-span-2 md:col-span-1" : ""}`}
+                  className={`group relative flex flex-col overflow-hidden rounded-2xl sm:rounded-3xl transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl ${cat.offset}`}
                 >
-                  {/* Card Image Container */}
-                  <div
-                    className={`relative w-full overflow-hidden rounded-2xl sm:rounded-3xl bg-zinc-200 ${
-                      isLastOnMobile ? "aspect-[16/9] sm:aspect-[3/4]" : "aspect-[3/4]"
-                    }`}
-                  >
+                  {/* Card Image Container: 3:2 ratio on mobile, editorial 3:4 on desktop */}
+                  <div className="relative w-full overflow-hidden rounded-2xl sm:rounded-3xl bg-zinc-200 aspect-[3/2] lg:aspect-[3/4]">
                     <Image
                       src={cat.image}
                       alt={cat.name}
                       fill
-                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 20vw"
                       className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-108"
                     />
 
@@ -446,10 +416,10 @@ export default function HomePage() {
                         {cat.subtitle}
                       </p>
                       <div className="flex items-center justify-between">
-                        <h3 className="font-serif text-lg sm:text-2xl font-light tracking-wide">
+                        <h3 className="font-serif text-xl sm:text-2xl font-light tracking-wide">
                           {cat.name}
                         </h3>
-                        <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white group-hover:bg-white group-hover:text-black transition-all">
+                        <span className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white group-hover:bg-white group-hover:text-black transition-all">
                           <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                         </span>
                       </div>
@@ -464,11 +434,10 @@ export default function HomePage() {
           <div className="mt-16 sm:mt-20 text-center">
             <Link
               href="/collections"
-              className={`inline-flex items-center space-x-3 rounded-full px-8 py-4 text-xs uppercase tracking-[0.25em] font-medium transition-all duration-300 shadow-md ${
-                isWhiteMode
+              className={`inline-flex items-center space-x-3 rounded-full px-8 py-4 text-xs uppercase tracking-[0.25em] font-medium transition-all duration-300 shadow-md ${isWhiteMode
                   ? "bg-zinc-950 text-white hover:bg-zinc-800"
                   : "bg-white text-zinc-950 hover:bg-zinc-200"
-              }`}
+                }`}
             >
               <span>Explore All Categories</span>
               <ArrowRight className="w-4 h-4" />
@@ -559,9 +528,8 @@ export default function HomePage() {
       {/* 6. MOBILE DRAWER */}
       {isMobileMenuOpen && (
         <div
-          className={`fixed inset-0 z-50 flex flex-col justify-between p-8 md:hidden animate-fadeIn ${
-            isWhiteMode ? "bg-white text-zinc-900" : "bg-black text-white"
-          }`}
+          className={`fixed inset-0 z-50 flex flex-col justify-between p-8 md:hidden animate-fadeIn ${isWhiteMode ? "bg-white text-zinc-900" : "bg-black text-white"
+            }`}
         >
           <div className="flex items-center justify-between">
             <span className="font-serif tracking-[0.25em] text-2xl uppercase">VÉLORA</span>
@@ -616,18 +584,16 @@ export default function HomePage() {
             <Link
               href="/login"
               onClick={() => setIsMobileMenuOpen(false)}
-              className={`text-center py-3 border rounded-full text-xs uppercase tracking-[0.2em] ${
-                isWhiteMode ? "border-zinc-300" : "border-white/30"
-              }`}
+              className={`text-center py-3 border rounded-full text-xs uppercase tracking-[0.2em] ${isWhiteMode ? "border-zinc-300" : "border-white/30"
+                }`}
             >
               Sign In
             </Link>
             <Link
               href="/collections"
               onClick={() => setIsMobileMenuOpen(false)}
-              className={`text-center py-3 rounded-full text-xs uppercase tracking-[0.2em] font-medium ${
-                isWhiteMode ? "bg-zinc-950 text-white" : "bg-white text-black"
-              }`}
+              className={`text-center py-3 rounded-full text-xs uppercase tracking-[0.2em] font-medium ${isWhiteMode ? "bg-zinc-950 text-white" : "bg-white text-black"
+                }`}
             >
               Shop Now
             </Link>
