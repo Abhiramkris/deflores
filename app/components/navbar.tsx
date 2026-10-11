@@ -3,11 +3,19 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Search, ShoppingBag, Menu, X, ArrowRight } from "lucide-react";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Hide navbar completely on admin pages
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,93 +25,95 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Hide navbar completely on admin pages
-  if (pathname?.startsWith("/admin")) {
-    return null;
-  }
-
-  const navItems = [
-    { name: "Explore", href: "/explore" },
-    { name: "Founder", href: "/founder" },
-    { name: "Blog", href: "/blog" },
+  const navLinks = [
+    { name: "Collections", href: "/explore" },
+    { name: "About", href: "/founder" },
+    { name: "Journal", href: "/blog" },
+    { name: "Sustainability", href: "/explore" },
     { name: "Contact", href: "/contact" }
   ];
 
   return (
-    <header className="w-full z-50">
-      {/* 1. Black announcement bar */}
-      <div className="w-full bg-black text-white py-2 px-6 md:px-12 flex justify-between items-center text-[10px] tracking-widest uppercase font-medium">
-        <div className="hidden sm:block">EN/INR</div>
-        <div className="mx-auto sm:mx-0">5% discount when subscribing to news</div>
-        <div className="hidden sm:flex gap-6">
-          <Link href="#contact" className="hover:opacity-75 transition-opacity">Contact</Link>
-          <Link href="#about" className="hover:opacity-75 transition-opacity">About</Link>
-        </div>
-      </div>
-
-      {/* 2. Main Navigation Bar */}
-      <nav
-        className={`w-full transition-all duration-300 ${
+    <>
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out ${
           isScrolled
-            ? "fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md border-b border-zinc-200/40 py-4 shadow-xs"
-            : "relative bg-white border-b border-zinc-100 py-6"
+            ? "bg-zinc-950/85 backdrop-blur-xl border-b border-white/10 py-3.5 shadow-2xl"
+            : "bg-transparent py-5 md:py-6"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between text-white">
           
-          {/* Left Side: Desktop Links / Mobile Hamburger */}
-          <div className="flex items-center">
-            {/* Mobile Hamburger Button */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="flex md:hidden flex-col justify-center items-center w-6 h-6 space-y-1.5 focus:outline-none z-50"
-              aria-label="Toggle Menu"
+          {/* Left: Brand Logo & Desktop Nav Links */}
+          <div className="flex items-center gap-8 lg:gap-12">
+            <Link
+              href="/"
+              className="font-serif text-2xl md:text-3xl tracking-[0.22em] uppercase font-light text-white hover:opacity-90 transition-opacity drop-shadow-sm"
             >
-              <span
-                className={`block w-5 h-0.5 bg-zinc-900 transition-all duration-300 ${
-                  isMobileMenuOpen ? "rotate-45 translate-y-2" : ""
-                }`}
-              />
-              <span
-                className={`block w-5 h-0.5 bg-zinc-900 transition-all duration-300 ${
-                  isMobileMenuOpen ? "opacity-0" : ""
-                }`}
-              />
-              <span
-                className={`block w-5 h-0.5 bg-zinc-900 transition-all duration-300 ${
-                  isMobileMenuOpen ? "-rotate-45 -translate-y-2" : ""
-                }`}
-              />
-            </button>
+              VÉLORA
+            </Link>
 
-            {/* Desktop Nav Links */}
-            <div className="hidden md:flex items-center gap-6 lg:gap-8">
-              {navItems.map((item) => (
+            {/* Desktop Navigation Links */}
+            <nav className="hidden lg:flex items-center gap-7 text-xs font-normal tracking-wide text-zinc-200">
+              {navLinks.map((link) => (
                 <Link
-                  key={item.name}
-                  href={item.href}
-                  className="text-[11px] font-semibold tracking-widest uppercase text-zinc-900 hover:opacity-60 transition-opacity"
+                  key={link.name}
+                  href={link.href}
+                  className="hover:text-white transition-colors py-1 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-white after:transition-all hover:after:w-full"
                 >
-                  {item.name}
+                  {link.name}
                 </Link>
               ))}
-            </div>
+            </nav>
           </div>
 
-          {/* Center Brand Logo (Always Centered) */}
-          <div className="absolute left-1/2 -translate-x-1/2">
-            <Link href="/" className="font-serif text-xl sm:text-2xl md:text-3xl font-light tracking-[0.2em] uppercase text-zinc-950">
-              DeFlores
+          {/* Right: Actions */}
+          <div className="flex items-center gap-4 sm:gap-6">
+            {/* Search Icon button */}
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              className="p-1.5 text-zinc-200 hover:text-white transition-colors cursor-pointer"
+              aria-label="Search"
+            >
+              <Search className="w-4 h-4 md:w-[18px] md:h-[18px]" />
+            </button>
+
+            {/* Mobile Shopping Bag icon */}
+            <Link
+              href="/explore"
+              className="md:hidden p-1.5 text-zinc-200 hover:text-white transition-colors"
+              aria-label="Shopping Bag"
+            >
+              <ShoppingBag className="w-5 h-5" />
             </Link>
-          </div>
 
-          {/* Right Menu Icons */}
-          <div className="flex items-center gap-4 sm:gap-5 md:gap-6 text-zinc-800">
-            {/* Profile Icon - Hidden on small mobile */}
-            <button className="hidden sm:block hover:opacity-60 transition-opacity" aria-label="Account">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
+            {/* Desktop Sign In */}
+            <Link
+              href="/admin/login"
+              className="hidden md:inline-block text-xs text-zinc-200 hover:text-white transition-colors font-normal tracking-wide"
+            >
+              Sign In
+            </Link>
+
+            {/* Desktop Shop Now Pill Button */}
+            <Link
+              href="/explore"
+              className="hidden md:inline-flex items-center justify-center rounded-full border border-white/60 px-5 py-2 text-xs font-normal tracking-wide text-white hover:bg-white hover:text-zinc-950 transition-all duration-300 backdrop-blur-xs"
+            >
+              Shop Now
+            </Link>
+
+            {/* Mobile Hamburger Menu Toggle */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden p-1.5 text-zinc-200 hover:text-white transition-colors cursor-pointer"
+              aria-label="Toggle Navigation Menu"
+            >
+              {isMobileMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
             {/* Wishlist Heart Icon - Hidden on small mobile */}
             <button className="hidden sm:block hover:opacity-60 transition-opacity" aria-label="Wishlist">
@@ -111,35 +121,90 @@ export default function Navbar() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
             </button>
-            {/* Shining Explore Button */}
-            <Link href="/explore" className="shining-explore-btn hidden md:inline-flex ml-2">
-              Explore
-            </Link>
           </div>
-
         </div>
 
-        {/* Mobile Dropdown Menu */}
+        {/* Mobile Fullscreen / Drawer Overlay */}
         <div
-          className={`md:hidden absolute top-full left-0 right-0 bg-white border-b border-zinc-200/50 shadow-md transition-all duration-300 ease-in-out overflow-hidden ${
-            isMobileMenuOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
+          className={`md:hidden fixed inset-x-0 top-full transition-all duration-500 ease-in-out bg-zinc-950/95 backdrop-blur-2xl border-b border-white/10 px-6 py-8 overflow-hidden ${
+            isMobileMenuOpen ? "max-h-screen opacity-100 visible" : "max-h-0 opacity-0 invisible"
           }`}
         >
-          <div className="px-6 py-6 flex flex-col gap-4">
-            {navItems.map((item) => (
+          <div className="flex flex-col gap-5 text-white">
+            <span className="text-[10px] tracking-[0.25em] uppercase text-zinc-400 font-medium">Navigation</span>
+            {navLinks.map((link) => (
               <Link
-                key={item.name}
-                href={item.href}
+                key={link.name}
+                href={link.href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="text-[11px] font-semibold tracking-widest uppercase text-zinc-900 hover:opacity-60 transition-opacity py-1 border-b border-zinc-50 last:border-0"
+                className="text-lg font-serif tracking-widest text-zinc-100 hover:text-white hover:translate-x-1 transition-all py-1 border-b border-white/5"
               >
-                {item.name}
+                {link.name}
               </Link>
             ))}
+
+            <div className="pt-4 flex flex-col gap-3">
+              <Link
+                href="/explore"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="w-full flex items-center justify-center gap-2 rounded-full bg-white text-zinc-950 py-3 text-xs tracking-widest uppercase font-semibold hover:bg-zinc-200 transition-colors"
+              >
+                Shop Now <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                href="/admin/login"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="w-full text-center py-2 text-xs tracking-widest uppercase text-zinc-400 hover:text-white transition-colors"
+              >
+                Sign In
+              </Link>
+            </div>
           </div>
         </div>
+      </header>
 
-      </nav>
-    </header>
+      {/* Interactive Search Modal */}
+      {isSearchOpen && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-24 px-4 bg-black/80 backdrop-blur-md transition-opacity">
+          <div className="relative w-full max-w-2xl bg-zinc-900 border border-white/20 rounded-2xl p-6 shadow-2xl text-white">
+            <div className="flex items-center justify-between pb-4 border-b border-white/10">
+              <div className="flex items-center gap-3 w-full">
+                <Search className="w-5 h-5 text-zinc-400" />
+                <input
+                  type="text"
+                  placeholder="Search collections, lehengas, sarees, gowns..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  autoFocus
+                  className="w-full bg-transparent text-sm md:text-base text-white placeholder-zinc-500 focus:outline-none"
+                />
+              </div>
+              <button
+                onClick={() => setIsSearchOpen(false)}
+                className="p-1 hover:text-zinc-300 text-zinc-400"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="py-4 space-y-2">
+              <p className="text-[10px] tracking-widest uppercase text-zinc-400 font-semibold">Suggested Searches</p>
+              <div className="flex flex-wrap gap-2 pt-1">
+                {["Bridal Lehenga", "Celeb Gown", "Silk Saree", "Reception Edit", "Haute Couture"].map((tag) => (
+                  <Link
+                    key={tag}
+                    href={`/explore?q=${encodeURIComponent(tag)}`}
+                    onClick={() => setIsSearchOpen(false)}
+                    className="text-xs px-3 py-1.5 rounded-full bg-white/10 hover:bg-white hover:text-zinc-950 transition-colors text-zinc-300"
+                  >
+                    {tag}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ArrowUpRight } from "lucide-react";
 
 export default function Footer() {
   const pathname = usePathname();
@@ -16,121 +17,109 @@ export default function Footer() {
   };
 
   return (
-    <footer className="w-full bg-[#f4f2ee] px-4 pb-4 md:px-6 md:pb-6 relative z-10">
-      <div className="w-full bg-[#181716] text-white rounded-[2.5rem] p-8 md:p-16 relative overflow-hidden flex flex-col justify-between min-h-[500px]">
+    <footer className="w-full bg-[#0d0d0f] text-zinc-400 font-sans border-t border-white/10 py-16 md:py-24 relative z-10">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8">
         
-        {/* Large Backdrop Text "De Flora" */}
-        <div className="absolute bottom-12 left-8 md:left-16 text-[11vw] font-bold text-white/[0.025] tracking-tighter pointer-events-none select-none leading-none">
-          De Flora
-        </div>
-
-        {/* Top Section */}
-        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          
-          {/* Left Column: CTA & Newsletter */}
-          <div className="lg:col-span-6 space-y-8 text-left">
-            <div className="space-y-1">
-              <span className="text-[10px] tracking-[0.25em] font-semibold uppercase text-zinc-500">DE FLORA</span>
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight uppercase leading-tight max-w-md">
-                READY TO ELEVATE YOUR STYLE?
-              </h2>
-            </div>
-            
-            {/* Minimal Underline Input */}
-            <div className="relative w-full max-w-sm border-b border-zinc-700 pb-3 flex items-center justify-between group focus-within:border-white transition-colors duration-300">
-              <input
-                type="email"
-                placeholder="Join for new drops & offers..."
-                className="bg-transparent border-none outline-none text-xs text-white placeholder:text-zinc-500 w-full focus:ring-0 pr-8"
-              />
-              <button 
-                type="submit" 
-                className="text-amber-300/80 hover:text-white transition-colors duration-300 pr-1"
-                aria-label="Subscribe"
-              >
-                <span className="text-base font-bold">↗</span>
-              </button>
-            </div>
-
-            <div className="text-[9px] tracking-wider uppercase text-zinc-500">
-              @2026 DE FLORA – PREMIUM FASHION. ALL RIGHTS RESERVED.
-            </div>
-          </div>
-
-          {/* Right Columns: Links & Info */}
-          <div className="lg:col-span-6 grid grid-cols-2 sm:grid-cols-4 gap-8 text-left text-xs uppercase tracking-widest font-semibold">
-            
-            {/* Column 1 */}
-            <div className="flex flex-col gap-4">
-              <Link href="/" className="text-zinc-400 hover:text-white transition-colors">HOME</Link>
-              <Link href="/explore" className="text-zinc-400 hover:text-white transition-colors">SHOP</Link>
-            </div>
-
-            {/* Column 2 */}
-            <div className="flex flex-col gap-4">
-              <Link href="/explore" className="text-zinc-400 hover:text-white transition-colors">COLLECTIONS</Link>
-              <Link href="/gallery" className="text-zinc-400 hover:text-white transition-colors">LOOKBOOK</Link>
-            </div>
-
-            {/* Column 3 */}
-            <div className="flex flex-col gap-4">
-              <Link href="/founder" className="text-zinc-400 hover:text-white transition-colors">ABOUT BRAND</Link>
-              <Link href="/contact" className="text-zinc-400 hover:text-white transition-colors">CONTACT</Link>
-            </div>
-
-            {/* Column 4: Flagship Info */}
-            <div className="space-y-6 text-[10px] text-zinc-400 tracking-wider">
-              <div className="space-y-1">
-                <div className="font-bold text-white text-[11px] tracking-widest">FLAGSHIP</div>
-                <p className="font-light leading-relaxed">
-                  MUMBAI, INDIA<br />
-                  COMING SOON
-                </p>
-              </div>
-
-              <div className="space-y-1">
-                <div className="font-bold text-white text-[11px] tracking-widest">CONTACT</div>
-                <a href="mailto:hello@deflora.co" className="hover:text-white transition-colors lowercase font-light">
-                  hello@deflora.co
-                </a>
-              </div>
-
-              <div className="space-y-1 font-light leading-relaxed">
-                <span className="font-bold text-white tracking-widest">MON – SAT</span>
-                <div>10:00 AM – 8:00 PM</div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        {/* Bottom Section */}
-        <div className="relative z-10 mt-20 pt-8 border-t border-zinc-800/60 flex items-center justify-between text-[10px] tracking-widest uppercase font-semibold text-zinc-500">
-          <button 
-            onClick={handleScrollToTop}
-            className="flex items-center gap-2 hover:text-white transition-colors"
+        {/* Brand Description */}
+        <div className="md:col-span-5 flex flex-col items-start space-y-6 text-left">
+          <Link 
+            href="/" 
+            className="font-serif text-3xl tracking-[0.2em] uppercase font-light text-white hover:opacity-80 transition-opacity"
           >
-            <span>↑</span> BACK TO TOP
-          </button>
-          
-          <div className="flex items-center gap-6 text-zinc-400">
-            {/* Inline SVGs for social media icons */}
-            <a href="#" className="hover:text-white transition-colors" aria-label="Instagram">
-              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051C.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
-              </svg>
-            </a>
-            <a href="#" className="hover:text-white transition-colors" aria-label="Twitter">
-              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
-              </svg>
-            </a>
-            <a href="#" className="hover:text-white transition-colors" aria-label="Facebook">
-              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-              </svg>
-            </a>
+            VÉLORA
+          </Link>
+          <p className="text-zinc-400 text-xs md:text-sm leading-relaxed max-w-sm font-light tracking-wide">
+            Combining human creativity and AI innovation to create fashion content built for modern audiences. Haute couture, bridal lehengas, and contemporary silhouettes.
+          </p>
+          <div className="flex items-center gap-3 pt-2">
+            <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-[11px] uppercase tracking-widest text-zinc-300 font-medium">Bespoke Atelier Open</span>
           </div>
+        </div>
+
+        {/* Collections Column */}
+        <div className="md:col-span-2 flex flex-col space-y-4 text-left">
+          <h4 className="text-[11px] font-bold tracking-[0.25em] text-white uppercase">
+            Collections
+          </h4>
+          <ul className="space-y-3 text-xs tracking-wider font-light">
+            {[
+              { name: "Bridal Lehenga", href: "/explore?category=lehenga" },
+              { name: "Celeb Gown", href: "/explore?category=gown" },
+              { name: "Draped Saree", href: "/explore?category=saree" },
+              { name: "Reception Edit", href: "/explore?category=reception" },
+              { name: "Pakistani Silhouettes", href: "/explore?category=pakistani" },
+            ].map((item) => (
+              <li key={item.name}>
+                <Link
+                  href={item.href}
+                  className="text-zinc-400 hover:text-white transition-all duration-300 hover:translate-x-1 inline-block"
+                >
+                  {item.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Studio Column */}
+        <div className="md:col-span-2 flex flex-col space-y-4 text-left">
+          <h4 className="text-[11px] font-bold tracking-[0.25em] text-white uppercase">
+            Maison
+          </h4>
+          <ul className="space-y-3 text-xs tracking-wider font-light">
+            {[
+              { name: "About the Founder", href: "/founder" },
+              { name: "Editorial Journal", href: "/blog" },
+              { name: "Lookbook Exposé", href: "/#lookbook" },
+              { name: "Contact & Bespoke", href: "/contact" }
+            ].map((item) => (
+              <li key={item.name}>
+                <Link
+                  href={item.href}
+                  className="text-zinc-400 hover:text-white transition-all duration-300 hover:translate-x-1 inline-block"
+                >
+                  {item.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Contact/Newsletter Column */}
+        <div className="md:col-span-3 flex flex-col space-y-4 text-left">
+          <h4 className="text-[11px] font-bold tracking-[0.25em] text-white uppercase">
+            Private Access
+          </h4>
+          <p className="text-zinc-400 text-xs leading-relaxed font-light tracking-wide">
+            Receive private runway invites, bespoke preview links, and seasonal curations.
+          </p>
+          <div className="flex w-full items-center mt-2 border border-white/20 rounded-full bg-white/5 px-2 py-1 focus-within:border-white transition-all">
+            <input
+              type="email"
+              placeholder="YOUR EMAIL"
+              className="bg-transparent border-0 outline-0 text-xs px-3 py-1.5 w-full text-white tracking-wider placeholder:text-zinc-500 focus:outline-none"
+            />
+            <button className="bg-white text-zinc-950 text-[10px] font-bold tracking-widest uppercase px-4 py-2 rounded-full hover:bg-zinc-200 transition-colors shrink-0">
+              Join
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Bar */}
+      <div className="max-w-7xl mx-auto px-6 md:px-12 mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-light tracking-wider text-zinc-500">
+        <p>© {new Date().getFullYear()} VÉLORA / DeFlores Atelier. All rights reserved.</p>
+        <div className="flex gap-6 items-center">
+          <Link href="/admin/login" className="hover:text-white transition-colors uppercase tracking-widest font-semibold border-r border-white/10 pr-6 mr-2 text-[10px]">
+            Admin
+          </Link>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-1">
+            Instagram <ArrowUpRight className="w-3 h-3" />
+          </a>
+          <a href="https://pinterest.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-1">
+            Pinterest <ArrowUpRight className="w-3 h-3" />
+          </a>
         </div>
 
       </div>
