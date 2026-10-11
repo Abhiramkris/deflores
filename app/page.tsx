@@ -54,43 +54,38 @@ const HERO_SLIDES = [
 const CATEGORIES = [
   {
     id: "lehenga",
+    number: "01",
+    tag: "HAUTE COUTURE",
     name: "Lehenga",
-    subtitle: "Bridal & Heritage",
     image: "/hero/herosection1.png",
-    tag: "Haute Couture",
-    offset: "lg:translate-y-4",
   },
   {
     id: "gown",
+    number: "02",
+    tag: "RED CARPET",
     name: "Gown",
-    subtitle: "Evening Silhouettes",
     image: "/hero/herosection3.png",
-    tag: "Red Carpet",
-    offset: "lg:-translate-y-6",
   },
   {
     id: "saree",
+    number: "03",
+    tag: "TIMELESS DRAPES",
     name: "Saree",
-    subtitle: "Pure Silk Weaves",
     image: "/new_images2/IMG_1077.webp",
-    tag: "Timeless Drapes",
-    offset: "lg:translate-y-8",
   },
   {
     id: "mens-wear",
+    number: "04",
+    tag: "SHERWANIS & BLAZERS",
     name: "Mens Wear",
-    subtitle: "Bespoke Royal Tailoring",
     image: "/new_images2/IMG_1078.webp",
-    tag: "Sherwanis & Blazers",
-    offset: "lg:-translate-y-3",
   },
   {
     id: "party-wear",
+    number: "05",
+    tag: "COCKTAIL EDIT",
     name: "Party Wear",
-    subtitle: "Contemporary Glamour",
     image: "/newimages/IMG_1064.webp",
-    tag: "Cocktail Edit",
-    offset: "lg:translate-y-6",
   },
 ];
 
@@ -381,46 +376,58 @@ export default function HomePage() {
             </h2>
           </div>
 
-          {/* Category Cards: Single column in mobile in 3:2 ratio, 5-col on desktop */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 items-center">
-            {CATEGORIES.map((cat) => {
+          {/* Category Cards: 2-Column Grid Matching Reference Design */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto">
+            {CATEGORIES.map((cat, index) => {
+              const isLast = index === 4;
+
               return (
                 <Link
                   key={cat.id}
                   href={`/collections?category=${cat.id}`}
-                  className={`group relative flex flex-col overflow-hidden rounded-2xl sm:rounded-3xl transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl ${cat.offset}`}
+                  className={`group relative flex flex-col overflow-hidden rounded-[2.2rem] sm:rounded-[2.6rem] border border-white/10 shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_25px_60px_rgba(0,0,0,0.25)] ${
+                    isLast ? "md:col-span-2 md:max-w-[calc(50%-1rem)] md:mx-auto w-full" : "w-full"
+                  }`}
                 >
-                  {/* Card Image Container: 3:2 ratio on mobile, editorial 3:4 on desktop */}
-                  <div className="relative w-full overflow-hidden rounded-2xl sm:rounded-3xl bg-zinc-200 aspect-[3/2] lg:aspect-[3/4]">
+                  {/* Card Container: Aspect 3:4.2 matching reference */}
+                  <div className="relative w-full aspect-[3/4] sm:aspect-[3/4.2] overflow-hidden bg-zinc-900">
+                    {/* Background Image with Hover Scale */}
                     <Image
                       src={cat.image}
                       alt={cat.name}
                       fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 20vw"
-                      className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-108"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-106"
                     />
 
-                    {/* Gradient Overlay on Card */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent transition-opacity group-hover:from-black/85" />
+                    {/* Gradient Overlay for Readability */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/40 transition-opacity duration-300 group-hover:from-black/90" />
 
-                    {/* Card Top Tag */}
-                    <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
-                      <span className="text-[10px] tracking-[0.2em] uppercase font-medium bg-black/40 backdrop-blur-md text-white/90 border border-white/20 px-2.5 py-1 rounded-full">
-                        {cat.tag}
-                      </span>
-                    </div>
-
-                    {/* Card Bottom Content */}
-                    <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 z-10 flex flex-col justify-end text-white">
-                      <p className="text-[10px] sm:text-xs uppercase tracking-widest text-white/70 mb-1">
-                        {cat.subtitle}
-                      </p>
+                    {/* Card Content Overlay */}
+                    <div className="absolute inset-0 p-5 sm:p-7 md:p-8 flex flex-col justify-between z-10">
+                      {/* Top Bar: Pill Tag & Number */}
                       <div className="flex items-center justify-between">
-                        <h3 className="font-serif text-xl sm:text-2xl font-light tracking-wide">
+                        {/* Pill Tag with Glowing Dot */}
+                        <span className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-[10px] sm:text-[11px] tracking-[0.22em] uppercase font-medium text-white shadow-sm">
+                          <span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" />
+                          <span>{cat.tag}</span>
+                        </span>
+
+                        {/* Line & 2-Digit Number */}
+                        <div className="flex items-center gap-2.5 sm:gap-3 text-white/90 text-xs sm:text-sm font-medium tracking-widest font-mono">
+                          <span className="w-6 sm:w-8 h-[1px] bg-white/40" />
+                          <span>{cat.number}</span>
+                        </div>
+                      </div>
+
+                      {/* Bottom Bar: Serif Name & Circular Arrow Button */}
+                      <div className="flex items-end justify-between pt-8">
+                        <h3 className="font-serif text-3xl sm:text-5xl lg:text-[3.25rem] font-normal tracking-wide text-white leading-none drop-shadow-md">
                           {cat.name}
                         </h3>
-                        <span className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white group-hover:bg-white group-hover:text-black transition-all">
-                          <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+
+                        <span className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white/20 backdrop-blur-md border border-white/25 flex items-center justify-center text-white group-hover:bg-white group-hover:text-black group-hover:scale-105 transition-all duration-300 shadow-xl shrink-0">
+                          <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.75] group-hover:translate-x-0.5 transition-transform" />
                         </span>
                       </div>
                     </div>
