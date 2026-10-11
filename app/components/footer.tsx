@@ -7,8 +7,8 @@ import { ArrowUpRight } from "lucide-react";
 export default function Footer() {
   const pathname = usePathname();
 
-  // Hide footer completely on admin workspace pages
-  if (pathname?.startsWith("/admin")) {
+  // Hide footer on homepage (which is now full screen hero) and admin pages
+  if (pathname === "/" || pathname?.startsWith("/admin")) {
     return null;
   }
 

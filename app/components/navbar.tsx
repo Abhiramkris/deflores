@@ -12,8 +12,8 @@ export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Hide navbar completely on admin pages
-  if (pathname?.startsWith("/admin")) {
+  // Hide navbar on homepage (which has its own integrated hero header) and admin pages
+  if (pathname === "/" || pathname?.startsWith("/admin")) {
     return null;
   }
 
