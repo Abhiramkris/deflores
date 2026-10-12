@@ -89,13 +89,6 @@ const CATEGORIES = [
   },
 ];
 
-const SHOWCASE_PRODUCTS = [
-  { id: 1, name: "BROKEN HEART RING", category: "JEWELRY", image: "/newimages/IMG_1058.webp" },
-  { id: 2, name: "PHILOSOPHER RING", category: "HEIRLOOM", image: "/new_images2/IMG_1077.webp" },
-  { id: 3, name: "SELENE'S ORBIT", category: "COUTURE", image: "/hero/herosection3.png" },
-  { id: 4, name: "AURA EARRINGS", category: "ORNAMENT", image: "/newimages/IMG_1060.webp" },
-  { id: 5, name: "CHAINS RING", category: "BESPOKE", image: "/gallery_purple.jpg" },
-];
 
 const MOOD_TABS = [
   { name: "RHYTHM", label: "[RHYTHM]", audioText: "128 BPM", image: "/newimages/IMG_1058.webp" },
@@ -584,98 +577,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. LABORATORY SHOWCASE & INTERACTIVE SOUND SECTION (Matching Indigo Reference) */}
-      <section
-        className={`w-full overflow-hidden transition-colors duration-500 border-t ${
-          isWhiteMode ? "bg-[#eaf0f4] text-zinc-900 border-zinc-200" : "bg-zinc-950 text-white border-zinc-800"
-        }`}
-      >
-        {/* Top Product Showcase Strip */}
-        <div
-          className={`w-full border-b px-4 sm:px-8 py-5 transition-colors ${
-            isWhiteMode
-              ? "bg-[#f1f5f9] border-zinc-300/70 text-zinc-900"
-              : "bg-zinc-900/80 border-white/10 text-white"
-          }`}
-        >
-          {/* Top Bar Links */}
-          <div className="flex items-center justify-between text-[11px] font-mono uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400 mb-4 px-2">
-            <Link href="/about" className="hover:text-black dark:hover:text-white transition-colors">
-              [THE ATELIER]
-            </Link>
-            <div className="flex items-center space-x-2">
-              <span className="font-serif tracking-[0.3em] font-normal text-zinc-900 dark:text-white text-base sm:text-lg">
-                VÉLORA
-              </span>
-            </div>
-            <Link href="/contact" className="hover:text-black dark:hover:text-white transition-colors">
-              [CONTACT]
-            </Link>
-          </div>
-
-          {/* Horizontal Product Strip with Sound Pill in Center */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3.5 sm:gap-4 items-center">
-            {SHOWCASE_PRODUCTS.map((prod, idx) => (
-              <div
-                key={prod.id}
-                className={`flex flex-col items-center group cursor-pointer ${
-                  idx === 2 ? "relative" : ""
-                }`}
-              >
-                <div className="w-full aspect-square relative overflow-hidden rounded-xl bg-white shadow-sm border border-zinc-200/80 mb-2.5">
-                  <Image
-                    src={prod.image}
-                    alt={prod.name}
-                    fill
-                    sizes="(max-width: 640px) 50vw, 20vw"
-                    className="object-cover object-center group-hover:scale-108 transition-transform duration-500"
-                  />
-                  {idx === 2 && (
-                    <div className="absolute inset-0 bg-black/45 flex items-center justify-center p-2">
-                      <span className="font-serif italic text-white text-lg sm:text-xl font-normal drop-shadow">
-                        VÉLORA
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                <span className="text-[10px] font-mono tracking-widest text-zinc-700 dark:text-zinc-300 uppercase text-center truncate w-full px-1">
-                  {prod.name}
-                </span>
-
-                {idx === 2 && (
-                  <button
-                    onClick={() => setIsSoundPlaying(!isSoundPlaying)}
-                    className="mt-1.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-[9px] font-mono tracking-widest uppercase hover:bg-zinc-100 transition-colors shadow-sm"
-                  >
-                    <span className="flex items-center gap-0.5">
-                      <span
-                        className={`w-0.5 h-2 bg-zinc-800 dark:bg-white rounded-full ${
-                          isSoundPlaying ? "animate-pulse" : ""
-                        }`}
-                      />
-                      <span
-                        className={`w-0.5 h-3.5 bg-zinc-800 dark:bg-white rounded-full ${
-                          isSoundPlaying ? "animate-pulse delay-75" : ""
-                        }`}
-                      />
-                      <span
-                        className={`w-0.5 h-1.5 bg-zinc-800 dark:bg-white rounded-full ${
-                          isSoundPlaying ? "animate-pulse delay-150" : ""
-                        }`}
-                      />
-                    </span>
-                    <span>{isSoundPlaying ? "Sound on" : "With sound"}</span>
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Central High-Fashion Portrait Centerpiece */}
-        <div className="relative w-full min-h-[520px] sm:min-h-[660px] lg:min-h-[760px] flex items-center justify-between px-6 sm:px-12 md:px-16 overflow-hidden">
-          {/* Background Portrait Image according to activeMood */}
+      {/* 5. FULL-SCREEN EDITORIAL & INTERACTIVE SOUND SECTION (Matching Reference) */}
+      <section className="relative w-full h-screen min-h-screen overflow-hidden flex flex-col justify-between select-none">
+        {/* Full-Screen Background Image Canvas (Below) */}
+        <div className="absolute inset-0 z-0">
           {MOOD_TABS.map((mood, idx) => (
             <div
               key={mood.name}
@@ -689,39 +594,83 @@ export default function HomePage() {
                 fill
                 priority={idx === 0}
                 sizes="100vw"
-                className="object-cover object-top"
+                className="object-cover object-top sm:object-center"
               />
-              {/* Atmospheric Tint Matching Studio Look */}
-              <div className="absolute inset-0 bg-[#3a4d5a]/20 mix-blend-multiply pointer-events-none" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/25 pointer-events-none" />
+              {/* Studio Atmospheric Tint */}
+              <div className="absolute inset-0 bg-[#2d3e4b]/20 mix-blend-multiply pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/35 pointer-events-none" />
             </div>
           ))}
+        </div>
 
-          {/* Left Typographic Indicator: [RHYTHM] */}
-          <div className="relative z-10 font-mono text-xs sm:text-sm tracking-[0.25em] text-white/90 drop-shadow-md bg-black/40 backdrop-blur-md px-3.5 py-1.5 rounded-md border border-white/20 select-none">
+        {/* Top Floating Layer: Navigation & Soundwave Pill (Above) */}
+        <div className="relative z-20 w-full pt-8 sm:pt-10 px-6 sm:px-12 flex items-center justify-between text-white drop-shadow">
+          <Link
+            href="/about"
+            className="text-[11px] font-mono uppercase tracking-[0.22em] text-white/85 hover:text-white transition-colors"
+          >
+            [THE ATELIER]
+          </Link>
+
+          {/* Center Brand & Audio Pill */}
+          <div className="flex flex-col items-center space-y-2">
+            <span className="font-serif tracking-[0.3em] font-normal text-white text-xl sm:text-2xl drop-shadow-md">
+              VÉLORA
+            </span>
+            <button
+              onClick={() => setIsSoundPlaying(!isSoundPlaying)}
+              className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/25 text-[10px] font-mono tracking-widest uppercase text-white hover:bg-black/60 transition-all shadow-lg"
+            >
+              <span className="flex items-center gap-0.5">
+                <span
+                  className={`w-0.5 h-2 bg-white rounded-full ${isSoundPlaying ? "animate-pulse" : ""}`}
+                />
+                <span
+                  className={`w-0.5 h-3.5 bg-white rounded-full ${
+                    isSoundPlaying ? "animate-pulse delay-75" : ""
+                  }`}
+                />
+                <span
+                  className={`w-0.5 h-1.5 bg-white rounded-full ${
+                    isSoundPlaying ? "animate-pulse delay-150" : ""
+                  }`}
+                />
+              </span>
+              <span>{isSoundPlaying ? "Sound on" : "With sound"}</span>
+            </button>
+          </div>
+
+          <Link
+            href="/contact"
+            className="text-[11px] font-mono uppercase tracking-[0.22em] text-white/85 hover:text-white transition-colors"
+          >
+            [CONTACT]
+          </Link>
+        </div>
+
+        {/* Middle Floating Layer: Bracket Typographic Indicators (Above) */}
+        <div className="relative z-20 w-full px-6 sm:px-12 md:px-16 flex items-center justify-between my-auto pointer-events-none">
+          <div className="pointer-events-auto font-mono text-xs sm:text-sm tracking-[0.25em] text-white drop-shadow-lg bg-black/40 backdrop-blur-md px-4 py-2 rounded-md border border-white/20">
             {MOOD_TABS[activeMood].label}
           </div>
 
-          {/* Right Typographic Indicator: [RHYTHM] */}
-          <div className="relative z-10 font-mono text-xs sm:text-sm tracking-[0.25em] text-white/90 drop-shadow-md bg-black/40 backdrop-blur-md px-3.5 py-1.5 rounded-md border border-white/20 select-none">
+          <div className="pointer-events-auto font-mono text-xs sm:text-sm tracking-[0.25em] text-white drop-shadow-lg bg-black/40 backdrop-blur-md px-4 py-2 rounded-md border border-white/20">
             {MOOD_TABS[activeMood].label}
           </div>
         </div>
 
-        {/* Bottom Interactive Tab Strip across entire width */}
-        <div className="grid grid-cols-5 w-full border-t border-zinc-300/80 dark:border-white/10 font-mono text-xs tracking-[0.2em] uppercase select-none">
+        {/* Bottom Floating Layer: 5 Interactive Segmented Mood Tabs (Above) */}
+        <div className="relative z-20 grid grid-cols-5 w-full border-t border-white/20 font-mono text-xs tracking-[0.2em] uppercase backdrop-blur-md bg-black/30">
           {MOOD_TABS.map((tab, idx) => {
             const isActive = idx === activeMood;
             return (
               <button
                 key={tab.name}
                 onClick={() => setActiveMood(idx)}
-                className={`py-4 sm:py-5 text-center transition-all duration-300 border-r border-zinc-300/80 dark:border-white/10 last:border-r-0 ${
+                className={`py-4 sm:py-5 text-center transition-all duration-300 border-r border-white/15 last:border-r-0 ${
                   isActive
-                    ? "bg-zinc-950 text-white font-semibold shadow-inner"
-                    : isWhiteMode
-                    ? "bg-white text-zinc-700 hover:bg-zinc-100 hover:text-black"
-                    : "bg-zinc-900 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                    ? "bg-white text-zinc-950 font-bold shadow-lg"
+                    : "text-white/80 hover:bg-white/15 hover:text-white"
                 }`}
               >
                 <span className="block truncate px-1 text-[10px] sm:text-xs">
