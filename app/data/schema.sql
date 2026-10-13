@@ -116,3 +116,17 @@ CREATE TABLE IF NOT EXISTS user_devices (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(email, device_id)
 );
+
+-- 10. Main Categories & Sub-categories Table
+CREATE TABLE IF NOT EXISTS categories (
+    id SERIAL PRIMARY KEY,
+    category_key VARCHAR(100) UNIQUE NOT NULL,
+    num VARCHAR(10) NOT NULL,
+    tag VARCHAR(100) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    image TEXT NOT NULL,
+    description TEXT NOT NULL,
+    subcategories JSONB DEFAULT '[]'::jsonb,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
