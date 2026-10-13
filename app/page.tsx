@@ -90,20 +90,38 @@ const CATEGORIES = [
 ];
 
 
-const MOOD_TABS = [
-  { name: "RHYTHM", label: "[RHYTHM]", audioText: "128 BPM", image: "/newimages/IMG_1058.webp" },
-  { name: "PULSE", label: "[PULSE]", audioText: "Heartbeat", image: "/newimages/IMG_1060.webp" },
-  { name: "WHISPER", label: "[WHISPER]", audioText: "Silken Wind", image: "/hero/herosection3.png" },
-  { name: "RESONANCE", label: "[RESONANCE]", audioText: "Chamber Echo", image: "/hero/herosection1.png" },
-  { name: "SUB-NOISE", label: "[SUB-NOISE]", audioText: "Ambient Static", image: "/gallery_purple.jpg" },
+const TEAM_MEMBERS = [
+  {
+    name: "Sofia Marchetti",
+    role: "Founder & CEO",
+    image: "/newimages/IMG_1060.webp",
+  },
+  {
+    name: "Elena Valois",
+    role: "Creative Director",
+    image: "/new_images2/IMG_1081.webp",
+  },
+  {
+    name: "Amara Diallo",
+    role: "VP, Production & Talent",
+    image: "/new_images2/IMG_1082.webp",
+  },
+  {
+    name: "James Okafor",
+    role: "Head of Innovation",
+    image: "/new_images2/IMG_1078.webp",
+  },
+  {
+    name: "Daniel Picard",
+    role: "VP, AI Content Engineering",
+    image: "/new_images2/IMG_1080.webp",
+  },
 ];
 
 export default function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isWhiteMode, setIsWhiteMode] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [activeMood, setActiveMood] = useState(0);
-  const [isSoundPlaying, setIsSoundPlaying] = useState(false);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -474,7 +492,7 @@ export default function HomePage() {
 
       {/* 4. NEW SECTION: "WHAT WE DELIVER" (Matching Reference Design) */}
       <section
-        className={`w-full py-20 sm:py-28 px-6 sm:px-12 lg:px-20 transition-colors duration-500 ${
+        className={`relative z-10 w-full py-20 sm:py-28 px-6 sm:px-12 lg:px-20 transition-colors duration-500 ${
           isWhiteMode ? "bg-[#f5f3ec] text-zinc-900" : "bg-black text-white"
         }`}
       >
@@ -577,108 +595,84 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. FULL-SCREEN EDITORIAL & INTERACTIVE SOUND SECTION (Matching Reference) */}
-      <section className="relative w-full h-screen min-h-screen overflow-hidden flex flex-col justify-between select-none">
-        {/* Full-Screen Background Image Canvas (Below) */}
-        <div className="absolute inset-0 z-0">
-          {MOOD_TABS.map((mood, idx) => (
-            <div
-              key={mood.name}
-              className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-                idx === activeMood ? "opacity-100 scale-100" : "opacity-0 scale-105 pointer-events-none"
+      {/* 5. FULL-SCREEN EDITORIAL IMAGE (Pure visual canvas without text) */}
+      <div className="relative h-[130vh] z-0">
+        <div className="sticky top-0 w-full h-screen overflow-hidden">
+          <Image
+            src="/newimages/IMG_1058.webp"
+            alt="Editorial Campaign"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+        </div>
+      </div>
+
+      {/* 6. THE TEAM BEHIND SECTION (Glides smoothly above the full-screen image) */}
+      <section
+        className={`relative z-10 w-full py-20 sm:py-28 px-6 sm:px-12 lg:px-20 rounded-t-[2.5rem] sm:rounded-t-[3.5rem] shadow-[0_-25px_60px_rgba(0,0,0,0.25)] border-t border-zinc-200/80 dark:border-white/10 transition-colors duration-500 ${
+          isWhiteMode ? "bg-[#faf9f6] text-zinc-900" : "bg-zinc-950 text-white"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto">
+          {/* Top Metadata Bar */}
+          <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.25em] text-zinc-400 mb-8 border-b border-zinc-200/60 dark:border-white/10 pb-4">
+            <span>Leadership & Culture</span>
+            <span>VÉLORA Atelier</span>
+            <span>03 / 2026</span>
+          </div>
+
+          {/* Heading matching reference */}
+          <div className="text-center mb-12 sm:mb-16">
+            <h2
+              className={`text-4xl sm:text-6xl md:text-7xl font-light tracking-tight ${
+                isWhiteMode ? "text-zinc-900" : "text-white"
               }`}
             >
-              <Image
-                src={mood.image}
-                alt={mood.name}
-                fill
-                priority={idx === 0}
-                sizes="100vw"
-                className="object-cover object-top sm:object-center"
-              />
-              {/* Studio Atmospheric Tint */}
-              <div className="absolute inset-0 bg-[#2d3e4b]/20 mix-blend-multiply pointer-events-none" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/35 pointer-events-none" />
-            </div>
-          ))}
-        </div>
-
-        {/* Top Floating Layer: Navigation & Soundwave Pill (Above) */}
-        <div className="relative z-20 w-full pt-8 sm:pt-10 px-6 sm:px-12 flex items-center justify-between text-white drop-shadow">
-          <Link
-            href="/about"
-            className="text-[11px] font-mono uppercase tracking-[0.22em] text-white/85 hover:text-white transition-colors"
-          >
-            [THE ATELIER]
-          </Link>
-
-          {/* Center Brand & Audio Pill */}
-          <div className="flex flex-col items-center space-y-2">
-            <span className="font-serif tracking-[0.3em] font-normal text-white text-xl sm:text-2xl drop-shadow-md">
-              VÉLORA
-            </span>
-            <button
-              onClick={() => setIsSoundPlaying(!isSoundPlaying)}
-              className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/25 text-[10px] font-mono tracking-widest uppercase text-white hover:bg-black/60 transition-all shadow-lg"
-            >
-              <span className="flex items-center gap-0.5">
-                <span
-                  className={`w-0.5 h-2 bg-white rounded-full ${isSoundPlaying ? "animate-pulse" : ""}`}
-                />
-                <span
-                  className={`w-0.5 h-3.5 bg-white rounded-full ${
-                    isSoundPlaying ? "animate-pulse delay-75" : ""
-                  }`}
-                />
-                <span
-                  className={`w-0.5 h-1.5 bg-white rounded-full ${
-                    isSoundPlaying ? "animate-pulse delay-150" : ""
-                  }`}
-                />
+              The Team Behind
+              <span className="block font-serif italic font-normal mt-1 sm:mt-2 text-5xl sm:text-7xl md:text-8xl">
+                Gloss Motion
               </span>
-              <span>{isSoundPlaying ? "Sound on" : "With sound"}</span>
-            </button>
+            </h2>
+            <p className="text-sm sm:text-base font-light text-zinc-600 dark:text-zinc-400 text-center max-w-xl mx-auto mt-4 sm:mt-6 leading-relaxed">
+              Creatives, strategists, and engineers united by one vision: fashion content that moves at the speed of culture.
+            </p>
           </div>
 
-          <Link
-            href="/contact"
-            className="text-[11px] font-mono uppercase tracking-[0.22em] text-white/85 hover:text-white transition-colors"
-          >
-            [CONTACT]
-          </Link>
-        </div>
+          {/* 5 Team Members Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 lg:gap-8 items-start">
+            {TEAM_MEMBERS.map((member, index) => {
+              const isLast = index === 4;
+              return (
+                <div
+                  key={member.name}
+                  className={`group flex flex-col ${
+                    isLast ? "col-span-2 md:col-span-1 max-w-[calc(50%-0.5rem)] mx-auto md:max-w-none w-full" : "w-full"
+                  }`}
+                >
+                  <div className="relative w-full aspect-square overflow-hidden rounded-xl sm:rounded-2xl bg-zinc-200 dark:bg-zinc-800 shadow-sm border border-zinc-200/60 dark:border-white/10">
+                    <Image
+                      src={member.image}
+                      alt={member.name}
+                      fill
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                      className="object-cover object-top transition-transform duration-500 ease-out group-hover:scale-106"
+                    />
+                  </div>
 
-        {/* Middle Floating Layer: Bracket Typographic Indicators (Above) */}
-        <div className="relative z-20 w-full px-6 sm:px-12 md:px-16 flex items-center justify-between my-auto pointer-events-none">
-          <div className="pointer-events-auto font-mono text-xs sm:text-sm tracking-[0.25em] text-white drop-shadow-lg bg-black/40 backdrop-blur-md px-4 py-2 rounded-md border border-white/20">
-            {MOOD_TABS[activeMood].label}
+                  <div className="mt-3.5 sm:mt-4 text-center sm:text-left">
+                    <h3 className="font-medium text-sm sm:text-base text-zinc-950 dark:text-white tracking-tight">
+                      {member.name}
+                    </h3>
+                    <p className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 font-light mt-0.5 tracking-wide">
+                      {member.role}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-
-          <div className="pointer-events-auto font-mono text-xs sm:text-sm tracking-[0.25em] text-white drop-shadow-lg bg-black/40 backdrop-blur-md px-4 py-2 rounded-md border border-white/20">
-            {MOOD_TABS[activeMood].label}
-          </div>
-        </div>
-
-        {/* Bottom Floating Layer: 5 Interactive Segmented Mood Tabs (Above) */}
-        <div className="relative z-20 grid grid-cols-5 w-full border-t border-white/20 font-mono text-xs tracking-[0.2em] uppercase backdrop-blur-md bg-black/30">
-          {MOOD_TABS.map((tab, idx) => {
-            const isActive = idx === activeMood;
-            return (
-              <button
-                key={tab.name}
-                onClick={() => setActiveMood(idx)}
-                className={`py-4 sm:py-5 text-center transition-all duration-300 border-r border-white/15 last:border-r-0 ${
-                  isActive
-                    ? "bg-white text-zinc-950 font-bold shadow-lg"
-                    : "text-white/80 hover:bg-white/15 hover:text-white"
-                }`}
-              >
-                <span className="block truncate px-1 text-[10px] sm:text-xs">
-                  {tab.name}
-                </span>
-              </button>
-            );
-          })}
         </div>
       </section>
 
