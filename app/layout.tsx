@@ -5,6 +5,7 @@ import Navbar from "./components/navbar";
 import Footer from "./components/footer";
 import Tracker from "./components/Tracker";
 import LuxuryEffects from "./components/LuxuryEffects";
+import Preloader from "./components/Preloader";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${inter.variable} ${cormorant.variable} h-full antialiased scroll-smooth`}
     >
       <body className="min-h-full flex flex-col bg-[#0d0d0f] text-white selection:bg-white selection:text-zinc-950">
+        <Preloader />
         <Tracker />
         <LuxuryEffects />
         <Navbar />
