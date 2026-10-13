@@ -13,9 +13,13 @@ import {
   VolumeX,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
+  ChevronUp,
   Sun,
   Moon,
   Sparkles,
+  ZoomIn,
+  MapPin,
 } from "lucide-react";
 
 const HERO_SLIDES = [
@@ -118,10 +122,120 @@ const TEAM_MEMBERS = [
   },
 ];
 
+const GALLERY_ITEMS = [
+  {
+    id: 1,
+    title: "Heritage Bridal Lehenga",
+    category: "Bridal Couture",
+    image: "/hero/herosection1.png",
+    aspect: "aspect-[3/4]",
+  },
+  {
+    id: 2,
+    title: "Temple Courtyard Silk Ensemble",
+    category: "Pret Apparel",
+    image: "/hero/herosection2.png",
+    aspect: "aspect-[4/3] md:col-span-2",
+  },
+  {
+    id: 3,
+    title: "Sunset Chiffon & Tulle Gown",
+    category: "Evening Gown",
+    image: "/hero/herosection3.png",
+    aspect: "aspect-[3/4]",
+  },
+  {
+    id: 4,
+    title: "Zardozi Embroidered Royal Drape",
+    category: "Haute Couture",
+    image: "/newimages/IMG_1058.webp",
+    aspect: "aspect-[3/4]",
+  },
+  {
+    id: 5,
+    title: "Mirror Reflection Fitting",
+    category: "Atelier Backstage",
+    image: "/newimages/IMG_1060.webp",
+    aspect: "aspect-[4/5]",
+  },
+  {
+    id: 6,
+    title: "Courtyard Swing Duo",
+    category: "Festive Occasion",
+    image: "/newimages/IMG_1062.webp",
+    aspect: "aspect-[3/4]",
+  },
+  {
+    id: 7,
+    title: "Lakeside Contemporary Gowns",
+    category: "Western Ensembles",
+    image: "/newimages/IMG_1064.webp",
+    aspect: "aspect-[3/4]",
+  },
+  {
+    id: 8,
+    title: "Sacred Ceremonial Silk Saree",
+    category: "Heritage Weaves",
+    image: "/new_images2/IMG_1076.webp",
+    aspect: "aspect-[3/4]",
+  },
+  {
+    id: 9,
+    title: "Peacock Jewel Handcrafted Details",
+    category: "Bespoke Jewelry & Blouse",
+    image: "/new_images2/IMG_1077.webp",
+    aspect: "aspect-[3/4]",
+  },
+  {
+    id: 10,
+    title: "Celebration Sherwani & Anarkali",
+    category: "Mens & Bridal",
+    image: "/new_images2/IMG_1078.webp",
+    aspect: "aspect-[4/5]",
+  },
+  {
+    id: 11,
+    title: "Lakeside Couple Embrace",
+    category: "Occasion Wear",
+    image: "/new_images2/IMG_1080.webp",
+    aspect: "aspect-[3/4]",
+  },
+  {
+    id: 12,
+    title: "Radiant Sheer Veil Drape",
+    category: "Bridal Veil",
+    image: "/new_images2/IMG_1081.webp",
+    aspect: "aspect-[3/4]",
+  },
+  {
+    id: 13,
+    title: "Embellished Peach Organza Saree",
+    category: "Pret Collection",
+    image: "/new_images2/IMG_1082.webp",
+    aspect: "aspect-[3/4]",
+  },
+  {
+    id: 14,
+    title: "Royal Violet Scalloped Blouse",
+    category: "Handcrafted Zardozi",
+    image: "/gallery_purple.jpg",
+    aspect: "aspect-[4/5]",
+  },
+  {
+    id: 15,
+    title: "Pastel Mirror-Work Lehenga",
+    category: "Party Wear",
+    image: "/crop_green.png",
+    aspect: "aspect-[3/4]",
+  },
+];
+
 export default function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isWhiteMode, setIsWhiteMode] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [showAllGallery, setShowAllGallery] = useState(false);
+  const [selectedGalleryImage, setSelectedGalleryImage] = useState<string | null>(null);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -676,7 +790,213 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 6. VIDEO LIGHTBOX MODAL */}
+      {/* 7. DE FLORES STORY / OUR VISION SECTION (Matching Reference Design) */}
+      <section className="relative w-full py-16 sm:py-24 px-4 sm:px-8 md:px-14 overflow-hidden">
+        {/* Full-width container with background photo */}
+        <div className="relative w-full rounded-2xl sm:rounded-3xl md:rounded-[3rem] overflow-hidden shadow-2xl min-h-[640px] sm:min-h-[720px] lg:min-h-[800px] flex items-center justify-end p-6 sm:p-10 md:p-16">
+          {/* Cinematic Background Image */}
+          <div className="absolute inset-0 z-0">
+            <Image
+              src="/newimages/IMG_1064.webp"
+              alt="de flores Haute Couture Story"
+              fill
+              sizes="100vw"
+              className="object-cover object-center brightness-95"
+            />
+            {/* Soft Sunlit Tint & Vignette */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/60 sm:to-black/30 pointer-events-none" />
+            <div className="absolute inset-0 bg-sky-950/20 mix-blend-multiply pointer-events-none" />
+          </div>
+
+          {/* Elevated Floating Story Card on the Right (Matching Reference) */}
+          <div className="relative z-10 w-full max-w-xl bg-white/95 dark:bg-zinc-950/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl md:rounded-[2.4rem] p-7 sm:p-10 md:p-12 shadow-2xl border border-white/50 dark:border-white/10 my-auto">
+            {/* Upper Badge */}
+            <span className="text-[10px] sm:text-xs tracking-[0.25em] uppercase font-semibold text-amber-800 dark:text-amber-400 mb-3 block">
+              CONTENT WITHOUT LIMITS · ATELIER HERITAGE
+            </span>
+
+            {/* Title */}
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-light tracking-tight text-zinc-950 dark:text-white mb-6">
+              Our Vision & <span className="italic">de flores Story</span>
+            </h2>
+
+            {/* Full Story Copy */}
+            <div className="space-y-4 text-xs sm:text-sm font-light text-zinc-700 dark:text-zinc-300 leading-relaxed max-h-[360px] sm:max-h-[420px] overflow-y-auto pr-2 custom-scrollbar">
+              <p>
+                <strong className="font-medium text-zinc-950 dark:text-white">‘de flores’</strong> stemmed from a young fashion designer’s passion for crafting unique and novel style statements—to create a distinction. <strong className="font-medium text-zinc-950 dark:text-white">‘de flores’</strong> translates to <span className="italic font-serif">‘flowers’</span> in Spanish, which symbolises elegance, chastity and loveliness in every attire we design.
+              </p>
+              <p>
+                With a profusion of colours, high-calibre fabric and aesthetic appeal, this exquisite haute couture is a one-stop designer boutique for every woman who wants to flaunt an enchanting style. For those who don't fancy off-the-peg shopping, <strong className="font-medium text-zinc-950 dark:text-white">‘de flores’</strong> is a perfect choice for any occasion.
+              </p>
+              <p>
+                Whether you wish to keep it simple or add a pop of colour, or go all out and be a showstopper, we tailor-make apparel just the way you fantasize. <strong className="font-medium text-zinc-950 dark:text-white">‘de flores’</strong> specialises in pret apparel, designer bridal clothing, occasion wear and western ensembles. Our fabrics and designs come as a fresh breeze with no trade-off on quality and trust.
+              </p>
+              <p>
+                You can explore sublime and serene costumes designed with enchanting styles, exquisite fabrics, and elegant embroidery masterfully detailed by dexterous artisans. Our carefully curated customised merchandise is bound to make an indelible mark on the fashion world.
+              </p>
+              <p className="pt-2 border-t border-zinc-200 dark:border-zinc-800 flex items-start gap-2 text-zinc-900 dark:text-white font-normal">
+                <MapPin className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+                <span>
+                  Visit our spacious showroom located near the <strong className="font-semibold">Cochin International Airport</strong>, and get your hands on some contemporary fashion. Turn your dream attire into reality with your forever fashion friend in <strong className="font-semibold">‘de flores’</strong>.
+                </span>
+              </p>
+            </div>
+
+            {/* CTAs */}
+            <div className="pt-6 sm:pt-8 flex flex-wrap items-center gap-3.5 border-t border-zinc-200/80 dark:border-white/10 mt-6">
+              <Link
+                href="/contact"
+                className="inline-flex items-center space-x-2.5 bg-zinc-950 text-white dark:bg-white dark:text-black rounded-full px-6 py-3 text-xs uppercase tracking-[0.2em] font-medium hover:opacity-90 transition-all shadow-md"
+              >
+                <span>Visit Showroom</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+              <Link
+                href="/collections"
+                className="inline-flex items-center space-x-2 border border-zinc-300 dark:border-zinc-700 rounded-full px-6 py-3 text-xs uppercase tracking-[0.2em] font-medium text-zinc-800 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all"
+              >
+                <span>Explore Pret & Bridal</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 8. ATELIER GALLERY LOOKBOOK SECTION (Fluid Grid With Show More Button) */}
+      <section
+        id="gallery-section"
+        className={`w-full py-20 sm:py-28 px-5 sm:px-10 lg:px-16 transition-colors duration-500 border-t ${
+          isWhiteMode
+            ? "bg-[#faf9f6] text-zinc-900 border-zinc-200/80"
+            : "bg-black text-white border-white/10"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto">
+          {/* Top Metadata Bar */}
+          <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.25em] text-zinc-400 mb-8 border-b border-zinc-200/60 dark:border-white/10 pb-4">
+            <span className="flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-zinc-500" />
+              Lookbook Archive
+            </span>
+            <span>The Haute Edit</span>
+            <span>2026 Collection</span>
+          </div>
+
+          {/* Gallery Heading */}
+          <div className="text-center mb-14 sm:mb-18">
+            <h2
+              className={`text-4xl sm:text-6xl md:text-7xl font-light tracking-tight ${
+                isWhiteMode ? "text-zinc-900" : "text-white"
+              }`}
+            >
+              Atelier Gallery
+              <span className="block font-serif italic font-normal mt-1 sm:mt-2 text-5xl sm:text-7xl md:text-8xl">
+                The Curated Edit
+              </span>
+            </h2>
+            <p className="text-sm sm:text-base font-light text-zinc-600 dark:text-zinc-400 text-center max-w-xl mx-auto mt-4 sm:mt-6 leading-relaxed">
+              A fluid lookbook of bespoke pret apparel, handcrafted bridal heirlooms, and backstage couture captures detailed by dexterous artisans.
+            </p>
+          </div>
+
+          {/* Responsive Gallery Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-6 items-start">
+            {(showAllGallery ? GALLERY_ITEMS : GALLERY_ITEMS.slice(0, 8)).map((item) => (
+              <div
+                key={item.id}
+                onClick={() => setSelectedGalleryImage(item.image)}
+                className={`group relative overflow-hidden rounded-2xl sm:rounded-3xl bg-zinc-200 dark:bg-zinc-800 shadow-md cursor-pointer transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl ${item.aspect}`}
+              >
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  fill
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-108"
+                />
+
+                {/* Hover Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                {/* Top Category Badge (Always visible or on hover) */}
+                <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
+                  <span className="text-[9px] sm:text-[10px] tracking-[0.2em] uppercase font-medium bg-black/50 backdrop-blur-md text-white border border-white/20 px-2.5 py-1 rounded-full shadow-sm">
+                    {item.category}
+                  </span>
+                </div>
+
+                {/* Hover Action / Zoom Indicator */}
+                <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <span className="w-8 h-8 rounded-full bg-white/25 backdrop-blur-md flex items-center justify-center text-white border border-white/30">
+                    <ZoomIn className="w-4 h-4" />
+                  </span>
+                </div>
+
+                {/* Bottom Title Content on Hover */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 z-10 flex flex-col justify-end text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <h3 className="font-serif text-base sm:text-lg font-light tracking-wide drop-shadow">
+                    {item.title}
+                  </h3>
+                  <span className="text-[10px] uppercase tracking-[0.2em] text-white/70 mt-0.5">
+                    View Lookbook Piece →
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Show More / Show Less Button */}
+          <div className="mt-14 sm:mt-18 text-center">
+            <button
+              onClick={() => setShowAllGallery(!showAllGallery)}
+              className={`inline-flex items-center space-x-3 rounded-full px-9 py-4 text-xs uppercase tracking-[0.25em] font-medium transition-all duration-300 shadow-md hover:scale-105 ${
+                isWhiteMode
+                  ? "bg-zinc-950 text-white hover:bg-zinc-800"
+                  : "bg-white text-zinc-950 hover:bg-zinc-200"
+              }`}
+            >
+              <span>{showAllGallery ? "Show Less Looks" : `Show More (${GALLERY_ITEMS.length} Looks)`}</span>
+              {showAllGallery ? (
+                <ChevronUp className="w-4 h-4" />
+              ) : (
+                <ChevronDown className="w-4 h-4" />
+              )}
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* 9. GALLERY IMAGE LIGHTBOX MODAL */}
+      {selectedGalleryImage && (
+        <div
+          onClick={() => setSelectedGalleryImage(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md p-4 sm:p-8 animate-fadeIn cursor-pointer"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-w-4xl max-h-[90vh] w-full rounded-2xl overflow-hidden border border-white/20 shadow-2xl bg-black"
+          >
+            <button
+              onClick={() => setSelectedGalleryImage(null)}
+              className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-white/20 hover:bg-white/30 text-white backdrop-blur-md transition-all"
+              aria-label="Close image"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div className="relative w-full h-[80vh]">
+              <Image
+                src={selectedGalleryImage}
+                alt="Enlarged Atelier Look"
+                fill
+                sizes="100vw"
+                className="object-contain"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 10. VIDEO LIGHTBOX MODAL */}
       {isVideoModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 sm:p-8 animate-fadeIn">
           <div className="relative w-full max-w-4xl bg-neutral-950 rounded-2xl overflow-hidden border border-white/20 shadow-2xl">
