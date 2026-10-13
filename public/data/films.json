@@ -1,22 +1,24 @@
 {
-  "featuredFilmId": "de-flores-couture-film",
+  "featuredFilmId": "film-01",
   "films": [
     {
-      "id": "de-flores-couture-film",
-      "title": "de flores — Haute Couture Campaign Film",
+      "id": "film-01",
+      "driveId": "1_WZtXfS70SJwyiO094XZjdcQAVvo90Cn",
+      "title": "de flores — Haute Couture Film",
       "subtitle": "Paris Runway & Bespoke Bridal Atelier",
       "year": "2026",
-      "googleDriveUrl": "",
-      "fallbackUrl": "/customization.mp4",
+      "googleDriveUrl": "https://drive.google.com/file/d/1_WZtXfS70SJwyiO094XZjdcQAVvo90Cn/view?usp=drive_link",
+      "previewUrl": "https://drive.google.com/file/d/1_WZtXfS70SJwyiO094XZjdcQAVvo90Cn/preview",
       "description": "An intimate glimpse into our bespoke bridal ateliers, handcrafted zardozi embroidery, and haute couture runway silhouettes."
     },
     {
-      "id": "bridal-heritage-film",
+      "id": "film-02",
+      "driveId": "1tXCU91L1fAR2c9XF-Df2rBfkgRIipV_Y",
       "title": "The Art of Zardozi & Handloom Silk",
       "subtitle": "Master Craftsmen at Work",
       "year": "2026",
-      "googleDriveUrl": "",
-      "fallbackUrl": "/customization.mp4",
+      "googleDriveUrl": "https://drive.google.com/file/d/1tXCU91L1fAR2c9XF-Df2rBfkgRIipV_Y/view?usp=drive_link",
+      "previewUrl": "https://drive.google.com/file/d/1tXCU91L1fAR2c9XF-Df2rBfkgRIipV_Y/preview",
       "description": "Witness centuries-old heritage weaving techniques reimagined for modern red carpet occasions."
     }
   ]

@@ -12,11 +12,6 @@ export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Hide navbar on homepage (which has its own integrated hero header) and admin pages
-  if (pathname === "/" || pathname?.startsWith("/admin")) {
-    return null;
-  }
-
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 40);
@@ -24,6 +19,11 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Hide navbar on homepage (which has its own integrated hero header) and admin pages
+  if (pathname === "/" || pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   const navLinks = [
     { name: "Collections", href: "/explore" },
@@ -50,7 +50,7 @@ export default function Navbar() {
               href="/"
               className="font-serif text-2xl md:text-3xl tracking-[0.22em] uppercase font-light text-white hover:opacity-90 transition-opacity drop-shadow-sm"
             >
-              VÉLORA
+              De flores
             </Link>
 
             {/* Desktop Navigation Links */}

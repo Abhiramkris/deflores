@@ -19,7 +19,7 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "VÉLORA - Haute Couture & Fashion Content",
+  title: "De flores - Haute Couture & Fashion Content",
   description: "Combining human creativity and AI innovation to create fashion content built for modern audiences.",
 };
 

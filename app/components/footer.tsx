@@ -12,9 +12,6 @@ export default function Footer() {
     return null;
   }
 
-  const handleScrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
 
   return (
     <footer className="w-full bg-[#0d0d0f] text-zinc-400 font-sans border-t border-white/10 py-16 md:py-24 relative z-10">
@@ -26,7 +23,7 @@ export default function Footer() {
             href="/" 
             className="font-serif text-3xl tracking-[0.2em] uppercase font-light text-white hover:opacity-80 transition-opacity"
           >
-            VÉLORA
+            De flores
           </Link>
           <p className="text-zinc-400 text-xs md:text-sm leading-relaxed max-w-sm font-light tracking-wide">
             Combining human creativity and AI innovation to create fashion content built for modern audiences. Haute couture, bridal lehengas, and contemporary silhouettes.
@@ -109,7 +106,7 @@ export default function Footer() {
 
       {/* Bottom Bar */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-light tracking-wider text-zinc-500">
-        <p>© {new Date().getFullYear()} VÉLORA / DeFlores Atelier. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} De flores Atelier. All rights reserved.</p>
         <div className="flex gap-6 items-center">
           <Link href="/admin/login" className="hover:text-white transition-colors uppercase tracking-widest font-semibold border-r border-white/10 pr-6 mr-2 text-[10px]">
             Admin
