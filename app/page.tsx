@@ -790,73 +790,71 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 7. DE FLORES STORY / OUR VISION SECTION (Matching Reference Design) */}
-      <section className="relative z-30 w-full py-16 sm:py-24 px-4 sm:px-8 md:px-14 overflow-hidden">
-        {/* Full-width container with background photo */}
-        <div className="relative w-full rounded-2xl sm:rounded-3xl md:rounded-[3rem] overflow-hidden shadow-2xl min-h-[640px] sm:min-h-[720px] lg:min-h-[800px] flex items-center justify-end p-6 sm:p-10 md:p-16">
-          {/* Cinematic Background Image */}
-          <div className="absolute inset-0 z-0">
-            <Image
-              src="/newimages/IMG_1064.webp"
-              alt="de flores Haute Couture Story"
-              fill
-              sizes="100vw"
-              className="object-cover object-center brightness-95"
-            />
-            {/* Soft Sunlit Tint & Vignette */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/60 sm:to-black/30 pointer-events-none" />
-            <div className="absolute inset-0 bg-sky-950/20 mix-blend-multiply pointer-events-none" />
-          </div>
-
-          {/* Elevated Floating Story Card on the Right (Matching Reference) */}
-          <div className="relative z-10 w-full max-w-xl bg-white/95 dark:bg-zinc-950/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl md:rounded-[2.4rem] p-7 sm:p-10 md:p-12 shadow-2xl border border-white/50 dark:border-white/10 my-auto">
-            {/* Upper Badge */}
-            <span className="text-[10px] sm:text-xs tracking-[0.25em] uppercase font-semibold text-amber-800 dark:text-amber-400 mb-3 block">
-              CONTENT WITHOUT LIMITS · ATELIER HERITAGE
-            </span>
-
-            {/* Title */}
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-light tracking-tight text-zinc-950 dark:text-white mb-6">
-              Our Vision & <span className="italic">de flores Story</span>
-            </h2>
-
-            {/* Full Story Copy */}
-            <div className="space-y-4 text-xs sm:text-sm font-light text-zinc-700 dark:text-zinc-300 leading-relaxed max-h-[360px] sm:max-h-[420px] overflow-y-auto pr-2 custom-scrollbar">
-              <p>
-                <strong className="font-medium text-zinc-950 dark:text-white">‘de flores’</strong> stemmed from a young fashion designer’s passion for crafting unique and novel style statements—to create a distinction. <strong className="font-medium text-zinc-950 dark:text-white">‘de flores’</strong> translates to <span className="italic font-serif">‘flowers’</span> in Spanish, which symbolises elegance, chastity and loveliness in every attire we design.
-              </p>
-              <p>
-                With a profusion of colours, high-calibre fabric and aesthetic appeal, this exquisite haute couture is a one-stop designer boutique for every woman who wants to flaunt an enchanting style. For those who don't fancy off-the-peg shopping, <strong className="font-medium text-zinc-950 dark:text-white">‘de flores’</strong> is a perfect choice for any occasion.
-              </p>
-              <p>
-                Whether you wish to keep it simple or add a pop of colour, or go all out and be a showstopper, we tailor-make apparel just the way you fantasize. <strong className="font-medium text-zinc-950 dark:text-white">‘de flores’</strong> specialises in pret apparel, designer bridal clothing, occasion wear and western ensembles. Our fabrics and designs come as a fresh breeze with no trade-off on quality and trust.
-              </p>
-              <p>
-                You can explore sublime and serene costumes designed with enchanting styles, exquisite fabrics, and elegant embroidery masterfully detailed by dexterous artisans. Our carefully curated customised merchandise is bound to make an indelible mark on the fashion world.
-              </p>
-              <p className="pt-2 border-t border-zinc-200 dark:border-zinc-800 flex items-start gap-2 text-zinc-900 dark:text-white font-normal">
-                <MapPin className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
-                <span>
-                  Visit our spacious showroom located near the <strong className="font-semibold">Cochin International Airport</strong>, and get your hands on some contemporary fashion. Turn your dream attire into reality with your forever fashion friend in <strong className="font-semibold">‘de flores’</strong>.
-                </span>
-              </p>
+      {/* 7. DE FLORES STORY / OUR VISION SECTION (Matching Reference media_1791866666671.png) */}
+      <section className="relative z-30 w-full py-16 sm:py-24 px-4 sm:px-8 md:px-12 lg:px-16 overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          {/* Full-width container with background photo matching reference */}
+          <div className="relative w-full rounded-[2.2rem] sm:rounded-[3rem] lg:rounded-[3.5rem] overflow-hidden shadow-2xl min-h-[640px] sm:min-h-[720px] lg:min-h-[780px] flex items-center justify-end p-4 sm:p-6 lg:p-8">
+            {/* Cinematic Background Image */}
+            <div className="absolute inset-0 z-0">
+              <Image
+                src="/newimages/IMG_1064.webp"
+                alt="de flores Haute Couture Story"
+                fill
+                sizes="100vw"
+                className="object-cover object-[25%_center] brightness-100"
+              />
+              {/* Soft Sunlit Vignette matching reference lighting */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/25 via-transparent to-black/35 pointer-events-none" />
             </div>
 
-            {/* CTAs */}
-            <div className="pt-6 sm:pt-8 flex flex-wrap items-center gap-3.5 border-t border-zinc-200/80 dark:border-white/10 mt-6">
-              <Link
-                href="/contact"
-                className="inline-flex items-center space-x-2.5 bg-zinc-950 text-white dark:bg-white dark:text-black rounded-full px-6 py-3 text-xs uppercase tracking-[0.2em] font-medium hover:opacity-90 transition-all shadow-md"
-              >
-                <span>Visit Showroom</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-              <Link
-                href="/collections"
-                className="inline-flex items-center space-x-2 border border-zinc-300 dark:border-zinc-700 rounded-full px-6 py-3 text-xs uppercase tracking-[0.2em] font-medium text-zinc-800 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all"
-              >
-                <span>Explore Pret & Bridal</span>
-              </Link>
+            {/* Inset Ivory Vision Card on the Right (Matching media_1791866666671.png) */}
+            <div className="relative z-10 w-full md:w-[50%] lg:w-[45%] xl:w-[41%] bg-[#faf7f2] dark:bg-zinc-950/95 rounded-[1.8rem] sm:rounded-[2.4rem] lg:rounded-[2.6rem] p-7 sm:p-10 lg:p-12 shadow-2xl border border-white/60 dark:border-white/10 my-auto">
+              {/* Clean Sans-Serif Title Matching Reference */}
+              <h2 className="font-sans text-4xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-zinc-950 dark:text-white leading-[1.08]">
+                Our Vision
+              </h2>
+
+              {/* Terracotta Subtitle Matching Reference */}
+              <span className="text-[10px] sm:text-xs tracking-[0.25em] uppercase font-semibold text-[#b86d3b] dark:text-amber-400 mt-7 sm:mt-10 mb-3 sm:mb-4 block">
+                CONTENT WITHOUT LIMITS · DE FLORES STORY
+              </span>
+
+              {/* Full Story Copy */}
+              <div className="space-y-4 text-xs sm:text-sm font-light text-zinc-700 dark:text-zinc-300 leading-relaxed max-h-[340px] sm:max-h-[380px] overflow-y-auto pr-2 custom-scrollbar">
+                <p>
+                  We believe that every woman who wants to flaunt an enchanting style deserves apparel tailored just the way she fantasizes—couture that looks and feels like it was crafted for a Paris runway. <strong className="font-medium text-zinc-950 dark:text-white">‘de flores’</strong> stemmed from a young fashion designer’s passion for crafting unique and novel style statements—to create a distinction.
+                </p>
+                <p>
+                  Translating to <span className="italic font-serif">‘flowers’</span> in Spanish, <strong className="font-medium text-zinc-950 dark:text-white">‘de flores’</strong> symbolises elegance, chastity and loveliness in every attire we design. With a profusion of colours, high-calibre fabric and aesthetic appeal, this exquisite haute couture boutique is a one-stop designer destination.
+                </p>
+                <p>
+                  Whether you wish to keep it simple, add a pop of colour, or go all out and be a showstopper, we tailor-make apparel just the way you fantasize. <strong className="font-medium text-zinc-950 dark:text-white">‘de flores’</strong> specialises in pret apparel, designer bridal clothing, occasion wear and western ensembles detailed by dexterous artisans with no trade-off on quality and trust.
+                </p>
+                <p className="pt-2.5 border-t border-zinc-200/80 dark:border-zinc-800 flex items-start gap-2 text-zinc-900 dark:text-white font-normal">
+                  <MapPin className="w-4 h-4 text-[#b86d3b] dark:text-amber-400 shrink-0 mt-0.5" />
+                  <span>
+                    Visit our spacious showroom located near <strong className="font-semibold">Cochin International Airport</strong>, and get your hands on some contemporary fashion. Turn your dream attire into reality with your forever fashion friend in <strong className="font-semibold">‘de flores’</strong>.
+                  </span>
+                </p>
+              </div>
+
+              {/* Minimalist CTAs */}
+              <div className="pt-6 sm:pt-7 flex flex-wrap items-center gap-3.5 border-t border-zinc-200/80 dark:border-white/10 mt-6">
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center space-x-2.5 bg-zinc-950 text-white dark:bg-white dark:text-black rounded-full px-6 py-3 text-xs uppercase tracking-[0.2em] font-medium hover:opacity-90 transition-all shadow-md"
+                >
+                  <span>Visit Showroom</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+                <Link
+                  href="/collections"
+                  className="inline-flex items-center space-x-2 border border-zinc-300 dark:border-zinc-700 rounded-full px-6 py-3 text-xs uppercase tracking-[0.2em] font-medium text-zinc-800 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all"
+                >
+                  <span>Explore Collections</span>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
