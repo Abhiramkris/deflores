@@ -519,33 +519,41 @@ export default function HomePage() {
         el.style.pointerEvents = p > 0.8 ? "auto" : "none";
         galleryFirstCardRef.current.style.opacity = "0";
       }
+    };
 
-      // 3. Pinned Editorial Section Animation (Best for your fit, best from us always)
-      if (editorialPinnedRef.current && editorialTextRef.current) {
-        const epRect = editorialPinnedRef.current.getBoundingClientRect();
-        const epScrollable = epRect.height - viewportH;
-        if (epScrollable > 0) {
-          const epP = Math.min(Math.max(-epRect.top / epScrollable, 0), 1);
-          // Text enters between 5% and 35% of the scroll track
-          const textP = Math.min(Math.max((epP - 0.05) / 0.3, 0), 1);
-          const easedTextP = 1 - Math.pow(1 - textP, 3);
-          const textTranslateY = (1 - easedTextP) * 45;
-          editorialTextRef.current.style.opacity = String(easedTextP);
-          editorialTextRef.current.style.transform = `translate3d(0, ${textTranslateY.toFixed(1)}px, 0)`;
+    const updateEditorialPin = () => {
+      if (!editorialPinnedRef.current || !editorialTextRef.current) return;
+      const rect = editorialPinnedRef.current.getBoundingClientRect();
+      const viewportH = window.innerHeight || 800;
+      const totalScrollable = rect.height - viewportH;
+      if (totalScrollable <= 0) return;
 
-          if (editorialScrimRef.current) {
-            // Scrim deepens from 0.15 to 0.55 as text appears to ensure readability
-            const scrimOpacity = 0.15 + easedTextP * 0.4;
-            editorialScrimRef.current.style.opacity = String(scrimOpacity);
-          }
-        }
+      // When the top of Section 7 hits top of viewport, -rect.top is >= 0
+      const p = Math.min(Math.max(-rect.top / totalScrollable, 0), 1);
+
+      // Text begins entering smoothly as soon as pinned (p = 0.01 to p = 0.22)
+      const textP = Math.min(Math.max((p - 0.01) / 0.22, 0), 1);
+      const easedTextP = 1 - Math.pow(1 - textP, 3);
+      const textTranslateY = (1 - easedTextP) * 45;
+
+      editorialTextRef.current.style.opacity = String(easedTextP);
+      editorialTextRef.current.style.transform = `translate3d(0, ${textTranslateY.toFixed(1)}px, 0)`;
+
+      if (editorialScrimRef.current) {
+        // Scrim deepens from 0.25 to 0.65 as text appears to ensure crystal clear contrast
+        const scrimOpacity = 0.25 + easedTextP * 0.4;
+        editorialScrimRef.current.style.opacity = String(scrimOpacity);
       }
     };
+
+    // Initial check on mount
+    updateEditorialPin();
 
     // Measure after mount and DOM paints
     const timer = setTimeout(() => {
       measureCard();
       updateMorph();
+      updateEditorialPin();
     }, 120);
 
     const onScroll = () => {
@@ -553,12 +561,14 @@ export default function HomePage() {
       rafId.current = window.requestAnimationFrame(() => {
         rafId.current = null;
         updateMorph();
+        updateEditorialPin();
       });
     };
 
     const onResize = () => {
       measureCard();
       updateMorph();
+      updateEditorialPin();
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -1239,14 +1249,14 @@ export default function HomePage() {
           {/* Dynamic Contrast Scrim (Subtle at first, deepens as text enters) */}
           <div
             ref={editorialScrimRef}
-            className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-black/35 pointer-events-none transition-opacity duration-150"
-            style={{ opacity: 0.15 }}
+            className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/55 to-black/35 pointer-events-none transition-opacity duration-150 z-[2]"
+            style={{ opacity: 0.2 }}
           />
 
           {/* Centered Editorial Text Overlay that glides in on scroll */}
           <div
             ref={editorialTextRef}
-            className="relative z-10 max-w-4xl mx-auto px-6 sm:px-10 text-center text-white will-change-transform"
+            className="relative z-20 max-w-4xl mx-auto px-6 sm:px-10 text-center text-white will-change-transform pointer-events-auto"
             style={{ opacity: 0, transform: "translate3d(0, 50px, 0)" }}
           >
             {/* Tagline Pill */}
