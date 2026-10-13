@@ -80,7 +80,7 @@ const CATEGORIES = [
   {
     id: "mens-wear",
     number: "04",
-    tag: "SHERWANIS & BLAZERS",
+    tag: "ROYAL COUTURE",
     name: "Mens Wear",
     image: "/new_images2/IMG_1078.webp",
   },
@@ -531,14 +531,14 @@ export default function HomePage() {
                 <Link
                   key={cat.id}
                   href={`/collections?category=${cat.id}`}
-                  className={`group relative flex flex-col overflow-hidden rounded-2xl sm:rounded-3xl border border-white/10 shadow-xl transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl ${
+                  className={`group relative flex flex-col overflow-hidden rounded-[2rem] sm:rounded-[2.4rem] lg:rounded-[2.8rem] border border-black/5 dark:border-white/10 shadow-xl transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl ${
                     isLastOnMobile ? "col-span-2 md:col-span-1" : ""
                   }`}
                 >
                   {/* Card Container: 2-2-1 responsive aspect ratio */}
                   <div
                     className={`relative w-full overflow-hidden bg-zinc-900 ${
-                      isLastOnMobile ? "aspect-[16/9] md:aspect-[3/4.2]" : "aspect-[3/4] sm:aspect-[3/4.2]"
+                      isLastOnMobile ? "aspect-[16/10] md:aspect-[3/4.4]" : "aspect-[3/4.2] sm:aspect-[3/4.4]"
                     }`}
                   >
                     {/* Background Image with Hover Scale */}
@@ -551,33 +551,33 @@ export default function HomePage() {
                     />
 
                     {/* Gradient Overlay for Readability */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/40 transition-opacity duration-300 group-hover:from-black/90" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-black/35 transition-opacity duration-300 group-hover:from-black/90" />
 
                     {/* Card Content Overlay */}
-                    <div className="absolute inset-0 p-3.5 sm:p-5 md:p-6 flex flex-col justify-between z-10">
-                      {/* Top Bar: Pill Tag & Number */}
+                    <div className="absolute inset-0 p-4 sm:p-5 lg:p-6 flex flex-col justify-between z-10">
+                      {/* Top Bar: Pill Tag & Number matching reference media_1791864535086.png */}
                       <div className="flex items-center justify-between">
-                        {/* Pill Tag with Glowing Dot */}
-                        <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-[9px] sm:text-[10px] tracking-[0.18em] uppercase font-medium text-white shadow-sm">
-                          <span className="w-1.5 h-1.5 rounded-full bg-white shrink-0" />
+                        {/* Pill Tag with Glowing Dot matching reference */}
+                        <span className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[#242831]/90 backdrop-blur-md border border-white/15 text-[10px] sm:text-xs tracking-[0.16em] uppercase font-semibold text-white shadow-lg">
+                          <span className="w-2 h-2 rounded-full bg-white shrink-0 shadow-[0_0_8px_rgba(255,255,255,0.9)]" />
                           <span>{cat.tag}</span>
                         </span>
 
-                        {/* Line & 2-Digit Number */}
-                        <div className="flex items-center gap-1.5 sm:gap-2.5 text-white/90 text-[10px] sm:text-xs font-medium tracking-widest font-mono">
-                          <span className="w-4 sm:w-6 h-[1px] bg-white/40" />
+                        {/* Line & 2-Digit Number matching reference */}
+                        <div className="flex items-center gap-2 sm:gap-2.5 text-white/95 text-xs sm:text-sm font-medium tracking-widest font-mono">
+                          <span className="w-5 sm:w-8 h-[1.5px] bg-white/70" />
                           <span>{cat.number}</span>
                         </div>
                       </div>
 
-                      {/* Bottom Bar: Clean Category Title & Circular Arrow CTA (No Extra Text) */}
+                      {/* Bottom Bar: Clean Category Title & Circular Arrow CTA */}
                       <div className="flex items-end justify-between pt-4">
-                        <h3 className="font-serif text-xl sm:text-2xl md:text-3xl font-light tracking-wide text-white leading-none drop-shadow-md">
+                        <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-normal tracking-wide text-white leading-none drop-shadow-md">
                           {cat.name}
                         </h3>
 
-                        <span className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-white/20 backdrop-blur-md border border-white/25 flex items-center justify-center text-white group-hover:bg-white group-hover:text-black group-hover:scale-105 transition-all duration-300 shadow-xl shrink-0">
-                          <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[1.75] group-hover:translate-x-0.5 transition-transform" />
+                        <span className="w-11 h-11 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white group-hover:bg-white group-hover:text-black group-hover:scale-105 transition-all duration-300 shadow-xl shrink-0">
+                          <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 stroke-[2] group-hover:translate-x-0.5 transition-transform" />
                         </span>
                       </div>
                     </div>
@@ -905,7 +905,7 @@ export default function HomePage() {
               <div
                 key={item.id}
                 onClick={() => setSelectedGalleryImage(item.image)}
-                className={`group relative overflow-hidden rounded-2xl sm:rounded-3xl bg-zinc-200 dark:bg-zinc-800 shadow-md cursor-pointer transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl ${item.aspect}`}
+                className={`group relative overflow-hidden rounded-[1.75rem] sm:rounded-[2.2rem] bg-zinc-200 dark:bg-zinc-800 shadow-md cursor-pointer transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl border border-black/5 dark:border-white/10 ${item.aspect}`}
               >
                 <Image
                   src={item.image}
@@ -918,27 +918,33 @@ export default function HomePage() {
                 {/* Hover Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                {/* Top Category Badge (Always visible or on hover) */}
-                <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
-                  <span className="text-[9px] sm:text-[10px] tracking-[0.2em] uppercase font-medium bg-black/50 backdrop-blur-md text-white border border-white/20 px-2.5 py-1 rounded-full shadow-sm">
-                    {item.category}
+                {/* Top Category Badge with Glowing Dot */}
+                <div className="absolute top-3.5 left-3.5 sm:top-4 sm:left-4 z-10">
+                  <span className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-[#242831]/90 backdrop-blur-md border border-white/15 text-[9px] sm:text-[10px] tracking-[0.16em] uppercase font-semibold text-white shadow-lg">
+                    <span className="w-1.5 h-1.5 rounded-full bg-white shrink-0 shadow-[0_0_6px_rgba(255,255,255,0.9)]" />
+                    <span>{item.category}</span>
                   </span>
                 </div>
 
                 {/* Hover Action / Zoom Indicator */}
-                <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <span className="w-8 h-8 rounded-full bg-white/25 backdrop-blur-md flex items-center justify-center text-white border border-white/30">
+                <div className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white border border-white/30 shadow-lg">
                     <ZoomIn className="w-4 h-4" />
                   </span>
                 </div>
 
                 {/* Bottom Title Content on Hover */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 z-10 flex flex-col justify-end text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <h3 className="font-serif text-base sm:text-lg font-light tracking-wide drop-shadow">
-                    {item.title}
-                  </h3>
-                  <span className="text-[10px] uppercase tracking-[0.2em] text-white/70 mt-0.5">
-                    View Lookbook Piece →
+                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 z-10 flex items-end justify-between text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="pr-3">
+                    <h3 className="font-serif text-base sm:text-lg font-normal tracking-wide drop-shadow">
+                      {item.title}
+                    </h3>
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-white/70 mt-0.5 block">
+                      Atelier Lookbook
+                    </span>
+                  </div>
+                  <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white shrink-0">
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </span>
                 </div>
               </div>
