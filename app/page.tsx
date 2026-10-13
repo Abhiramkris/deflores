@@ -385,8 +385,8 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* 2. TRUE FULL SCREEN HERO SECTION (100vh Edge-to-Edge) */}
-      <section className="relative w-full h-screen overflow-hidden bg-black select-none">
+      {/* 2. TRUE FULL SCREEN HERO SECTION (Pinned Sticky Background Canvas) */}
+      <section className="sticky top-0 w-full h-screen overflow-hidden bg-black select-none z-0">
         {/* Preloaded Background Images */}
         {HERO_SLIDES.map((item, idx) => (
           <div
@@ -501,9 +501,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 3. NEW SECTION: "WHERE BRANDS SHINE" CATEGORIES */}
+      {/* 3. NEW SECTION: "WHERE BRANDS SHINE" CATEGORIES (Glides smoothly on top of Hero) */}
       <section
-        className={`w-full py-16 sm:py-28 px-5 sm:px-10 lg:px-16 transition-colors duration-500 ${
+        className={`relative z-10 w-full py-16 sm:py-28 px-5 sm:px-10 lg:px-16 transition-colors duration-500 rounded-t-[2.5rem] sm:rounded-t-[3.5rem] shadow-[0_-25px_60px_rgba(0,0,0,0.35)] border-t border-zinc-200/80 dark:border-white/10 ${
           isWhiteMode ? "bg-[#faf9f6]" : "bg-zinc-950"
         }`}
       >
@@ -710,7 +710,7 @@ export default function HomePage() {
       </section>
 
       {/* 5. FULL-SCREEN EDITORIAL IMAGE (Pure visual canvas without text) */}
-      <div className="relative h-[130vh] z-0">
+      <div className="relative h-[130vh] z-20">
         <div className="sticky top-0 w-full h-screen overflow-hidden">
           <Image
             src="/newimages/IMG_1058.webp"
@@ -725,7 +725,7 @@ export default function HomePage() {
 
       {/* 6. THE TEAM BEHIND SECTION (Glides smoothly above the full-screen image) */}
       <section
-        className={`relative z-10 w-full py-20 sm:py-28 px-6 sm:px-12 lg:px-20 rounded-t-[2.5rem] sm:rounded-t-[3.5rem] shadow-[0_-25px_60px_rgba(0,0,0,0.25)] border-t border-zinc-200/80 dark:border-white/10 transition-colors duration-500 ${
+        className={`relative z-30 w-full py-20 sm:py-28 px-6 sm:px-12 lg:px-20 rounded-t-[2.5rem] sm:rounded-t-[3.5rem] shadow-[0_-25px_60px_rgba(0,0,0,0.25)] border-t border-zinc-200/80 dark:border-white/10 transition-colors duration-500 ${
           isWhiteMode ? "bg-[#faf9f6] text-zinc-900" : "bg-zinc-950 text-white"
         }`}
       >
@@ -791,7 +791,7 @@ export default function HomePage() {
       </section>
 
       {/* 7. DE FLORES STORY / OUR VISION SECTION (Matching Reference Design) */}
-      <section className="relative w-full py-16 sm:py-24 px-4 sm:px-8 md:px-14 overflow-hidden">
+      <section className="relative z-30 w-full py-16 sm:py-24 px-4 sm:px-8 md:px-14 overflow-hidden">
         {/* Full-width container with background photo */}
         <div className="relative w-full rounded-2xl sm:rounded-3xl md:rounded-[3rem] overflow-hidden shadow-2xl min-h-[640px] sm:min-h-[720px] lg:min-h-[800px] flex items-center justify-end p-6 sm:p-10 md:p-16">
           {/* Cinematic Background Image */}
@@ -865,7 +865,7 @@ export default function HomePage() {
       {/* 8. ATELIER GALLERY LOOKBOOK SECTION (Fluid Grid With Show More Button) */}
       <section
         id="gallery-section"
-        className={`w-full py-20 sm:py-28 px-5 sm:px-10 lg:px-16 transition-colors duration-500 border-t ${
+        className={`relative z-30 w-full py-20 sm:py-28 px-5 sm:px-10 lg:px-16 transition-colors duration-500 border-t ${
           isWhiteMode
             ? "bg-[#faf9f6] text-zinc-900 border-zinc-200/80"
             : "bg-black text-white border-white/10"
