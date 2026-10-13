@@ -264,6 +264,7 @@ export default function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isWhiteMode, setIsWhiteMode] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isPastHero, setIsPastHero] = useState(false);
   const [showAllGallery, setShowAllGallery] = useState(false);
   const [selectedGalleryImage, setSelectedGalleryImage] = useState<string | null>(null);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
@@ -285,11 +286,13 @@ export default function HomePage() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Track scroll position to toggle navbar appearance and drive the Story-to-Gallery morph
+  // Track scroll position to toggle navbar appearance, pin hero canvas, and drive the Story-to-Gallery morph
   useEffect(() => {
     let ticking = false;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 40);
+      const scrollY = window.scrollY;
+      setIsScrolled(scrollY > 40);
+      setIsPastHero(scrollY > (window.innerHeight || 800));
 
       if (!ticking) {
         window.requestAnimationFrame(() => {
@@ -444,125 +447,133 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* 2. TRUE FULL SCREEN HERO SECTION (Pinned Sticky Background Canvas) */}
-      <section className="sticky top-0 w-full h-screen overflow-hidden bg-black select-none z-0">
-        {/* Preloaded Background Images */}
-        {HERO_SLIDES.map((item, idx) => (
-          <div
-            key={item.id}
-            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${idx === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
-              }`}
-          >
-            <Image
-              src={item.image}
-              alt={`Hero Slide ${item.id}`}
-              fill
-              priority={true}
-              sizes="100vw"
-              quality={90}
-              className="object-cover object-center"
-            />
-          </div>
-        ))}
+      {/* 2. TRUE FULL SCREEN HERO SECTION (Pinned Fixed Background Canvas) */}
+      <div className="relative w-full h-screen">
+        <section
+          className="fixed top-0 left-0 right-0 w-full h-screen overflow-hidden bg-black select-none z-0"
+          style={{
+            pointerEvents: isPastHero ? "none" : "auto",
+            visibility: isPastHero ? "hidden" : "visible",
+          }}
+        >
+          {/* Preloaded Background Images */}
+          {HERO_SLIDES.map((item, idx) => (
+            <div
+              key={item.id}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${idx === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
+                }`}
+            >
+              <Image
+                src={item.image}
+                alt={`Hero Slide ${item.id}`}
+                fill
+                priority={true}
+                sizes="100vw"
+                quality={90}
+                className="object-cover object-center"
+              />
+            </div>
+          ))}
 
-        {/* Soft Contrast Gradient */}
-        <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-transparent to-black/30 pointer-events-none" />
+          {/* Soft Contrast Gradient */}
+          <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-transparent to-black/30 pointer-events-none" />
 
-        {/* Hero Content Overlay */}
-        <div className="relative z-20 w-full h-full pt-28 sm:pt-32 px-6 sm:px-12 md:px-16 pb-12 flex flex-col justify-between text-white">
-          {/* Top Row: Tagline & Carousel Switcher */}
-          <div className="flex items-center justify-between">
-            <span className="text-xs sm:text-sm tracking-[0.3em] font-light uppercase text-white/90 drop-shadow">
-              {slide.tagline}
-            </span>
+          {/* Hero Content Overlay */}
+          <div className="relative z-20 w-full h-full pt-28 sm:pt-32 px-6 sm:px-12 md:px-16 pb-12 flex flex-col justify-between text-white">
+            {/* Top Row: Tagline & Carousel Switcher */}
+            <div className="flex items-center justify-between">
+              <span className="text-xs sm:text-sm tracking-[0.3em] font-light uppercase text-white/90 drop-shadow">
+                {slide.tagline}
+              </span>
 
-            {/* Quick Slide Switcher (01 / 02 / 03) */}
-            <div className="flex items-center space-x-2 bg-black/40 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/20">
-              <button
-                onClick={() => setCurrentSlide((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
-                className="p-1 hover:text-white/70 transition-colors"
-                aria-label="Previous slide"
-              >
-                <ChevronLeft className="w-3.5 h-3.5" />
-              </button>
-              {HERO_SLIDES.map((s, i) => (
+              {/* Quick Slide Switcher (01 / 02 / 03) */}
+              <div className="flex items-center space-x-2 bg-black/40 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/20">
                 <button
-                  key={s.id}
-                  onClick={() => setCurrentSlide(i)}
-                  className={`text-xs px-2.5 py-0.5 rounded-full transition-all ${i === currentSlide
-                      ? "bg-white text-black font-semibold shadow-sm"
-                      : "text-white/70 hover:text-white"
-                    }`}
+                  onClick={() => setCurrentSlide((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
+                  className="p-1 hover:text-white/70 transition-colors"
+                  aria-label="Previous slide"
                 >
-                  0{s.id}
+                  <ChevronLeft className="w-3.5 h-3.5" />
                 </button>
-              ))}
-              <button
-                onClick={() => setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length)}
-                className="p-1 hover:text-white/70 transition-colors"
-                aria-label="Next slide"
-              >
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
-
-          {/* Middle Row: Left Headline & Right Paragraph (Hidden on Mobile view) */}
-          <div className="hidden sm:grid grid-cols-1 lg:grid-cols-12 gap-8 items-center my-auto">
-            {/* Left Headline */}
-            <div className="lg:col-span-8 space-y-2">
-              <h1 className="font-serif italic font-normal text-5xl sm:text-7xl md:text-8xl lg:text-[7.5rem] leading-[1.02] tracking-tight text-white drop-shadow-lg">
-                <span className="block">{slide.titleLine1}</span>
-                <span className="block font-sans not-italic font-light tracking-normal text-4xl sm:text-6xl md:text-7xl lg:text-[6.5rem]">
-                  {slide.titleLine2}
-                </span>
-              </h1>
-            </div>
-
-            {/* Right Paragraph */}
-            <div className="lg:col-span-4 flex justify-start lg:justify-end">
-              <p className="text-sm sm:text-base font-light text-white/90 leading-relaxed max-w-sm drop-shadow-md">
-                {slide.description}
-              </p>
-            </div>
-          </div>
-
-          {/* Bottom Area: 2 CTAs In Same Row Below + Year Bar */}
-          <div className="mt-auto pt-6 flex flex-col space-y-5 sm:space-y-6">
-            {/* 2 CTAs Side-by-Side in Same Row */}
-            <div className="flex flex-row items-center justify-center gap-2.5 sm:gap-4 w-full max-w-lg mx-auto">
-              <Link
-                href="/collections"
-                className="flex-1 sm:flex-initial inline-flex items-center justify-center space-x-2 sm:space-x-3 bg-white text-zinc-950 rounded-full px-4 sm:px-8 py-3 sm:py-3.5 text-[10px] sm:text-xs uppercase tracking-[0.18em] sm:tracking-[0.25em] font-medium hover:bg-zinc-200 transition-all duration-300 shadow-2xl hover:scale-[1.02] whitespace-nowrap"
-              >
-                <span>Explore Collections</span>
-                <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              </Link>
-
-              <button
-                onClick={() => setIsVideoModalOpen(true)}
-                className="flex-1 sm:flex-initial inline-flex items-center justify-center space-x-2 sm:space-x-3 backdrop-blur-md bg-black/40 border border-white/40 text-white rounded-full px-4 sm:px-8 py-3 sm:py-3.5 text-[10px] sm:text-xs uppercase tracking-[0.18em] sm:tracking-[0.25em] font-medium hover:bg-white hover:text-black transition-all duration-300 shadow-2xl hover:scale-[1.02] whitespace-nowrap"
-              >
-                <Play className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />
-                <span>Watch Film</span>
-              </button>
+                {HERO_SLIDES.map((s, i) => (
+                  <button
+                    key={s.id}
+                    onClick={() => setCurrentSlide(i)}
+                    className={`text-xs px-2.5 py-0.5 rounded-full transition-all ${i === currentSlide
+                        ? "bg-white text-black font-semibold shadow-sm"
+                        : "text-white/70 hover:text-white"
+                      }`}
+                  >
+                    0{s.id}
+                  </button>
+                ))}
+                <button
+                  onClick={() => setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length)}
+                  className="p-1 hover:text-white/70 transition-colors"
+                  aria-label="Next slide"
+                >
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
 
-            {/* Year & Tag Bar */}
-            <div className="flex items-center justify-between text-xs tracking-widest text-white/70 pt-2">
-              <span>{slide.year}</span>
-              <div className="flex items-center space-x-2">
-                <span className="w-12 h-[1px] bg-white/40" />
-                <span className="uppercase text-[10px] tracking-[0.3em]">Couture Digital</span>
+            {/* Middle Row: Left Headline & Right Paragraph (Hidden on Mobile view) */}
+            <div className="hidden sm:grid grid-cols-1 lg:grid-cols-12 gap-8 items-center my-auto">
+              {/* Left Headline */}
+              <div className="lg:col-span-8 space-y-2">
+                <h1 className="font-serif italic font-normal text-5xl sm:text-7xl md:text-8xl lg:text-[7.5rem] leading-[1.02] tracking-tight text-white drop-shadow-lg">
+                  <span className="block">{slide.titleLine1}</span>
+                  <span className="block font-sans not-italic font-light tracking-normal text-4xl sm:text-6xl md:text-7xl lg:text-[6.5rem]">
+                    {slide.titleLine2}
+                  </span>
+                </h1>
+              </div>
+
+              {/* Right Paragraph */}
+              <div className="lg:col-span-4 flex justify-start lg:justify-end">
+                <p className="text-sm sm:text-base font-light text-white/90 leading-relaxed max-w-sm drop-shadow-md">
+                  {slide.description}
+                </p>
+              </div>
+            </div>
+
+            {/* Bottom Area: 2 CTAs In Same Row Below + Year Bar */}
+            <div className="mt-auto pt-6 flex flex-col space-y-5 sm:space-y-6">
+              {/* 2 CTAs Side-by-Side in Same Row */}
+              <div className="flex flex-row items-center justify-center gap-2.5 sm:gap-4 w-full max-w-lg mx-auto">
+                <Link
+                  href="/collections"
+                  className="flex-1 sm:flex-initial inline-flex items-center justify-center space-x-2 sm:space-x-3 bg-white text-zinc-950 rounded-full px-4 sm:px-8 py-3 sm:py-3.5 text-[10px] sm:text-xs uppercase tracking-[0.18em] sm:tracking-[0.25em] font-medium hover:bg-zinc-200 transition-all duration-300 shadow-2xl hover:scale-[1.02] whitespace-nowrap"
+                >
+                  <span>Explore Collections</span>
+                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                </Link>
+
+                <button
+                  onClick={() => setIsVideoModalOpen(true)}
+                  className="flex-1 sm:flex-initial inline-flex items-center justify-center space-x-2 sm:space-x-3 backdrop-blur-md bg-black/40 border border-white/40 text-white rounded-full px-4 sm:px-8 py-3 sm:py-3.5 text-[10px] sm:text-xs uppercase tracking-[0.18em] sm:tracking-[0.25em] font-medium hover:bg-white hover:text-black transition-all duration-300 shadow-2xl hover:scale-[1.02] whitespace-nowrap"
+                >
+                  <Play className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />
+                  <span>Watch Film</span>
+                </button>
+              </div>
+
+              {/* Year & Tag Bar */}
+              <div className="flex items-center justify-between text-xs tracking-widest text-white/70 pt-2">
+                <span>{slide.year}</span>
+                <div className="flex items-center space-x-2">
+                  <span className="w-12 h-[1px] bg-white/40" />
+                  <span className="uppercase text-[10px] tracking-[0.3em]">Couture Digital</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
       {/* 3. NEW SECTION: "WHERE BRANDS SHINE" CATEGORIES (Glides smoothly on top of Hero) */}
       <section
-        className={`relative z-10 w-full py-16 sm:py-28 px-5 sm:px-10 lg:px-16 transition-colors duration-500 rounded-t-[2.5rem] sm:rounded-t-[3.5rem] shadow-[0_-25px_60px_rgba(0,0,0,0.35)] border-t border-zinc-200/80 dark:border-white/10 ${
+        className={`relative z-10 w-full py-16 sm:py-28 px-5 sm:px-10 lg:px-16 transition-colors duration-500 rounded-none shadow-[0_-25px_60px_rgba(0,0,0,0.35)] border-t border-zinc-200/80 dark:border-white/10 ${
           isWhiteMode ? "bg-[#faf9f6]" : "bg-zinc-950"
         }`}
       >
@@ -784,7 +795,7 @@ export default function HomePage() {
 
       {/* 6. THE TEAM BEHIND SECTION (Glides smoothly above the full-screen image) */}
       <section
-        className={`relative z-30 w-full py-20 sm:py-28 px-6 sm:px-12 lg:px-20 rounded-t-[2.5rem] sm:rounded-t-[3.5rem] shadow-[0_-25px_60px_rgba(0,0,0,0.25)] border-t border-zinc-200/80 dark:border-white/10 transition-colors duration-500 ${
+        className={`relative z-30 w-full py-20 sm:py-28 px-6 sm:px-12 lg:px-20 rounded-none shadow-[0_-25px_60px_rgba(0,0,0,0.25)] border-t border-zinc-200/80 dark:border-white/10 transition-colors duration-500 ${
           isWhiteMode ? "bg-[#faf9f6] text-zinc-900" : "bg-zinc-950 text-white"
         }`}
       >
