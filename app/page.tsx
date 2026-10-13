@@ -272,42 +272,13 @@ export default function HomePage() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const storyMorphRef = useRef<HTMLDivElement>(null);
-  const [storyMorphProgress, setStoryMorphProgress] = useState(0);
-  const [isMobileScreen, setIsMobileScreen] = useState(false);
 
-  // Track window resize to adapt morph grid smoothly
+  // Track scroll position to toggle navbar appearance and pin hero canvas
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobileScreen(window.innerWidth < 768);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  // Track scroll position to toggle navbar appearance, pin hero canvas, and drive the Story-to-Gallery morph
-  useEffect(() => {
-    let ticking = false;
     const handleScroll = () => {
       const scrollY = window.scrollY;
       setIsScrolled(scrollY > 40);
       setIsPastHero(scrollY > (window.innerHeight || 800));
-
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          if (storyMorphRef.current) {
-            const rect = storyMorphRef.current.getBoundingClientRect();
-            const totalDistance = rect.height - window.innerHeight;
-            if (totalDistance > 0) {
-              const p = Math.min(Math.max(-rect.top / totalDistance, 0), 1);
-              setStoryMorphProgress(p);
-            }
-          }
-          ticking = false;
-        });
-        ticking = true;
-      }
     };
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -860,287 +831,76 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 7 & 8. DE FLORES STORY TO ATELIER GALLERY SCROLL-MORPH EXPERIENCE */}
-      {/* 220vh scroll track: Pin sticky canvas, shrink story background image smoothly into Gallery Card #1 */}
-      <section
-        ref={storyMorphRef}
-        className={`relative z-30 w-full min-h-[220vh] transition-colors duration-500 ${
-          isWhiteMode ? "bg-[#faf9f6]" : "bg-black"
-        }`}
-      >
-        {/* Sticky Viewport Canvas */}
-        <div className="sticky top-0 w-full h-screen overflow-hidden flex flex-col justify-center px-4 sm:px-8 md:px-12 lg:px-16 py-6 sm:py-8">
-          <div className="max-w-7xl mx-auto w-full flex flex-col justify-center">
-            {/* Gallery Header: Fades in smoothly as user scrolls past story phase */}
-            {(() => {
-              const p = storyMorphProgress;
-              const storyOpacity = Math.max(0, 1 - p / 0.25);
-              const storyTranslateY = -p * 100;
-              const morphFactor = Math.min(Math.max((p - 0.18) / 0.65, 0), 1);
-              const galleryHeaderOpacity = Math.min(Math.max((p - 0.28) / 0.35, 0), 1);
-              const siblingCardsOpacity = Math.min(Math.max((p - 0.45) / 0.4, 0), 1);
-              const card1DetailsOpacity = Math.min(Math.max((morphFactor - 0.55) / 0.45, 0), 1);
+      {/* 7. DE FLORES STORY / OUR VISION SECTION (Full-Screen Editorial Canvas matching reference media_1791871878601.png) */}
+      <section className="relative z-30 w-full min-h-screen flex items-center justify-end overflow-hidden">
+        {/* Full-Bleed Edge-to-Edge Background Image */}
+        <div className="absolute inset-0 w-full h-full">
+          <Image
+            src="/vision_editorial.jpg"
+            alt="Our Vision - Haute Couture Runway"
+            fill
+            priority
+            sizes="100vw"
+            quality={95}
+            className="object-cover object-[25%_center] md:object-center"
+          />
+          {/* Subtle Contrast Vignette for readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-transparent to-black/30 pointer-events-none" />
+        </div>
 
-              // Responsive dimensions for Card #1 morph
-              const card1Width = isMobileScreen
-                ? `${100 - morphFactor * 52}%`
-                : `${100 - morphFactor * 75.5}%`;
-              const siblingWidth = isMobileScreen
-                ? `${morphFactor * 52}%`
-                : `${(morphFactor * 75.5) / 3}%`;
-              const cardHeight = isMobileScreen
-                ? morphFactor === 0
-                  ? "70vh"
-                  : `calc(70vh - ${morphFactor * 26}vh)`
-                : morphFactor === 0
-                ? "76vh"
-                : `calc(76vh - ${morphFactor * 32}vh)`;
-              const cardMaxHeight = isMobileScreen
-                ? `${620 - morphFactor * 220}px`
-                : `${740 - morphFactor * 280}px`;
-              const cardMinHeight = isMobileScreen ? "360px" : "420px";
-              const card1Radius = isMobileScreen
-                ? `${36 - morphFactor * 10}px`
-                : `${48 - morphFactor * 16}px`;
+        {/* Floating Ivory Vision Card on the Right (Matching reference media_1791871878601.png) */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-10 lg:px-16 py-16 sm:py-24 flex justify-end">
+          <div className="w-full md:w-[50%] lg:w-[44%] xl:w-[40%] bg-[#faf7f2]/95 backdrop-blur-md rounded-[2.2rem] sm:rounded-[2.8rem] p-7 sm:p-10 lg:p-12 shadow-[0_30px_70px_rgba(0,0,0,0.3)] border border-white/70">
+            {/* Clean Sans-Serif Title Matching Reference */}
+            <h2 className="font-sans text-4xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-zinc-950 leading-[1.06]">
+              Our Vision
+            </h2>
 
-              const card1Item = GALLERY_ITEMS[0];
-              const siblingItems = isMobileScreen
-                ? GALLERY_ITEMS.slice(1, 2)
-                : GALLERY_ITEMS.slice(1, 4);
+            {/* Terracotta Subtitle Matching Reference */}
+            <span className="text-[10px] sm:text-xs tracking-[0.25em] uppercase font-semibold text-[#b86d3b] mt-6 sm:mt-8 mb-4 sm:mb-5 block">
+              CONTENT WITHOUT LIMITS · DE FLORES STORY
+            </span>
 
-              return (
-                <>
-                  {/* Atelier Gallery Header (Fades in over sticky stage) */}
-                  <div
-                    className="transition-all duration-300 text-center mb-6 sm:mb-8"
-                    style={{
-                      opacity: galleryHeaderOpacity,
-                      transform: `translateY(${(1 - galleryHeaderOpacity) * 20}px)`,
-                      pointerEvents: galleryHeaderOpacity > 0.5 ? "auto" : "none",
-                      display: galleryHeaderOpacity <= 0.02 ? "none" : "block",
-                    }}
-                  >
-                    <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.25em] text-zinc-400 mb-4 border-b border-zinc-200/60 dark:border-white/10 pb-3 max-w-4xl mx-auto">
-                      <span className="flex items-center gap-1.5">
-                        <Sparkles className="w-3.5 h-3.5 text-zinc-500" />
-                        Lookbook Archive
-                      </span>
-                      <span>The Haute Edit</span>
-                      <span>2026 Collection</span>
-                    </div>
+            {/* Editorial Copy - Breathable, elegant, NO scrollbar */}
+            <div className="space-y-4 text-xs sm:text-sm font-light text-zinc-700 leading-relaxed">
+              <p>
+                We believe that every fashion and beauty brand — regardless of size or budget — deserves content that looks like it was shot on a Paris runway. Our platform makes that standard the new baseline, not the luxury exception reserved for heritage houses.
+              </p>
+              <p>
+                <strong className="font-medium text-zinc-950">‘de flores’</strong> stemmed from a young fashion designer’s passion for crafting unique and novel style statements. Translating to <span className="italic font-serif">‘flowers’</span> in Spanish, our atelier symbolises elegance, chastity and loveliness in every attire we design.
+              </p>
+              <p className="pt-2 border-t border-zinc-200/80 flex items-start gap-2 text-zinc-900 font-normal">
+                <MapPin className="w-4 h-4 text-[#b86d3b] shrink-0 mt-0.5" />
+                <span>
+                  Visit our spacious showroom located near <strong className="font-semibold">Cochin International Airport</strong>.
+                </span>
+              </p>
+            </div>
 
-                    <h2
-                      className={`text-3xl sm:text-5xl md:text-6xl font-light tracking-tight ${
-                        isWhiteMode ? "text-zinc-900" : "text-white"
-                      }`}
-                    >
-                      Atelier Gallery
-                      <span className="block font-serif italic font-normal text-4xl sm:text-6xl md:text-7xl mt-1">
-                        The Curated Edit
-                      </span>
-                    </h2>
-                  </div>
-
-                  {/* Morphing Row: Card #1 shrinks from full-width story banner to first gallery card */}
-                  <div className="flex flex-row gap-3.5 sm:gap-6 items-start justify-start w-full transition-all duration-200 ease-out">
-                    {/* CARD #1: THE MORPHING ELEMENT */}
-                    <div
-                      onClick={() => {
-                        if (card1DetailsOpacity > 0.6) {
-                          setSelectedGalleryImage(card1Item.image);
-                        }
-                      }}
-                      className={`group relative overflow-hidden bg-zinc-900 shadow-2xl transition-all duration-300 ease-out border border-black/10 dark:border-white/10 ${
-                        card1DetailsOpacity > 0.6 ? "cursor-pointer hover:-translate-y-1 hover:shadow-2xl" : ""
-                      }`}
-                      style={{
-                        width: card1Width,
-                        height: cardHeight,
-                        maxHeight: cardMaxHeight,
-                        minHeight: cardMinHeight,
-                        borderRadius: card1Radius,
-                      }}
-                    >
-                      {/* Background Image: The Continuous Photograph */}
-                      <Image
-                        src={card1Item.image}
-                        alt={card1Item.title}
-                        fill
-                        priority
-                        sizes="(max-width: 768px) 100vw, 100vw"
-                        className="object-cover object-[25%_center] transition-transform duration-700 ease-out group-hover:scale-106"
-                      />
-
-                      {/* Soft Contrast Gradient */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/35 transition-opacity duration-300" />
-
-                      {/* 1. OUR VISION & DE FLORES STORY CARD (Only visible during initial scroll phase) */}
-                      <div
-                        className="relative z-10 w-full md:w-[50%] lg:w-[45%] xl:w-[41%] bg-[#faf7f2] dark:bg-zinc-950/95 rounded-[1.8rem] sm:rounded-[2.4rem] lg:rounded-[2.6rem] p-6 sm:p-9 lg:p-11 shadow-2xl border border-white/60 dark:border-white/10 my-auto ml-auto transition-all duration-300"
-                        style={{
-                          opacity: storyOpacity,
-                          transform: `translateY(${storyTranslateY}px)`,
-                          pointerEvents: storyOpacity < 0.1 ? "none" : "auto",
-                          display: storyOpacity <= 0.01 ? "none" : "block",
-                        }}
-                      >
-                        {/* Clean Sans-Serif Title Matching Reference media_1791866666671.png */}
-                        <h2 className="font-sans text-3xl sm:text-4xl lg:text-5xl font-normal tracking-tight text-zinc-950 dark:text-white leading-[1.08]">
-                          Our Vision
-                        </h2>
-
-                        {/* Terracotta Subtitle Matching Reference */}
-                        <span className="text-[10px] sm:text-xs tracking-[0.25em] uppercase font-semibold text-[#b86d3b] dark:text-amber-400 mt-5 sm:mt-7 mb-3 sm:mb-4 block">
-                          CONTENT WITHOUT LIMITS · DE FLORES STORY
-                        </span>
-
-                        {/* Full Story Copy */}
-                        <div className="space-y-3.5 text-xs sm:text-sm font-light text-zinc-700 dark:text-zinc-300 leading-relaxed max-h-[260px] sm:max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-                          <p>
-                            We believe that every woman who wants to flaunt an enchanting style deserves apparel tailored just the way she fantasizes—couture that looks and feels like it was crafted for a Paris runway. <strong className="font-medium text-zinc-950 dark:text-white">‘de flores’</strong> stemmed from a young fashion designer’s passion for crafting unique and novel style statements—to create a distinction.
-                          </p>
-                          <p>
-                            Translating to <span className="italic font-serif">‘flowers’</span> in Spanish, <strong className="font-medium text-zinc-950 dark:text-white">‘de flores’</strong> symbolises elegance, chastity and loveliness in every attire we design. With a profusion of colours, high-calibre fabric and aesthetic appeal, this exquisite boutique is a one-stop designer destination.
-                          </p>
-                          <p>
-                            Whether you wish to keep it simple, add a pop of colour, or go all out and be a showstopper, we tailor-make apparel just the way you fantasize with no trade-off on quality and trust.
-                          </p>
-                          <p className="pt-2 border-t border-zinc-200/80 dark:border-zinc-800 flex items-start gap-2 text-zinc-900 dark:text-white font-normal">
-                            <MapPin className="w-4 h-4 text-[#b86d3b] dark:text-amber-400 shrink-0 mt-0.5" />
-                            <span>
-                              Visit our spacious showroom located near <strong className="font-semibold">Cochin International Airport</strong>.
-                            </span>
-                          </p>
-                        </div>
-
-                        {/* Minimalist CTAs */}
-                        <div className="pt-5 sm:pt-6 flex flex-wrap items-center gap-3 border-t border-zinc-200/80 dark:border-white/10 mt-5">
-                          <Link
-                            href="/contact"
-                            className="inline-flex items-center space-x-2.5 bg-zinc-950 text-white dark:bg-white dark:text-black rounded-full px-5 py-2.5 text-xs uppercase tracking-[0.2em] font-medium hover:opacity-90 transition-all shadow-md"
-                          >
-                            <span>Visit Showroom</span>
-                            <ArrowRight className="w-3.5 h-3.5" />
-                          </Link>
-                          <Link
-                            href="/collections"
-                            className="inline-flex items-center space-x-2 border border-zinc-300 dark:border-zinc-700 rounded-full px-5 py-2.5 text-xs uppercase tracking-[0.2em] font-medium text-zinc-800 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all"
-                          >
-                            <span>Explore Collections</span>
-                          </Link>
-                        </div>
-                      </div>
-
-                      {/* 2. GALLERY CARD #1 DETAILS OVERLAY (Fades in as image morphs to card size) */}
-                      <div
-                        className="absolute inset-0 p-4 sm:p-5 flex flex-col justify-between z-10 pointer-events-none transition-opacity duration-300"
-                        style={{
-                          opacity: card1DetailsOpacity,
-                          display: card1DetailsOpacity <= 0.02 ? "none" : "flex",
-                        }}
-                      >
-                        {/* Top Bar: Pill Tag & Number */}
-                        <div className="flex items-center justify-between">
-                          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#242831]/90 backdrop-blur-md border border-white/15 text-[10px] sm:text-xs tracking-[0.16em] uppercase font-semibold text-white shadow-lg">
-                            <span className="w-2 h-2 rounded-full bg-white shrink-0 shadow-[0_0_8px_rgba(255,255,255,0.9)]" />
-                            <span>{card1Item.tag}</span>
-                          </span>
-
-                          <div className="flex items-center gap-2 text-white/95 text-xs sm:text-sm font-medium tracking-widest font-mono">
-                            <span className="w-5 sm:w-7 h-[1.5px] bg-white/70" />
-                            <span>{card1Item.number}</span>
-                          </div>
-                        </div>
-
-                        {/* Bottom Bar: Title & Circular Arrow CTA */}
-                        <div className="flex items-end justify-between pt-4">
-                          <div className="pr-2">
-                            <h3 className="font-serif text-lg sm:text-xl lg:text-2xl font-normal tracking-wide text-white leading-tight drop-shadow-md">
-                              {card1Item.title}
-                            </h3>
-                            <span className="text-[10px] uppercase tracking-[0.2em] text-white/70 mt-1 block">
-                              {card1Item.category}
-                            </span>
-                          </div>
-
-                          <span className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white shadow-xl shrink-0 group-hover:bg-white group-hover:text-black group-hover:scale-105 transition-all">
-                            <ArrowRight className="w-4 h-4 stroke-[2]" />
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* SIBLING GALLERY CARDS (Fade in beside Card #1 as space opens) */}
-                    {siblingItems.map((item) => (
-                      <div
-                        key={item.id}
-                        onClick={() => setSelectedGalleryImage(item.image)}
-                        className="group relative overflow-hidden bg-zinc-900 shadow-2xl transition-all duration-300 ease-out border border-black/10 dark:border-white/10 cursor-pointer hover:-translate-y-1.5 hover:shadow-2xl"
-                        style={{
-                          width: siblingWidth,
-                          height: cardHeight,
-                          maxHeight: cardMaxHeight,
-                          minHeight: cardMinHeight,
-                          borderRadius: card1Radius,
-                          opacity: siblingCardsOpacity,
-                          transform: `translateY(${(1 - siblingCardsOpacity) * 30}px)`,
-                          display: morphFactor < 0.08 ? "none" : "block",
-                          pointerEvents: siblingCardsOpacity > 0.6 ? "auto" : "none",
-                        }}
-                      >
-                        <Image
-                          src={item.image}
-                          alt={item.title}
-                          fill
-                          sizes="(max-width: 768px) 50vw, 25vw"
-                          className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-106"
-                        />
-
-                        {/* Dark Gradient Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-black/35 transition-opacity duration-300" />
-
-                        {/* Top Bar: Pill Tag & Number */}
-                        <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-10">
-                          <span className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-[#242831]/90 backdrop-blur-md border border-white/15 text-[9px] sm:text-[10px] tracking-[0.16em] uppercase font-semibold text-white shadow-lg">
-                            <span className="w-1.5 h-1.5 rounded-full bg-white shrink-0 shadow-[0_0_6px_rgba(255,255,255,0.9)]" />
-                            <span>{item.tag}</span>
-                          </span>
-
-                          <div className="flex items-center gap-1.5 sm:gap-2 text-white/95 text-[11px] sm:text-xs font-medium tracking-widest font-mono">
-                            <span className="w-4 sm:w-6 h-[1.5px] bg-white/70" />
-                            <span>{item.number}</span>
-                          </div>
-                        </div>
-
-                        {/* Bottom Bar: Title & Circular Arrow CTA */}
-                        <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between z-10">
-                          <div className="pr-2">
-                            <h3 className="font-serif text-base sm:text-lg lg:text-xl font-normal tracking-wide text-white leading-tight drop-shadow-md">
-                              {item.title}
-                            </h3>
-                            <span className="text-[10px] uppercase tracking-[0.2em] text-white/70 mt-1 block">
-                              {item.category}
-                            </span>
-                          </div>
-
-                          <span className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white shadow-xl shrink-0 group-hover:bg-white group-hover:text-black group-hover:scale-105 transition-all">
-                            <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2]" />
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              );
-            })()}
+            {/* Minimalist Action Buttons */}
+            <div className="pt-6 sm:pt-7 flex flex-wrap items-center gap-3.5 border-t border-zinc-200/80 mt-6 sm:mt-7">
+              <Link
+                href="/contact"
+                className="inline-flex items-center space-x-2.5 bg-zinc-950 text-white rounded-full px-6 py-3 text-xs uppercase tracking-[0.2em] font-medium hover:bg-zinc-800 transition-all shadow-md"
+              >
+                <span>Visit Showroom</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+              <Link
+                href="/collections"
+                className="inline-flex items-center space-x-2 border border-zinc-300 rounded-full px-6 py-3 text-xs uppercase tracking-[0.2em] font-medium text-zinc-800 hover:bg-zinc-100 transition-all"
+              >
+                <span>Explore Collections</span>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 8. ATELIER GALLERY LOOKBOOK - COMPLETE ARCHIVE (Continues fluidly below the morph) */}
+      {/* 8. ATELIER GALLERY LOOKBOOK (Fluid Editorial Grid with Category Filter & Lightbox) */}
       <section
         id="gallery-section"
-        className={`relative z-30 w-full pb-24 sm:pb-32 px-5 sm:px-10 lg:px-16 transition-colors duration-500 border-t ${
+        className={`relative z-30 w-full py-20 sm:py-28 px-5 sm:px-10 lg:px-16 transition-colors duration-500 border-t ${
           isWhiteMode
             ? "bg-[#faf9f6] text-zinc-900 border-zinc-200/80"
             : "bg-black text-white border-white/10"
@@ -1148,20 +908,35 @@ export default function HomePage() {
       >
         <div className="max-w-7xl mx-auto">
           {/* Top Metadata Bar */}
-          <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.25em] text-zinc-400 mb-8 pt-10 border-b border-zinc-200/60 dark:border-white/10 pb-4">
+          <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.25em] text-zinc-400 mb-8 border-b border-zinc-200/60 dark:border-white/10 pb-4">
             <span className="flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-zinc-500" />
-              Extended Lookbook Pieces
+              Lookbook Archive
             </span>
-            <span>Pieces {isMobileScreen ? "03" : "05"} – 15</span>
+            <span>The Haute Edit</span>
+            <span>2026 Collection</span>
           </div>
 
-          {/* Responsive Gallery Grid for Remaining Looks */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-6 items-start">
-            {(showAllGallery
-              ? GALLERY_ITEMS.slice(isMobileScreen ? 2 : 4)
-              : GALLERY_ITEMS.slice(isMobileScreen ? 2 : 4, isMobileScreen ? 8 : 12)
-            ).map((item) => (
+          {/* Section Heading */}
+          <div className="text-center mb-12 sm:mb-16">
+            <h2
+              className={`text-4xl sm:text-6xl md:text-7xl font-light tracking-tight ${
+                isWhiteMode ? "text-zinc-900" : "text-white"
+              }`}
+            >
+              Atelier Gallery
+              <span className="block font-serif italic font-normal text-5xl sm:text-7xl md:text-8xl mt-1 sm:mt-2">
+                The Curated Edit
+              </span>
+            </h2>
+            <p className="text-sm sm:text-base font-light text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto mt-4 sm:mt-6 leading-relaxed">
+              Explore bespoke couture creations, bridal trousseaus, and red-carpet ensembles handcrafted by our master artisans.
+            </p>
+          </div>
+
+          {/* Responsive Gallery Grid for All Looks */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 items-start">
+            {(showAllGallery ? GALLERY_ITEMS : GALLERY_ITEMS.slice(0, 8)).map((item) => (
               <div
                 key={item.id}
                 onClick={() => setSelectedGalleryImage(item.image)}
@@ -1175,7 +950,7 @@ export default function HomePage() {
                   className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-108"
                 />
 
-                {/* Hover Gradient Overlay */}
+                {/* Dark Vignette Overlay on Hover */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                 {/* Top Category Badge with Glowing Dot */}
@@ -1199,23 +974,23 @@ export default function HomePage() {
                     <h3 className="font-serif text-base sm:text-lg font-normal tracking-wide drop-shadow">
                       {item.title}
                     </h3>
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-white/70 mt-0.5 block">
+                    <p className="text-[10px] uppercase tracking-[0.2em] text-white/70 mt-0.5">
                       {item.category}
-                    </span>
+                    </p>
                   </div>
-                  <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white shrink-0">
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </span>
+                  <div className="text-xs font-mono text-white/80 shrink-0">
+                    — {item.number}
+                  </div>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Show More / Show Less Button */}
+          {/* Show More / Show Less Toggle Button */}
           <div className="mt-14 sm:mt-18 text-center">
             <button
               onClick={() => setShowAllGallery(!showAllGallery)}
-              className={`inline-flex items-center space-x-3 rounded-full px-9 py-4 text-xs uppercase tracking-[0.25em] font-medium transition-all duration-300 shadow-md hover:scale-105 ${
+              className={`inline-flex items-center space-x-2.5 rounded-full px-8 py-3.5 text-xs uppercase tracking-[0.22em] font-medium transition-all duration-300 shadow-md ${
                 isWhiteMode
                   ? "bg-zinc-950 text-white hover:bg-zinc-800"
                   : "bg-white text-zinc-950 hover:bg-zinc-200"
