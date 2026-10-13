@@ -260,6 +260,66 @@ const GALLERY_ITEMS = [
   },
 ];
 
+interface FilmItem {
+  id: string;
+  title: string;
+  subtitle?: string;
+  year?: string;
+  googleDriveUrl?: string;
+  url?: string;
+  fallbackUrl?: string;
+  description?: string;
+}
+
+const DEFAULT_FILMS: FilmItem[] = [
+  {
+    id: "de-flores-couture-film",
+    title: "de flores — Haute Couture Campaign Film",
+    subtitle: "Paris Runway & Bespoke Bridal Atelier",
+    year: "2026",
+    googleDriveUrl: "",
+    fallbackUrl: "/customization.mp4",
+    description: "An intimate glimpse into our bespoke bridal ateliers, handcrafted zardozi embroidery, and haute couture runway silhouettes.",
+  },
+];
+
+function parseVideoSource(item?: FilmItem | null): { type: "iframe" | "video"; src: string } {
+  const rawUrl = (item?.googleDriveUrl || item?.url || item?.fallbackUrl || "/customization.mp4").trim();
+
+  // 1. Google Drive URLs (converts to official Google embed preview player)
+  const driveMatch = rawUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || rawUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (driveMatch && driveMatch[1]) {
+    return {
+      type: "iframe",
+      src: `https://drive.google.com/file/d/${driveMatch[1]}/preview`,
+    };
+  }
+
+  // 2. YouTube URLs
+  const ytMatch = rawUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+  if (ytMatch && ytMatch[1]) {
+    return {
+      type: "iframe",
+      src: `https://www.youtube-nocookie.com/embed/${ytMatch[1]}?autoplay=1&rel=0&modestbranding=1`,
+    };
+  }
+
+  // 3. Vimeo URLs
+  const vimeoMatch = rawUrl.match(/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)/);
+  if (vimeoMatch && vimeoMatch[3]) {
+    return {
+      type: "iframe",
+      src: `https://player.vimeo.com/video/${vimeoMatch[3]}?autoplay=1`,
+    };
+  }
+
+  // 4. Direct video file (local or remote MP4 / WebM)
+  return {
+    type: "video",
+    src: rawUrl.startsWith("http") || rawUrl.startsWith("/") ? rawUrl : "/customization.mp4",
+  };
+}
+
 export default function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isWhiteMode, setIsWhiteMode] = useState(true);
@@ -271,7 +331,26 @@ export default function HomePage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [films, setFilms] = useState<FilmItem[]>(DEFAULT_FILMS);
+  const [selectedFilmIndex, setSelectedFilmIndex] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Load films configuration from public/data/films.json
+  useEffect(() => {
+    fetch("/data/films.json")
+      .then((res) => {
+        if (res.ok) return res.json();
+        throw new Error("films.json not available");
+      })
+      .then((data) => {
+        if (data && Array.isArray(data.films) && data.films.length > 0) {
+          setFilms(data.films);
+        }
+      })
+      .catch((err) => {
+        console.warn("Using fallback films configuration:", err);
+      });
+  }, []);
 
   // Track scroll position to toggle navbar appearance and pin hero canvas
   useEffect(() => {
@@ -968,45 +1047,133 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* 10. VIDEO LIGHTBOX MODAL */}
-      {isVideoModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 sm:p-8 animate-fadeIn">
-          <div className="relative w-full max-w-4xl bg-neutral-950 rounded-2xl overflow-hidden border border-white/20 shadow-2xl">
-            <div className="absolute top-4 right-4 z-20 flex items-center space-x-3">
-              <button
-                onClick={() => {
-                  if (videoRef.current) {
-                    videoRef.current.muted = !videoRef.current.muted;
-                    setIsMuted(videoRef.current.muted);
-                  }
-                }}
-                className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-all"
-                aria-label="Toggle mute"
-              >
-                {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
-              </button>
-              <button
-                onClick={() => setIsVideoModalOpen(false)}
-                className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-all"
-                aria-label="Close video"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+      {/* FLOATING BOTTOM-LEFT "WATCH FILM" CIRCLE (Docked when scrolled) */}
+      <div
+        className={`fixed bottom-6 left-6 sm:bottom-8 sm:left-8 z-40 transition-all duration-500 ease-out ${
+          isScrolled
+            ? "opacity-100 translate-y-0 scale-100 pointer-events-auto"
+            : "opacity-0 translate-y-8 scale-75 pointer-events-none"
+        }`}
+      >
+        <button
+          onClick={() => setIsVideoModalOpen(true)}
+          className="group relative w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-zinc-950/90 hover:bg-black text-white backdrop-blur-xl border border-white/25 shadow-[0_12px_40px_rgba(0,0,0,0.55)] flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-white/40"
+          title="Watch Campaign Film"
+          aria-label="Watch Campaign Film"
+        >
+          {/* Subtle Ambient Pulse Ring */}
+          <span className="absolute inset-0 rounded-full bg-white/20 animate-ping opacity-30 pointer-events-none" />
 
-            <div className="aspect-video w-full bg-black">
-              <video
-                ref={videoRef}
-                src="/customization.mp4"
-                autoPlay
-                controls
-                playsInline
-                className="w-full h-full object-cover"
-              />
+          {/* Play Icon */}
+          <Play className="w-5 h-5 fill-white text-white ml-0.5 group-hover:scale-110 transition-transform" />
+
+          {/* Hover Pill Label that expands gracefully to the right */}
+          <span className="absolute left-full ml-3 px-3.5 py-1.5 rounded-full bg-zinc-950/95 backdrop-blur-md text-white text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-medium border border-white/15 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap shadow-xl -translate-x-2 group-hover:translate-x-0">
+            Watch Film
+          </span>
+        </button>
+      </div>
+
+      {/* 10. VIDEO LIGHTBOX MODAL (Plays Google Drive, YouTube, or Local Video from /data/films.json) */}
+      {isVideoModalOpen && (() => {
+        const activeFilm = films[selectedFilmIndex] || films[0] || DEFAULT_FILMS[0];
+        const videoSource = parseVideoSource(activeFilm);
+
+        return (
+          <div
+            onClick={() => setIsVideoModalOpen(false)}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md p-4 sm:p-8 animate-fadeIn cursor-pointer"
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-5xl bg-zinc-950 rounded-[1.6rem] sm:rounded-[2rem] overflow-hidden border border-white/20 shadow-2xl flex flex-col cursor-default"
+            >
+              {/* Header Bar */}
+              <div className="px-5 sm:px-7 py-4 bg-zinc-900/90 border-b border-white/10 flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="text-[10px] sm:text-xs tracking-[0.2em] uppercase font-semibold text-white/70">
+                      Campaign Film · {activeFilm.year || "2026"}
+                    </span>
+                  </div>
+                  <h3 className="font-serif text-lg sm:text-xl font-normal text-white tracking-wide mt-0.5">
+                    {activeFilm.title}
+                  </h3>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  {videoSource.type === "video" && (
+                    <button
+                      onClick={() => {
+                        if (videoRef.current) {
+                          videoRef.current.muted = !videoRef.current.muted;
+                          setIsMuted(videoRef.current.muted);
+                        }
+                      }}
+                      className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-all"
+                      aria-label="Toggle mute"
+                    >
+                      {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setIsVideoModalOpen(false)}
+                    className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-all"
+                    aria-label="Close video"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Video Player Canvas (Supports Google Drive iframe and HTML5 video) */}
+              <div className="relative w-full aspect-video bg-black flex items-center justify-center overflow-hidden">
+                {videoSource.type === "iframe" ? (
+                  <iframe
+                    src={videoSource.src}
+                    title={activeFilm.title}
+                    className="w-full h-full border-0"
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : (
+                  <video
+                    ref={videoRef}
+                    src={videoSource.src}
+                    autoPlay
+                    controls
+                    playsInline
+                    className="w-full h-full object-cover"
+                  />
+                )}
+              </div>
+
+              {/* Multiple Film Selector Tabs if more than 1 film in films.json */}
+              {films.length > 1 && (
+                <div className="px-5 sm:px-7 py-3 bg-zinc-900/60 border-t border-white/10 flex items-center gap-2 overflow-x-auto">
+                  <span className="text-[10px] uppercase tracking-widest text-white/50 shrink-0 mr-1">
+                    Select Film:
+                  </span>
+                  {films.map((f, idx) => (
+                    <button
+                      key={f.id || idx}
+                      onClick={() => setSelectedFilmIndex(idx)}
+                      className={`text-xs px-3.5 py-1.5 rounded-full transition-all shrink-0 ${
+                        idx === selectedFilmIndex
+                          ? "bg-white text-black font-semibold shadow"
+                          : "bg-white/10 text-white/70 hover:bg-white/20"
+                      }`}
+                    >
+                      {f.title}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* 5. SEARCH MODAL */}
       {isSearchOpen && (
