@@ -16,42 +16,57 @@ import {
   ChevronRight,
   ChevronDown,
   ChevronUp,
-  Sun,
-  Moon,
-  Sparkles,
   ExternalLink,
 } from "lucide-react";
+
+function InstagramIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+    </svg>
+  );
+}
 
 const HERO_SLIDES = [
   {
     id: 1,
     image: "/hero/herosection1.png",
-    tagline: "Cross Motion",
-    titleLine1: "Every Brand.",
-    titleLine2: "Every Moment.",
+    tagline: "Haute Couture Atelier · Est. 2026",
+    titleLine1: "Every Silhouette.",
+    titleLine2: "EVERY MOMENT.",
     year: "2026",
     description:
-      "Combining human creativity and AI innovation to create fashion content built for modern audiences.",
+      "Bespoke bridal couture, sculpted silhouettes, and generational handlooms tailored to your grandest fantasies.",
   },
   {
     id: 2,
     image: "/hero/herosection2.png",
-    tagline: "Timeless Luxury",
-    titleLine1: "Every Brand.",
-    titleLine2: "Every Moment.",
+    tagline: "Royal Heritage Weaves",
+    titleLine1: "Timeless Elegance.",
+    titleLine2: "ROYAL DISTINCTION.",
     year: "2026",
     description:
-      "Combining human creativity and AI innovation to create fashion content built for modern audiences.",
+      "Generations of artisanal zardozi embroidery and Kanchipuram mulberry silks sculpted into contemporary masterpieces.",
   },
   {
     id: 3,
     image: "/hero/herosection3.png",
-    tagline: "Haute Couture",
-    titleLine1: "Every Brand.",
-    titleLine2: "Every Moment.",
+    tagline: "Bespoke Red Carpet & Pret",
+    titleLine1: "Chastity & Loveliness.",
+    titleLine2: "EXQUISITE FORM.",
     year: "2026",
     description:
-      "Combining human creativity and AI innovation to create fashion content built for modern audiences.",
+      "Translating 'flowers' in Spanish — an ode to botanical grace, ethereal drapes, and bespoke contour draping.",
   },
 ];
 
@@ -93,15 +108,15 @@ const CATEGORIES = [
   },
 ];
 
-
 const TEAM_PILLARS = [
   {
     number: "01",
     tag: "FOUNDER & CREATIVE HEAD",
     title: "Anisree Sreeraj",
-    role: "Couture Vision & Design Philosophy",
+    role: "Couture Vision & Philosophy",
     description:
-      "IT professional turned fashion designer leading De flores. Renowned for blending unique elegance, royalty, and class into bespoke bridal outfits and red-carpet ensembles.",
+      "IT professional turned fashion designer leading De flores. Renowned for blending unique elegance, royalty, and class into bespoke bridal outfits.",
+    image: "/crop_green.png",
     linkText: "Read Founder Story",
     href: "/founder",
   },
@@ -109,21 +124,34 @@ const TEAM_PILLARS = [
     number: "02",
     tag: "ATELIER CRAFTSMEN",
     title: "Master Karigars",
-    role: "Zardozi & Heritage Embroidery Guild",
+    role: "Zardozi & Heritage Guild",
     description:
-      "Generations of artisanal expertise mastering antique zardozi, hand-done aari, dabka work, and delicate thread embroideries on authentic pure handloom silks.",
-    linkText: "Explore Collections",
-    href: "/collections",
+      "Generations of artisanal mastery crafting antique zardozi, hand-done aari, dabka work, and intricate gold thread embroideries on pure silks.",
+    image: "/gallery_purple.jpg",
+    linkText: "Explore Creations",
+    href: "/explore",
   },
   {
     number: "03",
     tag: "BESPOKE CONSULTATION",
     title: "Bridal Stylists",
-    role: "Personal Couture & Trousseau Planning",
+    role: "Personal Trousseau Planning",
     description:
-      "A dedicated styling team guiding each client through private fittings, custom shade curation, and tailored ensembles for unforgettable wedding celebrations.",
+      "Dedicated bespoke stylists guiding each bride through custom color palettes, silhouette sculpting, and tailored wedding ensembles.",
+    image: "/new_images2/IMG_1076.webp",
     linkText: "Book Consultation",
     href: "/contact",
+  },
+  {
+    number: "04",
+    tag: "EDITORIAL ARCHIVES",
+    title: "Runway & Occasion",
+    role: "Contemporary Haute Couture",
+    description:
+      "Exploring novel style statements across statement lehengas, western gowns, and red-carpet showstoppers designed without compromise.",
+    image: "/newimages/IMG_1062.webp",
+    linkText: "View Lookbook",
+    href: "/gallery",
   },
 ];
 
@@ -133,6 +161,7 @@ const GALLERY_ITEMS = [
     title: "Atelier Runway Vision",
     category: "Editorial Collection",
     tag: "HAUTE EDITORIAL",
+    fabric: "Raw Silk Habotai · Antique Metallic Wirework",
     number: "01",
     image: "/vision_editorial.jpg",
     aspect: "aspect-video",
@@ -142,6 +171,7 @@ const GALLERY_ITEMS = [
     title: "Lakeside Contemporary Gowns",
     category: "Western Ensembles",
     tag: "ATELIER SIGNATURE",
+    fabric: "French Tulle & Sculpted Mikado Silk",
     number: "02",
     image: "/newimages/IMG_1064.webp",
     aspect: "aspect-[3/4.4]",
@@ -151,6 +181,7 @@ const GALLERY_ITEMS = [
     title: "Heritage Bridal Lehenga",
     category: "Bridal Couture",
     tag: "HAUTE COUTURE",
+    fabric: "Pure Mulberry Silk Handloom · Antique Zardozi Guild",
     number: "03",
     image: "/hero/herosection1.png",
     aspect: "aspect-[4/3]",
@@ -160,6 +191,7 @@ const GALLERY_ITEMS = [
     title: "Temple Courtyard Silk Ensemble",
     category: "Pret Apparel",
     tag: "TIMELESS SILKS",
+    fabric: "Kanchipuram Brocade & Pure Zari Weave",
     number: "04",
     image: "/hero/herosection2.png",
     aspect: "aspect-[4/3]",
@@ -169,6 +201,7 @@ const GALLERY_ITEMS = [
     title: "Sunset Chiffon & Tulle Gown",
     category: "Evening Gown",
     tag: "RED CARPET",
+    fabric: "Mulberry Silk Chiffon · Hand-cut Resham Petals",
     number: "05",
     image: "/hero/herosection3.png",
     aspect: "aspect-video",
@@ -178,6 +211,7 @@ const GALLERY_ITEMS = [
     title: "Zardozi Embroidered Royal Drape",
     category: "Haute Couture",
     tag: "ROYAL EMBROIDERY",
+    fabric: "Varanasi Tissue Silk · Dabka & Mukaish Guild",
     number: "06",
     image: "/newimages/IMG_1058.webp",
     aspect: "aspect-[3/4.4]",
@@ -187,6 +221,7 @@ const GALLERY_ITEMS = [
     title: "Mirror Reflection Fitting",
     category: "Atelier Backstage",
     tag: "ATELIER BESPOKE",
+    fabric: "Hand-pleated Georgette & Seed Pearl Borders",
     number: "07",
     image: "/newimages/IMG_1060.webp",
     aspect: "aspect-[3/4]",
@@ -196,6 +231,7 @@ const GALLERY_ITEMS = [
     title: "Courtyard Swing Duo",
     category: "Festive Occasion",
     tag: "FESTIVE COUTURE",
+    fabric: "Brocade Tanchoi Silk · Handloom Weave",
     number: "08",
     image: "/newimages/IMG_1062.webp",
     aspect: "aspect-[3/4.4]",
@@ -205,6 +241,7 @@ const GALLERY_ITEMS = [
     title: "Sacred Ceremonial Silk Saree",
     category: "Heritage Weaves",
     tag: "PURE SILK HEIRLOOM",
+    fabric: "Pure Kanchipuram Silk · Korvai Temple Borders",
     number: "09",
     image: "/new_images2/IMG_1076.webp",
     aspect: "aspect-[3/4.4]",
@@ -214,6 +251,7 @@ const GALLERY_ITEMS = [
     title: "Peacock Jewel Handcrafted Details",
     category: "Bespoke Jewelry & Blouse",
     tag: "ARTISANAL JEWEL",
+    fabric: "Antique Gold Threadwork · Glass Kundan Detailing",
     number: "10",
     image: "/new_images2/IMG_1077.webp",
     aspect: "aspect-[3/4]",
@@ -223,6 +261,7 @@ const GALLERY_ITEMS = [
     title: "Celebration Sherwani & Anarkali",
     category: "Mens & Bridal",
     tag: "ROYAL COUTURE",
+    fabric: "Raw Matka Silk & Zardozi Cartouches",
     number: "11",
     image: "/new_images2/IMG_1078.webp",
     aspect: "aspect-[3/4.4]",
@@ -232,6 +271,7 @@ const GALLERY_ITEMS = [
     title: "Lakeside Couple Embrace",
     category: "Occasion Wear",
     tag: "ROMANCE EDIT",
+    fabric: "Chanderi Tissue & Organza Drapes",
     number: "12",
     image: "/new_images2/IMG_1080.webp",
     aspect: "aspect-[3/4]",
@@ -241,6 +281,7 @@ const GALLERY_ITEMS = [
     title: "Radiant Sheer Veil Drape",
     category: "Bridal Veil",
     tag: "BRIDAL VEIL",
+    fabric: "Fine French Silk Net · Scalloped Gotapatti",
     number: "13",
     image: "/new_images2/IMG_1081.webp",
     aspect: "aspect-[3/4.4]",
@@ -250,6 +291,7 @@ const GALLERY_ITEMS = [
     title: "Embellished Peach Organza Saree",
     category: "Pret Collection",
     tag: "ORGANZA DRAPES",
+    fabric: "Hand-painted Organza & Cutdana Borders",
     number: "14",
     image: "/new_images2/IMG_1082.webp",
     aspect: "aspect-[3/4.4]",
@@ -259,6 +301,7 @@ const GALLERY_ITEMS = [
     title: "Royal Violet Scalloped Blouse",
     category: "Handcrafted Zardozi",
     tag: "ZARDOZI ATELIER",
+    fabric: "Deep Violet Velvet & Antique Gold Zardozi",
     number: "15",
     image: "/gallery_purple.jpg",
     aspect: "aspect-[3/4]",
@@ -268,10 +311,55 @@ const GALLERY_ITEMS = [
     title: "Pastel Mirror-Work Lehenga",
     category: "Party Wear",
     tag: "COCKTAIL EDIT",
+    fabric: "Georgette Silk with Convex Glass Mirror Work",
     number: "16",
     image: "/crop_green.png",
     aspect: "aspect-[3/4]",
   },
+];
+
+const JOURNAL_ARTICLES = [
+  {
+    id: 1,
+    category: "CRAFTSMANSHIP",
+    readTime: "6 MIN READ",
+    title: "The Art of Zardozi: Reviving Imperial Metallic Wire Embroidery",
+    excerpt:
+      "Exploring the intricate patience of Old Delhi karigars as gold and silver dabka wires are hand-sewn into pure organza silhouettes.",
+    image: "/newimages/IMG_1058.webp",
+    date: "OCTOBER 2026",
+    href: "/blog",
+  },
+  {
+    id: 2,
+    category: "BRIDAL ATELIER",
+    readTime: "4 MIN READ",
+    title: "Curating Your Bridal Silhouette: The Architecture of Royal Drapes",
+    excerpt:
+      "How our bespoke contour draping and personalized shade consultations sculpt an unmistakable presence for reception evenings.",
+    image: "/hero/herosection1.png",
+    date: "SEPTEMBER 2026",
+    href: "/blog",
+  },
+  {
+    id: 3,
+    category: "MAISON DE FLORES",
+    readTime: "5 MIN READ",
+    title: "Behind the Seams: The 2026 Runway Edit at Cochin International Atelier",
+    excerpt:
+      "A glimpse inside our bespoke showroom near Cochin Airport, where heritage handlooms meet contemporary western ensembles.",
+    image: "/vision_editorial.jpg",
+    date: "AUGUST 2026",
+    href: "/blog",
+  },
+];
+
+const INSTAGRAM_SHOTS = [
+  { id: 1, image: "/hero/herosection1.png", tag: "@deflores.couture" },
+  { id: 2, image: "/new_images2/IMG_1077.webp", tag: "@deflores.couture" },
+  { id: 3, image: "/newimages/IMG_1064.webp", tag: "@deflores.couture" },
+  { id: 4, image: "/new_images2/IMG_1078.webp", tag: "@deflores.couture" },
+  { id: 5, image: "/newimages/IMG_1062.webp", tag: "@deflores.couture" },
 ];
 
 interface FilmItem {
@@ -384,8 +472,7 @@ export default function HomePage() {
   const ivoryCardRef = useRef<HTMLDivElement>(null);
   const visionBgRef = useRef<HTMLDivElement>(null);
   const editorialPinnedRef = useRef<HTMLDivElement>(null);
-  const editorialTextRef = useRef<HTMLDivElement>(null);
-  const editorialScrimRef = useRef<HTMLDivElement>(null);
+  const editorialImageRef = useRef<HTMLDivElement>(null);
   const cachedCard = useRef<{
     docX: number;
     docY: number;
@@ -394,6 +481,14 @@ export default function HomePage() {
     radius: number;
   } | null>(null);
   const rafId = useRef<number | null>(null);
+  const teamScrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollTeam = (direction: "left" | "right") => {
+    if (teamScrollRef.current) {
+      const scrollAmount = direction === "left" ? -380 : 380;
+      teamScrollRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
+  };
 
   // Ultra-performant geometry cache and scroll-driven morph
   useEffect(() => {
@@ -454,7 +549,7 @@ export default function HomePage() {
             ivoryCardRef.current.style.pointerEvents = "none";
           } else if (scrollY < startScroll - 60) {
             ivoryCardRef.current.style.opacity = "1";
-            ivoryCardRef.current.style.transform = "translate3d(0, 0, 0)";
+            ivoryCardRef.current.style.transform = "translate3d(0, 0, 0) scale(1)";
             ivoryCardRef.current.style.pointerEvents = "auto";
           }
         }
@@ -474,19 +569,23 @@ export default function HomePage() {
         visionBgRef.current.style.opacity = p > 0.02 ? "0" : "1";
       }
 
-      // 1. Ivory Vision Card: fades out smoothly and lifts in the first 22% of scroll
-      if (ivoryCardRef.current) {
-        const cardP = Math.min(p / 0.22, 1);
-        const cardOpacity = Math.max(0, 1 - cardP);
-        const cardTranslateY = -cardP * 45;
-        ivoryCardRef.current.style.opacity = String(cardOpacity);
-        ivoryCardRef.current.style.transform = `translate3d(0, ${cardTranslateY}px, 0)`;
-        ivoryCardRef.current.style.pointerEvents = cardOpacity < 0.1 ? "none" : "auto";
-      }
-
-      // 2. Continuous Image Morph: cubic ease for luxurious physical momentum
+      // 1. Continuous Image Morph: cubic ease for luxurious physical momentum
       const morphT = Math.min(Math.max((p - 0.04) / 0.96, 0), 1);
       const e = morphT < 0.5 ? 4 * morphT * morphT * morphT : 1 - Math.pow(-2 * morphT + 2, 3) / 2;
+
+      // 2. Ivory Vision Card: fades with the image and glides in the direction of the image (down and leftwards toward Card 1)
+      if (ivoryCardRef.current) {
+        // Fades smoothly with the image across the entire transition
+        const cardOpacity = Math.max(0, 1 - Math.pow(e, 0.9));
+        // Glides in the trajectory of the morphing image (towards the left and downwards)
+        const cardTranslateX = -e * Math.min(viewportW * 0.32, 170);
+        const cardTranslateY = e * Math.min(viewportH * 0.22, 130);
+        const cardScale = 1 - e * 0.12;
+
+        ivoryCardRef.current.style.opacity = cardOpacity.toFixed(3);
+        ivoryCardRef.current.style.transform = `translate3d(${cardTranslateX.toFixed(1)}px, ${cardTranslateY.toFixed(1)}px, 0) scale(${cardScale.toFixed(3)})`;
+        ivoryCardRef.current.style.pointerEvents = cardOpacity < 0.05 ? "none" : "auto";
+      }
 
       // Current position of Card 1 in the viewport
       const cardCurrentY = card.docY - scrollY;
@@ -521,39 +620,31 @@ export default function HomePage() {
       }
     };
 
-    const updateEditorialPin = () => {
-      if (!editorialPinnedRef.current || !editorialTextRef.current) return;
+    const updateEditorialParallax = () => {
+      if (!editorialPinnedRef.current || !editorialImageRef.current) return;
       const rect = editorialPinnedRef.current.getBoundingClientRect();
       const viewportH = window.innerHeight || 800;
-      const totalScrollable = rect.height - viewportH;
-      if (totalScrollable <= 0) return;
 
-      // When the top of Section 7 hits top of viewport, -rect.top is >= 0
-      const p = Math.min(Math.max(-rect.top / totalScrollable, 0), 1);
+      // Skip calculation if section is far outside the viewport
+      if (rect.bottom < -100 || rect.top > viewportH + 100) return;
 
-      // Text begins entering smoothly as soon as pinned (p = 0.01 to p = 0.22)
-      const textP = Math.min(Math.max((p - 0.01) / 0.22, 0), 1);
-      const easedTextP = 1 - Math.pow(1 - textP, 3);
-      const textTranslateY = (1 - easedTextP) * 45;
+      // Progress of scroll across the section
+      const totalRange = rect.height + viewportH;
+      const p = Math.min(Math.max((viewportH - rect.top) / totalRange, 0), 1);
 
-      editorialTextRef.current.style.opacity = String(easedTextP);
-      editorialTextRef.current.style.transform = `translate3d(0, ${textTranslateY.toFixed(1)}px, 0)`;
-
-      if (editorialScrimRef.current) {
-        // Scrim deepens from 0.25 to 0.65 as text appears to ensure crystal clear contrast
-        const scrimOpacity = 0.25 + easedTextP * 0.4;
-        editorialScrimRef.current.style.opacity = String(scrimOpacity);
-      }
+      // Smooth parallax translation on the background image (-70px to +70px)
+      const imageOffset = (p - 0.5) * 140;
+      editorialImageRef.current.style.transform = `translate3d(0, ${imageOffset.toFixed(1)}px, 0) scale(1.08)`;
     };
 
     // Initial check on mount
-    updateEditorialPin();
+    updateEditorialParallax();
 
     // Measure after mount and DOM paints
     const timer = setTimeout(() => {
       measureCard();
       updateMorph();
-      updateEditorialPin();
+      updateEditorialParallax();
     }, 120);
 
     const onScroll = () => {
@@ -561,14 +652,14 @@ export default function HomePage() {
       rafId.current = window.requestAnimationFrame(() => {
         rafId.current = null;
         updateMorph();
-        updateEditorialPin();
+        updateEditorialParallax();
       });
     };
 
     const onResize = () => {
       measureCard();
       updateMorph();
-      updateEditorialPin();
+      updateEditorialParallax();
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -623,6 +714,15 @@ export default function HomePage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Synchronize documentElement dark mode class with isWhiteMode state
+  useEffect(() => {
+    if (isWhiteMode) {
+      document.documentElement.classList.remove("dark");
+    } else {
+      document.documentElement.classList.add("dark");
+    }
+  }, [isWhiteMode]);
+
   // Preload hero images into browser cache
   useEffect(() => {
     HERO_SLIDES.forEach((s) => {
@@ -649,51 +749,73 @@ export default function HomePage() {
       {/* 1. TOP LUXURY NAVBAR: TRANSPARENT AT TOP, WHITE ON SCROLL */}
       <header
         className={`fixed top-0 left-0 right-0 z-50 px-6 sm:px-12 flex items-center justify-between transition-all duration-300 ${isScrolled
-            ? "bg-white/95 backdrop-blur-md border-b border-zinc-200/80 text-zinc-900 py-4 shadow-sm"
-            : "bg-transparent border-b border-transparent text-white py-6 sm:py-7"
+            ? isWhiteMode
+              ? "bg-white/95 backdrop-blur-md border-b border-zinc-200/80 text-zinc-900 py-3 sm:py-3.5 shadow-sm"
+              : "bg-zinc-950/90 backdrop-blur-md border-b border-white/10 text-white py-3 sm:py-3.5 shadow-sm"
+            : "bg-transparent border-b border-transparent text-white py-4 sm:py-5"
           }`}
       >
-        {/* Brand Logo */}
+        {/* Brand Emblem */}
         <Link
           href="/"
-          className={`font-serif tracking-[0.25em] text-2xl sm:text-3xl font-light uppercase hover:opacity-80 transition-all ${isScrolled ? "text-zinc-950" : "text-white drop-shadow-sm"
-            }`}
+          className="flex items-center group transition-transform duration-300 hover:scale-105"
+          aria-label="De Flores Atelier"
         >
-          De flores
+          <div
+            className={`relative aspect-[5/6] transition-all duration-300 ${
+              isScrolled
+                ? "h-[50px] sm:h-[58px]"
+                : "h-[62px] sm:h-[76px] md:h-[90px]"
+            }`}
+          >
+            <Image
+              src="/logo.svg"
+              alt="De flores"
+              fill
+              priority
+              className={`object-contain transition-all duration-300 ${
+                isScrolled
+                  ? isWhiteMode
+                    ? "brightness-0"
+                    : "brightness-0 invert drop-shadow-[0_2px_10px_rgba(255,255,255,0.4)]"
+                  : "brightness-0 invert drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
+              }`}
+            />
+          </div>
         </Link>
 
         {/* Desktop Nav Links */}
         <nav
-          className={`hidden md:flex items-center space-x-9 text-xs tracking-[0.22em] uppercase font-medium transition-colors ${isScrolled ? "text-zinc-600" : "text-white/90"
+          className={`hidden md:flex items-center space-x-9 text-xs tracking-[0.25em] uppercase font-medium transition-colors ${isScrolled ? "text-zinc-700" : "text-white/90"
             }`}
         >
           <Link
-            href="/collections"
-            className={isScrolled ? "hover:text-black transition-colors" : "hover:text-white transition-colors"}
+            href="#lookbook"
+            className={isScrolled ? "hover:text-[#2B0A0E] transition-colors" : "hover:text-[#C5A059] transition-colors"}
           >
-            Collections
+            Lookbook
           </Link>
           <Link
-            href="/about"
-            className={isScrolled ? "hover:text-black transition-colors" : "hover:text-white transition-colors"}
+            href="#craft"
+            className={isScrolled ? "hover:text-[#2B0A0E] transition-colors" : "hover:text-[#C5A059] transition-colors"}
+          >
+            The Craft
+          </Link>
+          <Link
+            href="/founder"
+            className={isScrolled ? "hover:text-[#2B0A0E] transition-colors" : "hover:text-[#C5A059] transition-colors"}
           >
             About
           </Link>
           <Link
-            href="/journal"
-            className={isScrolled ? "hover:text-black transition-colors" : "hover:text-white transition-colors"}
+            href="#journal"
+            className={isScrolled ? "hover:text-[#2B0A0E] transition-colors" : "hover:text-[#C5A059] transition-colors"}
           >
             Journal
           </Link>
           <Link
-            href="/sustainability"
-            className={isScrolled ? "hover:text-black transition-colors" : "hover:text-white transition-colors"}
-          >
-            Sustainability
-          </Link>
-          <Link
             href="/contact"
-            className={isScrolled ? "hover:text-black transition-colors" : "hover:text-white transition-colors"}
+            className={isScrolled ? "hover:text-[#2B0A0E] transition-colors" : "hover:text-[#C5A059] transition-colors"}
           >
             Contact
           </Link>
@@ -701,25 +823,15 @@ export default function HomePage() {
 
         {/* Right Nav Actions */}
         <div className="flex items-center space-x-4 sm:space-x-5">
-          {/* Mode Toggle */}
+          {/* Search (Disabled) */}
           <button
-            onClick={() => setIsWhiteMode(!isWhiteMode)}
-            className={`p-2 rounded-full transition-all ${isScrolled
-                ? "bg-zinc-100 hover:bg-zinc-200 text-zinc-800"
-                : "bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm"
-              }`}
-            title={isWhiteMode ? "Switch to Dark Mode" : "Switch to White Mode"}
-            aria-label="Toggle Theme Mode"
-          >
-            {isWhiteMode ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-          </button>
-
-          {/* Search */}
-          <button
-            onClick={() => setIsSearchOpen(true)}
-            aria-label="Search"
-            className={`p-2 transition-opacity hover:opacity-75 ${isScrolled ? "text-zinc-800" : "text-white"
-              }`}
+            type="button"
+            disabled
+            aria-disabled="true"
+            aria-label="Search (Disabled)"
+            className={`p-2 opacity-40 cursor-not-allowed pointer-events-none transition-opacity ${
+              isScrolled ? "text-zinc-500" : "text-white/50"
+            }`}
           >
             <Search className="w-4 h-4 sm:w-5 sm:h-5 stroke-[1.75]" />
           </button>
@@ -733,15 +845,16 @@ export default function HomePage() {
             Sign In
           </Link>
 
-          {/* Shop Now */}
+          {/* Book Consultation (Luxury Pill Button) */}
           <Link
-            href="/collections"
-            className={`rounded-full px-5 sm:px-6 py-2 text-xs uppercase tracking-[0.2em] font-medium transition-all duration-300 shadow-sm ${isScrolled
-                ? "bg-zinc-950 text-white hover:bg-zinc-800"
-                : "border border-white/80 bg-white/10 text-white hover:bg-white hover:text-black backdrop-blur-sm"
+            href="/contact"
+            data-cursor="BOOK"
+            className={`rounded-full px-6 sm:px-7 py-2.5 text-[11px] sm:text-xs uppercase tracking-[0.22em] font-semibold transition-all duration-300 shadow-sm ${isScrolled
+                ? "bg-[#2B0A0E] text-[#C5A059] border border-[#C5A059]/40 hover:bg-black hover:text-white"
+                : "border border-[#C5A059] bg-[#2B0A0E]/70 text-[#FDFBF7] hover:bg-[#C5A059] hover:text-[#2B0A0E] backdrop-blur-sm"
               }`}
           >
-            Shop Now
+            Book Consultation
           </Link>
 
           {/* Mobile Menu */}
@@ -765,6 +878,9 @@ export default function HomePage() {
             visibility: isPastHero ? "hidden" : "visible",
           }}
         >
+          {/* Film Grain Texture Overlay */}
+          <div className="film-grain absolute inset-0 z-[15] pointer-events-none opacity-40 mix-blend-overlay" />
+
           {/* Preloaded Background Images */}
           {HERO_SLIDES.map((item, idx) => (
             <div
@@ -785,21 +901,21 @@ export default function HomePage() {
           ))}
 
           {/* Soft Contrast Gradient */}
-          <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-transparent to-black/30 pointer-events-none" />
+          <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/75 via-black/20 to-black/40 pointer-events-none" />
 
           {/* Hero Content Overlay */}
-          <div className="relative z-20 w-full h-full pt-28 sm:pt-32 px-6 sm:px-12 md:px-16 pb-12 flex flex-col justify-between text-white">
+          <div className="relative z-20 w-full h-full pt-24 sm:pt-28 px-5 sm:px-12 md:px-16 pb-6 sm:pb-8 flex flex-col justify-between text-white">
             {/* Top Row: Tagline & Carousel Switcher */}
             <div className="flex items-center justify-between">
-              <span className="text-xs sm:text-sm tracking-[0.3em] font-light uppercase text-white/90 drop-shadow">
+              <span className="text-xs sm:text-sm tracking-[0.32em] font-semibold uppercase text-[#C5A059] drop-shadow">
                 {slide.tagline}
               </span>
 
               {/* Quick Slide Switcher (01 / 02 / 03) */}
-              <div className="flex items-center space-x-2 bg-black/40 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/20">
+              <div className="flex items-center space-x-2 bg-black/60 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-[#C5A059]/40">
                 <button
                   onClick={() => setCurrentSlide((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
-                  className="p-1 hover:text-white/70 transition-colors"
+                  className="p-1 hover:text-[#C5A059] transition-colors"
                   aria-label="Previous slide"
                 >
                   <ChevronLeft className="w-3.5 h-3.5" />
@@ -809,7 +925,7 @@ export default function HomePage() {
                     key={s.id}
                     onClick={() => setCurrentSlide(i)}
                     className={`text-xs px-2.5 py-0.5 rounded-full transition-all ${i === currentSlide
-                        ? "bg-white text-black font-semibold shadow-sm"
+                        ? "bg-[#C5A059] text-[#2B0A0E] font-bold shadow-sm"
                         : "text-white/70 hover:text-white"
                       }`}
                   >
@@ -818,7 +934,7 @@ export default function HomePage() {
                 ))}
                 <button
                   onClick={() => setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length)}
-                  className="p-1 hover:text-white/70 transition-colors"
+                  className="p-1 hover:text-[#C5A059] transition-colors"
                   aria-label="Next slide"
                 >
                   <ChevronRight className="w-3.5 h-3.5" />
@@ -827,12 +943,12 @@ export default function HomePage() {
             </div>
 
             {/* Middle Row: Left Headline & Right Paragraph (Hidden on Mobile view) */}
-            <div className="hidden sm:grid grid-cols-1 lg:grid-cols-12 gap-8 items-center my-auto">
-              {/* Left Headline */}
-              <div className="lg:col-span-8 space-y-2">
-                <h1 className="font-serif italic font-normal text-5xl sm:text-7xl md:text-8xl lg:text-[7.5rem] leading-[1.02] tracking-tight text-white drop-shadow-lg">
+            <div className="hidden sm:grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center my-auto py-2">
+              {/* Left Headline: High-Contrast Editorial Typography */}
+              <div className="lg:col-span-8 space-y-1 sm:space-y-2">
+                <h1 className="font-serif italic font-bold text-5xl sm:text-6xl md:text-7xl lg:text-[6.2rem] xl:text-[7.2rem] leading-[1.02] tracking-tight text-[#FDFBF7] drop-shadow-lg">
                   <span className="block">{slide.titleLine1}</span>
-                  <span className="block font-sans not-italic font-light tracking-normal text-4xl sm:text-6xl md:text-7xl lg:text-[6.5rem]">
+                  <span className="block font-sans not-italic font-black tracking-wider text-3xl sm:text-5xl md:text-6xl lg:text-[5.2rem] xl:text-[6.2rem] text-white/95 mt-1">
                     {slide.titleLine2}
                   </span>
                 </h1>
@@ -840,128 +956,150 @@ export default function HomePage() {
 
               {/* Right Paragraph */}
               <div className="lg:col-span-4 flex justify-start lg:justify-end">
-                <p className="text-sm sm:text-base font-light text-white/90 leading-relaxed max-w-sm drop-shadow-md">
+                <p className="text-sm sm:text-base font-light text-[#FDFBF7]/90 leading-relaxed max-w-sm drop-shadow-md border-l-2 border-[#C5A059]/60 pl-4">
                   {slide.description}
                 </p>
               </div>
             </div>
 
-            {/* Bottom Area: 2 CTAs In Same Row Below + Year Bar */}
-            <div className="mt-auto pt-6 flex flex-col space-y-5 sm:space-y-6">
-              {/* 2 CTAs Side-by-Side in Same Row */}
+            {/* Bottom Area: 2 Centered CTAs */}
+            <div className="mt-auto pb-4 sm:pb-6 flex justify-center">
               <div className="flex flex-row items-center justify-center gap-2.5 sm:gap-4 w-full max-w-lg mx-auto">
                 <Link
-                  href="/collections"
-                  className="flex-1 sm:flex-initial inline-flex items-center justify-center space-x-2 sm:space-x-3 bg-white text-zinc-950 rounded-full px-4 sm:px-8 py-3 sm:py-3.5 text-[10px] sm:text-xs uppercase tracking-[0.18em] sm:tracking-[0.25em] font-medium hover:bg-zinc-200 transition-all duration-300 shadow-2xl hover:scale-[1.02] whitespace-nowrap"
+                  href="/explore"
+                  data-cursor="COLLECTION"
+                  className="group relative flex-1 sm:flex-initial inline-flex items-center justify-center space-x-2 sm:space-x-3 rounded-full bg-[#FDFBF7] text-[#111111] hover:bg-[#C5A059] hover:text-[#2B0A0E] border border-white px-6 sm:px-9 py-3 sm:py-3.5 text-[10px] sm:text-xs uppercase tracking-[0.22em] font-bold transition-all duration-300 shadow-2xl hover:scale-[1.02] whitespace-nowrap overflow-hidden"
                 >
-                  <span>Explore Collections</span>
-                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-black/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 pointer-events-none" />
+                  <span>Explore Collection</span>
+                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
 
                 <button
                   onClick={() => setIsVideoModalOpen(true)}
-                  className="flex-1 sm:flex-initial inline-flex items-center justify-center space-x-2 sm:space-x-3 backdrop-blur-md bg-black/40 border border-white/40 text-white rounded-full px-4 sm:px-8 py-3 sm:py-3.5 text-[10px] sm:text-xs uppercase tracking-[0.18em] sm:tracking-[0.25em] font-medium hover:bg-white hover:text-black transition-all duration-300 shadow-2xl hover:scale-[1.02] whitespace-nowrap"
+                  data-cursor="FILM"
+                  className="flex-1 sm:flex-initial inline-flex items-center justify-center space-x-2 sm:space-x-3 rounded-full backdrop-blur-md bg-black/50 border border-[#C5A059]/80 text-[#FDFBF7] hover:bg-[#2B0A0E]/80 hover:border-[#C5A059] px-6 sm:px-9 py-3 sm:py-3.5 text-[10px] sm:text-xs uppercase tracking-[0.22em] font-semibold transition-all duration-300 shadow-2xl hover:scale-[1.02] whitespace-nowrap"
                 >
-                  <Play className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />
+                  <Play className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current text-[#C5A059]" />
                   <span>Watch Film</span>
                 </button>
-              </div>
-
-              {/* Year & Tag Bar */}
-              <div className="flex items-center justify-between text-xs tracking-widest text-white/70 pt-2">
-                <span>{slide.year}</span>
-                <div className="flex items-center space-x-2">
-                  <span className="w-12 h-[1px] bg-white/40" />
-                  <span className="uppercase text-[10px] tracking-[0.3em]">Couture Digital</span>
-                </div>
               </div>
             </div>
           </div>
         </section>
       </div>
 
-      {/* 3. SHOP BY CATEGORY (Glides smoothly on top of Hero) */}
+      {/* 3. THE SIGNATURE COLLECTIONS (Glides smoothly on top of Hero) */}
       <section
-        className={`relative z-10 w-full py-16 sm:py-28 px-5 sm:px-10 lg:px-16 transition-colors duration-500 rounded-none shadow-[0_-25px_60px_rgba(0,0,0,0.35)] border-t border-zinc-200/80 dark:border-white/10 ${
+        id="collections"
+        className={`relative z-10 w-full py-16 sm:py-28 px-5 sm:px-10 lg:px-16 transition-colors duration-500 rounded-none shadow-[0_-25px_60px_rgba(0,0,0,0.35)] border-t border-zinc-200/80 dark:border-white/10 overflow-hidden ${
           isWhiteMode ? "bg-[#faf9f6]" : "bg-zinc-950"
         }`}
       >
-        <div className="max-w-7xl mx-auto">
-          {/* Top Metadata Bar */}
-          <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.25em] text-zinc-400 mb-8 border-b border-zinc-200/60 dark:border-white/10 pb-4">
-            <span>Curated Collections</span>
-            <span>Shop by Category</span>
-            <span>2026</span>
-          </div>
+        {/* Monogram Pattern Background (Continuous Seamless Repeating Offset Wallpaper) */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 pointer-events-none select-none z-0 opacity-[0.22] dark:opacity-[0.28]"
+          style={{
+            backgroundImage: "url('/floral-pattern.svg')",
+            backgroundRepeat: "repeat",
+            backgroundSize: "140px 120px",
+          }}
+        />
 
+        <div className="max-w-7xl mx-auto relative z-10">
           {/* Section Title */}
-          <div className="text-center mb-12 sm:mb-20">
+          <div className="text-center mb-12 sm:mb-16">
+            <span className="text-[11px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#C5A059] block mb-3">
+              Shop by Category
+            </span>
             <h2
-              className={`text-4xl sm:text-6xl md:text-7xl font-light tracking-tight ${
+              className={`text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight ${
                 isWhiteMode ? "text-zinc-900" : "text-white"
               }`}
             >
-              Shop by
-              <span className="block font-serif italic font-normal mt-1 sm:mt-2 text-5xl sm:text-7xl md:text-8xl">
-                Category
+              The Signature
+              <span className={`block font-serif italic font-bold text-4xl sm:text-5xl lg:text-6xl mt-1 sm:mt-2 ${
+                isWhiteMode ? "text-[#2B0A0E]" : "text-[#C5A059]"
+              }`}>
+                Collections
               </span>
             </h2>
+            <p className="text-sm sm:text-base font-light text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto mt-4 sm:mt-5 leading-relaxed">
+              Explore handcrafted bridal lehengas, royal wedding gowns, timeless silk sarees, and bespoke celebration wear.
+            </p>
           </div>
 
-          {/* 5 Category Cards across 2 Rows: 3 on Row 1, 2 Centered on Row 2 */}
+          {/* Category Cards: 2 columns on mobile; if odd, last card spans full width as a horizontal wide image */}
           <div className="flex flex-wrap justify-center gap-4 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
             {CATEGORIES.map((cat, index) => {
+              const isTotalOdd = CATEGORIES.length % 2 !== 0;
               const isLast = index === CATEGORIES.length - 1;
+              const isLastAndOdd = isTotalOdd && isLast;
 
               return (
                 <Link
                   key={cat.id}
                   href={`/collections?category=${cat.id}`}
-                  className={`group relative block overflow-hidden rounded-[1.8rem] sm:rounded-[2.2rem] bg-zinc-900 shadow-xl border border-black/5 dark:border-white/10 cursor-pointer transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl w-[calc(50%-0.6rem)] md:w-[calc(33.333%-1.5rem)] lg:w-[calc(33.333%-1.75rem)] max-w-[340px] shrink-0 ${
-                    isLast ? "max-w-[calc(50%-0.6rem)] md:max-w-[340px]" : ""
+                  data-cursor="LOOK"
+                  className={`group relative block overflow-hidden rounded-[1.8rem] sm:rounded-[2.2rem] bg-zinc-900 shadow-xl border border-black/5 dark:border-white/10 cursor-pointer transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl shrink-0 ${
+                    isLastAndOdd
+                      ? "w-full max-w-full md:w-[calc(33.333%-1.5rem)] lg:w-[calc(33.333%-1.75rem)] md:max-w-[340px]"
+                      : "w-[calc(50%-0.6rem)] md:w-[calc(33.333%-1.5rem)] lg:w-[calc(33.333%-1.75rem)] max-w-[340px]"
                   }`}
                 >
-                  <div className="relative w-full aspect-[3/4.2] overflow-hidden">
+                  <div
+                    className={`relative w-full overflow-hidden ${
+                      isLastAndOdd
+                        ? "aspect-[16/9] sm:aspect-[2/1] md:aspect-[3/4.2]"
+                        : "aspect-[3/4.2]"
+                    }`}
+                  >
                     <Image
                       src={cat.image}
                       alt={cat.name}
                       fill
-                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 340px"
-                      className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-106"
+                      sizes={
+                        isLastAndOdd
+                          ? "(max-width: 768px) 100vw, (max-width: 1024px) 33vw, 340px"
+                          : "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 340px"
+                      }
+                      className={`object-cover transition-transform duration-700 ease-out group-hover:scale-106 ${
+                        isLastAndOdd
+                          ? "object-[center_60%] md:object-center"
+                          : "object-center"
+                      }`}
                     />
 
                     {/* Gradient Overlay for Text Readability */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent pointer-events-none" />
 
-                    {/* Bottom Bar: Category Name & Circular Arrow */}
-                    <div className="absolute bottom-4 left-4 right-4 sm:bottom-5 sm:left-5 sm:right-5 flex items-center justify-between z-10">
-                      <span className="font-serif text-base sm:text-lg lg:text-xl font-normal tracking-wide text-white drop-shadow-md">
-                        {cat.name}
+                    {/* Top Tag Pill */}
+                    <div className="absolute top-4 left-4 sm:top-5 sm:left-5 z-10">
+                      <span className="text-[9px] sm:text-[10px] tracking-[0.25em] uppercase font-bold text-[#FDFBF7] bg-black/50 backdrop-blur-md px-3 py-1 border border-white/20 rounded-full">
+                        {cat.tag}
                       </span>
+                    </div>
 
-                      <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/20 backdrop-blur-md border border-white/40 flex items-center justify-center text-white shadow-lg shrink-0 group-hover:bg-white group-hover:text-black group-hover:scale-110 transition-all duration-300">
-                        <ArrowUpRight className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2]" />
+                    {/* Bottom Bar: Category Name & Sleek Gold Arrow */}
+                    <div className="absolute bottom-4 left-4 right-4 sm:bottom-5 sm:left-5 sm:right-5 flex items-center justify-between z-10">
+                      <div>
+                        <span className="font-serif text-lg sm:text-xl lg:text-2xl font-bold tracking-wide text-white drop-shadow-md block">
+                          {cat.name}
+                        </span>
+                        <span className="text-[10px] uppercase tracking-[0.2em] text-[#C5A059] font-medium hidden sm:block">
+                          View Lookbook
+                        </span>
+                      </div>
+
+                      <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#C5A059]/20 backdrop-blur-md border border-[#C5A059]/60 flex items-center justify-center text-[#C5A059] shadow-lg shrink-0 group-hover:bg-[#C5A059] group-hover:text-[#2B0A0E] group-hover:scale-110 transition-all duration-300">
+                        <ArrowUpRight className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2.2]" />
                       </span>
                     </div>
                   </div>
                 </Link>
               );
             })}
-          </div>
-
-          {/* Section Bottom CTA Pill */}
-          <div className="mt-16 sm:mt-24 text-center">
-            <Link
-              href="/collections"
-              className={`inline-flex items-center space-x-3 rounded-full px-8 py-4 text-xs uppercase tracking-[0.25em] font-medium transition-all duration-300 shadow-md ${
-                isWhiteMode
-                  ? "bg-zinc-950 text-white hover:bg-zinc-800"
-                  : "bg-white text-zinc-950 hover:bg-zinc-200"
-              }`}
-            >
-              <span>Explore All Categories</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
           </div>
         </div>
       </section>
@@ -986,29 +1124,58 @@ export default function HomePage() {
             className="object-cover object-center"
           />
           {/* Subtle Contrast Vignette for readability */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/15 via-transparent to-black/25 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/30 pointer-events-none" />
         </div>
 
-        {/* Floating Ivory Vision Card on the Right (Glides and fades smoothly on scroll) */}
+        {/* Floating Ivory Vision Card on the Right (Slender & Elongated, matching reference) */}
         <div
-          ref={ivoryCardRef}
-          className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-10 lg:px-16 py-16 sm:py-24 flex justify-end will-change-transform"
+          className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-14 py-12 sm:py-20 flex justify-end"
         >
-          <div className="w-full sm:w-[50%] md:w-[44%] lg:w-[38%] max-w-[460px] bg-[#fff7ef]/98 backdrop-blur-md rounded-[2.2rem] sm:rounded-[2.6rem] p-8 sm:p-11 lg:p-12 shadow-[0_30px_70px_rgba(0,0,0,0.3)] border border-white/80 flex flex-col justify-between min-h-[440px] sm:min-h-[500px]">
-            {/* Title */}
-            <h2 className="font-sans text-3xl sm:text-5xl lg:text-[3.25rem] font-normal tracking-tight text-zinc-950 leading-[1.05]">
-              Our Vision
-            </h2>
+          <div
+            ref={ivoryCardRef}
+            className="w-[78%] sm:w-[320px] md:w-[300px] lg:w-[285px] max-w-[305px] bg-[#fff7ef]/95 backdrop-blur-md rounded-[2.4rem] sm:rounded-[2.8rem] p-6 sm:p-8 shadow-[0_30px_70px_rgba(0,0,0,0.3)] border border-white/80 flex flex-col justify-between min-h-[580px] sm:min-h-[660px] lg:min-h-[720px] will-change-transform origin-center"
+          >
+            {/* Top Heading matching reference */}
+            <div>
+              <h2 className="font-serif text-3xl sm:text-4xl lg:text-[2.5rem] font-medium tracking-tight text-zinc-950 leading-[1.08]">
+                Our Vision
+              </h2>
+            </div>
 
-            {/* Tagline & Paragraph pushed down with generous breathing room */}
-            <div className="mt-auto pt-16 sm:pt-24 lg:pt-32">
-              <span className="text-[10px] sm:text-xs tracking-[0.22em] uppercase font-semibold text-[#c07a48] mb-3 sm:mb-4 block">
-                CONTENT WITHOUT LIMITS
+            {/* Bottom Content Area */}
+            <div>
+              <span className="text-[10px] sm:text-[11px] tracking-[0.22em] uppercase font-bold text-[#D96C3A] block mb-3">
+                FLOWERS IN SPANISH · BESPOKE ELEGANCE
               </span>
 
-              <p className="text-xs sm:text-[13px] lg:text-sm font-light text-zinc-700 leading-relaxed pb-2 sm:pb-4">
-                We believe that every fashion and beauty brand — regardless of size or budget — deserves content that looks like it was shot on a Paris runway. Our platform makes that standard the new baseline, not the luxury exception reserved for heritage houses.
+              <p className="text-xs sm:text-[13px] font-light text-zinc-700 leading-relaxed">
+                ‘de flores’ stemmed from a young fashion designer’s passion for crafting unique and novel style statements — to create an unmistakable distinction. Translating to <strong className="font-semibold text-zinc-900">‘flowers’ in Spanish</strong>, our atelier symbolises elegance, chastity, and loveliness in every attire we design.
               </p>
+
+              <p className="text-xs sm:text-[13px] font-light text-zinc-700 leading-relaxed mt-3">
+                For those who don&apos;t fancy off-the-peg shopping, ‘de flores’ is a perfect choice for any occasion. We tailor-make pret apparel, designer bridal clothing, occasion wear, and western ensembles with uncompromised quality, master embroidery, and trust.
+              </p>
+
+              {/* Showroom Footnote */}
+              <div className="mt-5 pt-4 border-t border-zinc-200/60 flex items-center justify-between">
+                <div>
+                  <span className="text-[9px] uppercase tracking-[0.22em] font-semibold text-zinc-400 block">
+                    Bespoke Showroom
+                  </span>
+                  <span className="font-serif text-xs sm:text-sm text-zinc-900 font-medium italic">
+                    Near Cochin Int&apos;l Airport
+                  </span>
+                </div>
+
+                <Link
+                  href="/founder"
+                  data-cursor="STORY"
+                  className="w-8 h-8 rounded-full bg-[#2B0A0E] text-[#C5A059] flex items-center justify-center hover:bg-[#C5A059] hover:text-[#2B0A0E] transition-colors shadow-md shrink-0"
+                  title="Founder Story"
+                >
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -1046,7 +1213,7 @@ export default function HomePage() {
       {/* 5. ATELIER GALLERY LOOKBOOK (Fluid Editorial Grid with Category Filter & Lightbox) */}
       <section
         ref={gallerySectionRef}
-        id="gallery-section"
+        id="lookbook"
         className={`relative z-[30] w-full py-20 sm:py-28 px-5 sm:px-10 lg:px-16 transition-colors duration-500 border-t ${
           isWhiteMode
             ? "bg-[#faf9f6] text-zinc-900 border-zinc-200/80"
@@ -1054,34 +1221,29 @@ export default function HomePage() {
         }`}
       >
         <div className="max-w-7xl mx-auto">
-          {/* Top Metadata Bar */}
-          <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.25em] text-zinc-400 mb-8 border-b border-zinc-200/60 dark:border-white/10 pb-4">
-            <span className="flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-zinc-500" />
-              Lookbook Archive
-            </span>
-            <span>The Haute Edit</span>
-            <span>2026 Collection</span>
-          </div>
-
           {/* Section Heading */}
           <div className="text-center mb-12 sm:mb-16">
+            <span className="text-[11px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#C5A059] block mb-3">
+              Our Masterpieces
+            </span>
             <h2
-              className={`text-4xl sm:text-6xl md:text-7xl font-light tracking-tight ${
+              className={`text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight ${
                 isWhiteMode ? "text-zinc-900" : "text-white"
               }`}
             >
-              Atelier Gallery
-              <span className="block font-serif italic font-normal text-5xl sm:text-7xl md:text-8xl mt-1 sm:mt-2">
-                The Curated Edit
+              Featured
+              <span className={`block font-serif italic font-bold text-4xl sm:text-5xl lg:text-6xl mt-1 sm:mt-2 ${
+                isWhiteMode ? "text-[#2B0A0E]" : "text-[#C5A059]"
+              }`}>
+                Designs
               </span>
             </h2>
-            <p className="text-sm sm:text-base font-light text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto mt-4 sm:mt-6 leading-relaxed">
-              Explore bespoke couture creations, bridal trousseaus, and red-carpet ensembles handcrafted by our master artisans.
+            <p className="text-sm sm:text-base font-light text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto mt-4 sm:mt-5 leading-relaxed">
+              Explore our bespoke bridal lehengas, royal wedding gowns, timeless sarees, and red-carpet couture handcrafted by master artisans.
             </p>
           </div>
 
-          {/* Responsive Gallery Grid: Authentic Pinterest Masonry Lookbook */}
+          {/* Responsive Gallery Grid: Authentic Pinterest Masonry Lookbook with Fabric Overlays */}
           <div className="columns-2 md:columns-3 lg:columns-4 gap-4 sm:gap-6">
             {(showAllGallery ? GALLERY_ITEMS : GALLERY_ITEMS.slice(0, 8)).map((item, index) => {
               const isFirst = index === 0;
@@ -1094,6 +1256,7 @@ export default function HomePage() {
                   <div
                     ref={isFirst ? galleryFirstCardRef : undefined}
                     onClick={() => setSelectedGalleryImage(item.image)}
+                    data-cursor="VIEW"
                     className={`group relative overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] bg-zinc-900 shadow-md cursor-pointer transition-[transform,box-shadow] duration-500 hover:-translate-y-1.5 hover:shadow-2xl border border-black/5 dark:border-white/10 ${item.aspect}`}
                   >
                     <Image
@@ -1103,6 +1266,29 @@ export default function HomePage() {
                       sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                       className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-106"
                     />
+
+                    {/* Gradient Overlay for Fabric Spec and Title Reveal on Hover */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4 sm:p-5 pointer-events-none">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[9px] uppercase tracking-[0.22em] font-bold text-[#C5A059] bg-black/60 px-2 py-0.5 border border-[#C5A059]/40">
+                          {item.tag}
+                        </span>
+                        <span className="text-[10px] font-mono text-[#FDFBF7]/80">
+                          {item.number}
+                        </span>
+                      </div>
+
+                      <div>
+                        <h4 className="font-serif text-sm sm:text-base font-bold text-white tracking-wide leading-tight drop-shadow-md">
+                          {item.title}
+                        </h4>
+                        {item.fabric && (
+                          <p className="text-[10px] sm:text-[11px] font-sans font-light text-[#C5A059] tracking-wider mt-1 drop-shadow">
+                            {item.fabric}
+                          </p>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               );
@@ -1113,10 +1299,11 @@ export default function HomePage() {
           <div className="mt-14 sm:mt-18 text-center">
             <button
               onClick={() => setShowAllGallery(!showAllGallery)}
-              className={`inline-flex items-center space-x-2.5 rounded-full px-8 py-3.5 text-xs uppercase tracking-[0.22em] font-medium transition-all duration-300 shadow-md ${
+              data-cursor="TOGGLE"
+              className={`inline-flex items-center space-x-2.5 rounded-full px-9 py-4 text-xs uppercase tracking-[0.25em] font-bold transition-all duration-300 shadow-md ${
                 isWhiteMode
-                  ? "bg-zinc-950 text-white hover:bg-zinc-800"
-                  : "bg-white text-zinc-950 hover:bg-zinc-200"
+                  ? "bg-[#2B0A0E] text-[#C5A059] border border-[#C5A059]/40 hover:bg-black hover:text-white"
+                  : "bg-[#FDFBF7] text-[#2B0A0E] hover:bg-[#C5A059] hover:text-[#2B0A0E]"
               }`}
             >
               <span>{showAllGallery ? "Show Less Looks" : `Show More (${GALLERY_ITEMS.length} Looks)`}</span>
@@ -1130,8 +1317,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 6. WHAT WE DELIVER */}
+      {/* 6. BEHIND THE SEAMS (The Atelier Discipline) */}
       <section
+        id="craft"
         className={`relative z-10 w-full py-20 sm:py-28 px-6 sm:px-12 lg:px-20 transition-colors duration-500 ${
           isWhiteMode ? "bg-[#f5f3ec] text-zinc-900" : "bg-black text-white"
         }`}
@@ -1140,23 +1328,34 @@ export default function HomePage() {
 
           {/* Section Heading */}
           <div className="mb-12 sm:mb-16">
+            <span className="text-[11px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#C5A059] block mb-3">
+              Authentic Handwork & Embroidery
+            </span>
             <h2
-              className={`text-4xl sm:text-6xl md:text-7xl font-light tracking-tight ${
-                isWhiteMode ? "text-zinc-950" : "text-white"
+              className={`text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight ${
+                isWhiteMode ? "text-zinc-900" : "text-white"
               }`}
             >
-              What We Deliver
+              Behind the
+              <span className={`block font-serif italic font-bold text-4xl sm:text-5xl lg:text-6xl mt-1 sm:mt-2 ${
+                isWhiteMode ? "text-[#2B0A0E]" : "text-[#C5A059]"
+              }`}>
+                Craft
+              </span>
             </h2>
+            <p className="text-sm sm:text-base font-light text-zinc-600 dark:text-zinc-400 max-w-xl mt-4 sm:mt-5 leading-relaxed">
+              Generations of master artisans, authentic antique zardozi wirework, and pure handloom silks tailored to perfection.
+            </p>
           </div>
 
-          {/* Main 2-Column Grid: Image Left, Deliverables Right */}
+          {/* Main 2-Column Grid: Image Left, Storytelling Deliverables Right */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
             {/* Left Column: Portrait Editorial Image */}
             <div className="lg:col-span-5">
               <div className="relative w-full aspect-[4/5] overflow-hidden rounded-2xl sm:rounded-3xl shadow-2xl border border-black/5 dark:border-white/10">
                 <Image
                   src="/gallery_purple.jpg"
-                  alt="What We Deliver - Couture Craftsmanship"
+                  alt="Behind the Craft - Couture Craftsmanship"
                   fill
                   sizes="(max-width: 1024px) 100vw, 40vw"
                   className="object-cover object-center transition-transform duration-700 ease-out hover:scale-105"
@@ -1164,204 +1363,432 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right Column: 4 Editorial Deliverables */}
+            {/* Right Column: 4 Haute Couture Storytelling Pillars */}
             <div className="lg:col-span-7 flex flex-col space-y-7 sm:space-y-9">
-              {/* Item 1 */}
+              {/* Pillar 1 */}
               <div className="flex items-start space-x-4 sm:space-x-5">
-                <span className="w-1.5 h-1.5 rounded-[1px] bg-zinc-800 dark:bg-white mt-2.5 shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-[#C5A059] mt-2.5 shrink-0" />
                 <p className={`text-sm sm:text-base leading-relaxed font-light ${isWhiteMode ? "text-zinc-700" : "text-zinc-300"}`}>
-                  <strong className={`font-semibold ${isWhiteMode ? "text-zinc-950" : "text-white"}`}>
-                    Bespoke Artisanal Tailoring
-                  </strong>{" "}
-                  — Every garment is meticulously designed and sculpted to your exact measurements, incorporating hand-guided zardozi embroidery, bespoke draping, and personalized fit consultations for a silhouette made exclusively for you.
+                  <strong className={`font-serif font-bold text-base sm:text-lg block mb-1 ${isWhiteMode ? "text-[#2B0A0E]" : "text-white"}`}>
+                    Guild of Master Karigars
+                  </strong>
+                  Generations of artisanal lineage in Old Delhi and Lucknow specializing in authentic antique *zardozi*, *aari*, *dabka*, and *mukaish* wire hand-embroidery.
                 </p>
               </div>
 
-              {/* Item 2 */}
+              {/* Pillar 2 */}
               <div className="flex items-start space-x-4 sm:space-x-5">
-                <span className="w-1.5 h-1.5 rounded-[1px] bg-zinc-800 dark:bg-white mt-2.5 shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-[#C5A059] mt-2.5 shrink-0" />
                 <p className={`text-sm sm:text-base leading-relaxed font-light ${isWhiteMode ? "text-zinc-700" : "text-zinc-300"}`}>
-                  <strong className={`font-semibold ${isWhiteMode ? "text-zinc-950" : "text-white"}`}>
-                    Heritage Craftsmanship Meets Modern Form
-                  </strong>{" "}
-                  — Revitalizing centuries-old handloom weaves and regal heritage techniques, re-engineered for contemporary global wardrobes and modern red-carpet occasions without compromising authenticity.
+                  <strong className={`font-serif font-bold text-base sm:text-lg block mb-1 ${isWhiteMode ? "text-[#2B0A0E]" : "text-white"}`}>
+                    Pure Heritage Handloom Weaves
+                  </strong>
+                  Sourced directly from artisan weaver cooperatives across Varanasi, Kanchipuram, and Chanderi — uncompromised mulberry silks, metallic tissues, and tissue organzas.
                 </p>
               </div>
 
-              {/* Item 3 */}
+              {/* Pillar 3 */}
               <div className="flex items-start space-x-4 sm:space-x-5">
-                <span className="w-1.5 h-1.5 rounded-[1px] bg-zinc-800 dark:bg-white mt-2.5 shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-[#C5A059] mt-2.5 shrink-0" />
                 <p className={`text-sm sm:text-base leading-relaxed font-light ${isWhiteMode ? "text-zinc-700" : "text-zinc-300"}`}>
-                  <strong className={`font-semibold ${isWhiteMode ? "text-zinc-950" : "text-white"}`}>
-                    Bridal & Occasion Trousseau Concierge
-                  </strong>{" "}
-                  — Full bridal concierge styling from statement reception lehengas and pure silk sarees to coordinated groom&apos;s sherwanis and festive party wear collections.
+                  <strong className={`font-serif font-bold text-base sm:text-lg block mb-1 ${isWhiteMode ? "text-[#2B0A0E]" : "text-white"}`}>
+                    Bespoke Shade & Silhouette Sculpting
+                  </strong>
+                  Every garment is sculpted through private contour draping, personalized color-matching palettes, and hand-cut pattern draftsmanship tailored specifically to your posture.
                 </p>
               </div>
 
-              {/* Item 4 */}
+              {/* Pillar 4 */}
               <div className="flex items-start space-x-4 sm:space-x-5">
-                <span className="w-1.5 h-1.5 rounded-[1px] bg-zinc-800 dark:bg-white mt-2.5 shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-[#C5A059] mt-2.5 shrink-0" />
                 <p className={`text-sm sm:text-base leading-relaxed font-light ${isWhiteMode ? "text-zinc-700" : "text-zinc-300"}`}>
-                  <strong className={`font-semibold ${isWhiteMode ? "text-zinc-950" : "text-white"}`}>
-                    Global White-Glove Delivery & Consultations
-                  </strong>{" "}
-                  — Seamless express insured delivery worldwide, paired with private video styling appointments, custom fabric swatches, and lifetime aftercare support.
+                  <strong className={`font-serif font-bold text-base sm:text-lg block mb-1 ${isWhiteMode ? "text-[#2B0A0E]" : "text-white"}`}>
+                    Bridal & Trousseau Concierge
+                  </strong>
+                  Dedicated master designer consultations, custom swatch presentation kits, global private video fittings, and heirloom conservation guidance for your grandest moments.
                 </p>
-              </div>
-
-              {/* Section CTA */}
-              <div className="pt-4">
-                <Link
-                  href="/about"
-                  className={`inline-flex items-center space-x-3 text-xs uppercase tracking-[0.25em] font-medium border-b pb-1.5 transition-colors ${
-                    isWhiteMode
-                      ? "border-zinc-900 text-zinc-950 hover:text-zinc-600 hover:border-zinc-400"
-                      : "border-white text-white hover:text-white/70 hover:border-white/50"
-                  }`}
-                >
-                  <span>Discover Our Atelier</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 7. FULL-SCREEN EDITORIAL IMAGE PINNED SCROLL WITH TEXT ENTRANCE */}
-      <div
-        ref={editorialPinnedRef}
-        className="relative h-[230vh] sm:h-[260vh] z-20"
-      >
-        <div className="sticky top-0 w-full h-screen overflow-hidden flex items-center justify-center">
-          {/* Static Full-Screen Editorial Background Image */}
-          <Image
-            src="/newimages/IMG_1058.webp"
-            alt="De flores Editorial Couture"
-            fill
-            priority
-            sizes="100vw"
-            quality={95}
-            className="object-cover object-center"
-          />
-
-          {/* Dynamic Contrast Scrim (Subtle at first, deepens as text enters) */}
-          <div
-            ref={editorialScrimRef}
-            className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/55 to-black/35 pointer-events-none transition-opacity duration-150 z-[2]"
-            style={{ opacity: 0.2 }}
-          />
-
-          {/* Centered Editorial Text Overlay that glides in on scroll */}
-          <div
-            ref={editorialTextRef}
-            className="relative z-20 max-w-4xl mx-auto px-6 sm:px-10 text-center text-white will-change-transform pointer-events-auto"
-            style={{ opacity: 0, transform: "translate3d(0, 50px, 0)" }}
-          >
-            {/* Tagline Pill */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/25 mb-5 sm:mb-7 shadow-lg">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-              <span className="text-[10px] sm:text-xs uppercase tracking-[0.28em] font-medium text-white/90">
-                Our Atelier Promise
-              </span>
+      {/* 7 & 8: FULL-SCREEN EDITORIAL IMAGE WITH PARALLAX & THE TEAM SECTION ROLLING ABOVE */}
+      <div id="editorial-archive" ref={editorialPinnedRef} className="relative w-full">
+        {/* 7. Full-Screen Editorial Background Canvas with Parallax */}
+        <div className="relative w-full h-[135vh]">
+          <div className="sticky top-0 w-full h-screen z-10 overflow-hidden flex items-center justify-center">
+            {/* Parallax Image Canvas */}
+            <div
+              ref={editorialImageRef}
+              className="absolute -top-[10%] -bottom-[10%] -left-[5%] -right-[5%] w-[110%] h-[120%] will-change-transform"
+            >
+              <Image
+                src="/newimages/IMG_1058.webp"
+                alt="De flores Editorial Couture"
+                fill
+                priority
+                sizes="100vw"
+                quality={95}
+                className="object-cover object-center"
+              />
             </div>
 
-            {/* Main Statement */}
-            <h2 className="font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-light tracking-tight leading-[1.08] text-white drop-shadow-[0_15px_35px_rgba(0,0,0,0.8)]">
-              Best for your fit,
-              <span className="block italic font-normal mt-2 sm:mt-3 text-amber-200/95 font-serif">
-                best from us always.
-              </span>
-            </h2>
+            {/* Subtle Depth Vignette */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-black/20 pointer-events-none z-[2]" />
 
-            {/* Subtext */}
-            <p className="text-xs sm:text-base md:text-lg font-light text-white/85 max-w-xl mx-auto mt-6 sm:mt-8 leading-relaxed tracking-wide drop-shadow-md">
-              Every silhouette sculpted with intention, every thread woven with generational mastery. Bespoke couture tailored for your grandest moments.
-            </p>
+            {/* Prominently Viewable Explore Collection Button */}
+            <div className="absolute bottom-[20vh] sm:bottom-[23vh] md:bottom-[25vh] inset-x-0 z-20 flex flex-col items-center justify-center px-4 pointer-events-auto">
+              <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.3em] font-semibold text-[#FDFBF7]/90 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] mb-3 text-center">
+                The 2026 Bridal & Occasion Collection
+              </span>
+              <Link
+                href="/explore"
+                data-cursor="EXPLORE"
+                className="group relative inline-flex items-center gap-3.5 sm:gap-4 px-8 sm:px-10 py-4 sm:py-4.5 rounded-full bg-[#2B0A0E] hover:bg-[#3D0E14] text-[#FDFBF7] border border-[#C5A059] shadow-[0_15px_35px_rgba(0,0,0,0.6),0_0_25px_rgba(197,160,89,0.35)] overflow-hidden transition-all duration-500 hover:scale-105 active:scale-95"
+              >
+                {/* Shimmer light sweep - strictly contained inside overflow-hidden */}
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
+
+                {/* Continuous glowing radar beacon */}
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C5A059] opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#C5A059]" />
+                </span>
+
+                <span className="text-[11px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#FDFBF7] group-hover:text-[#C5A059] transition-colors whitespace-nowrap">
+                  Explore Collection
+                </span>
+
+                <span className="w-7 h-7 rounded-full bg-[#C5A059]/20 border border-[#C5A059]/40 flex items-center justify-center text-[#C5A059] group-hover:bg-[#C5A059] group-hover:text-[#2B0A0E] group-hover:translate-x-1 transition-all duration-300">
+                  <ArrowRight className="w-3.5 h-3.5 stroke-[2]" />
+                </span>
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* 8. THE TEAM BEHIND SECTION (Glides smoothly above the full-screen image) */}
+        {/* 8. THE TEAM BEHIND SECTION (Side-by-side scrollable grey image boxes) */}
+        <section
+          className={`relative z-20 w-full py-20 sm:py-28 px-6 sm:px-12 lg:px-20 rounded-none border-t border-zinc-200/80 dark:border-white/10 transition-colors duration-500 ${
+            isWhiteMode ? "bg-[#faf9f6] text-zinc-900" : "bg-zinc-950 text-white"
+          }`}
+        >
+          <div className="max-w-7xl mx-auto">
+            {/* Heading with Navigation Controls */}
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10 sm:mb-14">
+              <div>
+                <span className="text-[11px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#C5A059] block mb-3">
+                  Our Designers & Artisans
+                </span>
+                <h2
+                  className={`text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight ${
+                    isWhiteMode ? "text-zinc-900" : "text-white"
+                  }`}
+                >
+                  The People Behind
+                  <span className={`block font-serif italic font-bold text-4xl sm:text-5xl lg:text-6xl mt-1 sm:mt-2 ${
+                    isWhiteMode ? "text-[#2B0A0E]" : "text-[#C5A059]"
+                  }`}>
+                    De flores
+                  </span>
+                </h2>
+                <p className="text-sm sm:text-base font-light text-zinc-600 dark:text-zinc-400 max-w-xl mt-4 sm:mt-5 leading-relaxed">
+                  Meet our passionate designers, master tailors, and bridal stylists dedicated to bringing your dream outfits to life.
+                </p>
+              </div>
+
+              {/* Scroll Controls (Desktop & Mobile) */}
+              <div className="flex items-center gap-3 mt-6 md:mt-0">
+                <button
+                  type="button"
+                  onClick={() => scrollTeam("left")}
+                  aria-label="Scroll previous team card"
+                  className={`w-11 h-11 rounded-full flex items-center justify-center border transition-all duration-300 active:scale-95 ${
+                    isWhiteMode
+                      ? "bg-white hover:bg-zinc-200/90 border-zinc-300 text-zinc-900 shadow-sm"
+                      : "bg-[#252528] hover:bg-zinc-800 border-white/10 text-white hover:border-[#C5A059]/50 shadow-md"
+                  }`}
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => scrollTeam("right")}
+                  aria-label="Scroll next team card"
+                  className={`w-11 h-11 rounded-full flex items-center justify-center border transition-all duration-300 active:scale-95 ${
+                    isWhiteMode
+                      ? "bg-white hover:bg-zinc-200/90 border-zinc-300 text-zinc-900 shadow-sm"
+                      : "bg-[#252528] hover:bg-zinc-800 border-white/10 text-white hover:border-[#C5A059]/50 shadow-md"
+                  }`}
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Side-by-side scrollable grey boxes of images */}
+            <div
+              ref={teamScrollRef}
+              className="flex overflow-x-auto gap-5 sm:gap-6 pb-8 pt-2 snap-x snap-mandatory scrollbar-none -mx-6 px-6 sm:-mx-12 sm:px-12 lg:-mx-20 lg:px-20"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
+              {TEAM_PILLARS.map((pillar) => (
+                <Link
+                  key={pillar.number}
+                  href={pillar.href}
+                  data-cursor="EXPLORE"
+                  className={`group shrink-0 snap-start w-[290px] sm:w-[340px] md:w-[380px] rounded-[2rem] p-4 sm:p-5 flex flex-col justify-between transition-all duration-500 hover:-translate-y-2.5 shadow-xl cursor-pointer ${
+                    isWhiteMode
+                      ? "bg-zinc-100 hover:bg-zinc-200/90 border border-zinc-300/80 hover:border-zinc-400/80 shadow-zinc-200/60"
+                      : "bg-[#252528] hover:bg-[#2e2e33] border border-white/10 hover:border-[#C5A059]/40 shadow-black/50"
+                  }`}
+                >
+                  <div>
+                    {/* Architectural Grey Box (in place of image) */}
+                    <div className={`relative aspect-[4/3.8] w-full rounded-[1.5rem] overflow-hidden mb-5 p-5 flex flex-col justify-between transition-colors duration-500 border ${
+                      isWhiteMode
+                        ? "bg-zinc-200/80 group-hover:bg-zinc-300/80 border-zinc-300/80 text-zinc-900"
+                        : "bg-[#1c1c1f] group-hover:bg-[#25252a] border-white/10 text-white"
+                    }`}>
+                      {/* Top Badges */}
+                      <div className="flex items-center justify-between z-10">
+                        <span className={`font-mono text-xs tracking-widest px-3 py-1 font-semibold rounded-full border ${
+                          isWhiteMode
+                            ? "bg-white/80 text-[#2B0A0E] border-zinc-300/80 shadow-xs"
+                            : "bg-black/60 text-[#C5A059] border-[#C5A059]/30"
+                        }`}>
+                          {pillar.number}
+                        </span>
+                        <span className={`text-[9px] tracking-[0.2em] uppercase font-bold px-2.5 py-1 rounded-full border ${
+                          isWhiteMode
+                            ? "bg-white/60 text-zinc-600 border-zinc-300/60"
+                            : "bg-white/10 text-white/80 border-white/15"
+                        }`}>
+                          {pillar.tag}
+                        </span>
+                      </div>
+
+                      {/* Center Monogram Emblem Watermark */}
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
+                        <div className="relative w-16 h-16 opacity-15 dark:opacity-20 transition-transform duration-500 group-hover:scale-110 filter contrast-125">
+                          <img
+                            src="/floral.svg"
+                            alt=""
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Bottom Title & Role inside Grey Box */}
+                      <div className="relative z-10">
+                        <p className={`text-[11px] font-medium uppercase tracking-wider mb-0.5 ${
+                          isWhiteMode ? "text-[#9E7A32]" : "text-[#C5A059]"
+                        }`}>
+                          {pillar.role}
+                        </p>
+                        <h3 className={`font-serif text-2xl sm:text-[1.7rem] font-bold tracking-tight leading-tight ${
+                          isWhiteMode ? "text-zinc-950 group-hover:text-[#2B0A0E]" : "text-white group-hover:text-[#C5A059]"
+                        }`}>
+                          {pillar.title}
+                        </h3>
+                      </div>
+                    </div>
+
+                    {/* Description inside grey box */}
+                    <p className={`text-xs sm:text-sm font-light leading-relaxed line-clamp-3 px-1 ${
+                      isWhiteMode ? "text-zinc-600" : "text-zinc-300"
+                    }`}>
+                      {pillar.description}
+                    </p>
+                  </div>
+
+                  {/* Footer Action inside Grey Box */}
+                  <div className={`mt-6 pt-4 border-t flex items-center justify-between px-1 ${
+                    isWhiteMode ? "border-zinc-200/90" : "border-white/10"
+                  }`}>
+                    <span className={`inline-flex items-center space-x-2 text-xs uppercase tracking-[0.2em] font-semibold transition-colors ${
+                      isWhiteMode
+                        ? "text-zinc-900 group-hover:text-[#2B0A0E]"
+                        : "text-white group-hover:text-[#C5A059]"
+                    }`}>
+                      <span>{pillar.linkText}</span>
+                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1.5 transition-transform" />
+                    </span>
+
+                    <span className="w-9 h-9 rounded-full bg-[#C5A059]/15 border border-[#C5A059]/30 flex items-center justify-center text-[#C5A059] group-hover:bg-[#C5A059] group-hover:text-[#2B0A0E] group-hover:rotate-45 transition-all duration-300">
+                      <ArrowUpRight className="w-4 h-4" />
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+    </div>
+
+      {/* 9. THE ATELIER JOURNAL (Editorial Articles & Craft Stories) */}
       <section
-        className={`relative z-30 w-full py-20 sm:py-28 px-6 sm:px-12 lg:px-20 rounded-none shadow-[0_-30px_70px_rgba(0,0,0,0.35)] border-t border-zinc-200/80 dark:border-white/10 transition-colors duration-500 ${
-          isWhiteMode ? "bg-[#faf9f6] text-zinc-900" : "bg-zinc-950 text-white"
+        id="journal"
+        className={`relative z-10 w-full py-20 sm:py-28 px-6 sm:px-12 lg:px-20 transition-colors duration-500 border-t ${
+          isWhiteMode
+            ? "bg-[#faf9f6] text-zinc-900 border-zinc-200/80"
+            : "bg-black text-white border-white/10"
         }`}
       >
         <div className="max-w-7xl mx-auto">
-          {/* Top Metadata Bar */}
-          <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.25em] text-zinc-400 mb-8 border-b border-zinc-200/60 dark:border-white/10 pb-4">
-            <span>Leadership & Culture</span>
-            <span>De flores Atelier</span>
-            <span>03 / 2026</span>
+          {/* Section Heading */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-6">
+            <div>
+              <span className="text-[11px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#C5A059] block mb-3">
+                Style Guides & Bridal Stories
+              </span>
+              <h2
+                className={`text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight ${
+                  isWhiteMode ? "text-zinc-900" : "text-white"
+                }`}
+              >
+                Bridal & Fashion
+                <span className={`block font-serif italic font-bold text-4xl sm:text-5xl lg:text-6xl mt-1 sm:mt-2 ${
+                  isWhiteMode ? "text-[#2B0A0E]" : "text-[#C5A059]"
+                }`}>
+                  Journal
+                </span>
+              </h2>
+              <p className="text-sm sm:text-base font-light text-zinc-600 dark:text-zinc-400 max-w-xl mt-4 sm:mt-5 leading-relaxed">
+                Inspiration, styling guides, real bride stories, and behind-the-scenes insights from our craft workshop.
+              </p>
+            </div>
+
+            <Link
+              href="/blog"
+              data-cursor="READ"
+              className={`inline-flex items-center space-x-3 text-xs uppercase tracking-[0.25em] font-semibold border-b pb-1.5 transition-colors self-start md:self-end ${
+                isWhiteMode
+                  ? "border-zinc-900 text-zinc-950 hover:text-[#C5A059] hover:border-[#C5A059]"
+                  : "border-white text-white hover:text-[#C5A059] hover:border-[#C5A059]"
+              }`}
+            >
+              <span>Read All Stories</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
 
-          {/* Heading matching reference */}
+          {/* 3 Editorial Articles Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10">
+            {JOURNAL_ARTICLES.map((article) => (
+              <article
+                key={article.id}
+                className="group flex flex-col justify-between cursor-pointer"
+              >
+                <div>
+                  <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-black/10 dark:border-white/10 mb-6 bg-zinc-900">
+                    <Image
+                      src={article.image}
+                      alt={article.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-106"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+                  </div>
+
+                  <div className="flex items-center justify-between text-[10px] tracking-[0.25em] uppercase font-bold text-[#C5A059] mb-3">
+                    <span>{article.category}</span>
+                    <span className="font-mono text-zinc-400">{article.readTime}</span>
+                  </div>
+
+                  <h3 className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-zinc-950 dark:text-white leading-snug group-hover:text-[#2B0A0E] dark:group-hover:text-[#C5A059] transition-colors mb-3">
+                    {article.title}
+                  </h3>
+
+                  <p className="text-xs sm:text-sm font-light text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                    {article.excerpt}
+                  </p>
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-zinc-200/80 dark:border-white/10 flex items-center justify-between">
+                  <span className="text-[10px] tracking-widest text-zinc-400 uppercase font-mono">
+                    {article.date}
+                  </span>
+                  <Link
+                    href={article.href}
+                    data-cursor="READ"
+                    className="inline-flex items-center space-x-1.5 text-xs uppercase tracking-[0.2em] font-semibold text-[#2B0A0E] dark:text-[#C5A059] group-hover:translate-x-1 transition-transform"
+                  >
+                    <span>Read Article</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 10. INSTAGRAM LOOKBOOK RIBBON */}
+      <section
+        className={`relative z-10 w-full py-16 sm:py-20 px-4 sm:px-8 transition-colors duration-500 border-t ${
+          isWhiteMode
+            ? "bg-[#f5f3ec] text-zinc-900 border-zinc-200/80"
+            : "bg-zinc-950 text-white border-white/10"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
           <div className="text-center mb-12 sm:mb-16">
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-cursor="INSTAGRAM"
+              className="inline-flex items-center space-x-2 text-[11px] sm:text-xs uppercase tracking-[0.3em] font-semibold text-[#C5A059] hover:opacity-80 transition-opacity mb-3"
+            >
+              <InstagramIcon className="w-3.5 h-3.5 text-[#C5A059]" />
+              <span>@deflores.india</span>
+            </a>
             <h2
-              className={`text-4xl sm:text-6xl md:text-7xl font-light tracking-tight ${
+              className={`text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight ${
                 isWhiteMode ? "text-zinc-900" : "text-white"
               }`}
             >
-              The Team Behind
-              <span className="block font-serif italic font-normal mt-1 sm:mt-2 text-5xl sm:text-7xl md:text-8xl">
-                De flores
+              Follow Our Journey
+              <span className={`block font-serif italic font-bold text-4xl sm:text-5xl lg:text-6xl mt-1 sm:mt-2 ${
+                isWhiteMode ? "text-[#2B0A0E]" : "text-[#C5A059]"
+              }`}>
+                On Instagram
               </span>
             </h2>
-            <p className="text-sm sm:text-base font-light text-zinc-600 dark:text-zinc-400 text-center max-w-xl mx-auto mt-4 sm:mt-6 leading-relaxed">
-              Design visionaries, master karigars, and bespoke stylists dedicated to crafting royalty, class, and bespoke couture.
+            <p className="text-sm sm:text-base font-light text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto mt-4 sm:mt-5 leading-relaxed">
+              Daily bridal inspirations, real bride portraits, and behind-the-scenes moments from our Cochin atelier.
             </p>
           </div>
 
-          {/* 3 Team & Atelier Pillar Boxes (No Images) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
-            {TEAM_PILLARS.map((pillar) => (
-              <div
-                key={pillar.number}
-                className="group relative flex flex-col justify-between p-8 sm:p-10 rounded-[1.8rem] sm:rounded-[2.2rem] bg-white dark:bg-zinc-900/80 border border-zinc-200/80 dark:border-white/10 shadow-lg shadow-black/5 hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 min-h-[380px]"
+          {/* 5-Item Lookbook Ribbon */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4">
+            {INSTAGRAM_SHOTS.map((shot) => (
+              <a
+                key={shot.id}
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-cursor="INSTAGRAM"
+                className="group relative aspect-square overflow-hidden rounded-2xl bg-zinc-900 border border-black/5 dark:border-white/10 block"
               >
-                {/* Top Info */}
-                <div>
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-xs tracking-widest text-[#c07a48] dark:text-[#e09865] bg-[#c07a48]/10 px-3 py-1 rounded-full font-semibold">
-                      {pillar.number}
-                    </span>
-                    <span className="text-[10px] tracking-[0.25em] uppercase font-semibold text-zinc-400">
-                      {pillar.tag}
-                    </span>
-                  </div>
-
-                  <h3 className="font-serif text-2xl sm:text-3xl font-normal text-zinc-950 dark:text-white mt-6 tracking-tight group-hover:text-[#c07a48] dark:group-hover:text-[#e09865] transition-colors">
-                    {pillar.title}
-                  </h3>
-
-                  <p className="text-xs sm:text-sm font-medium text-zinc-500 dark:text-zinc-400 mt-1">
-                    {pillar.role}
-                  </p>
-
-                  <div className="w-12 h-[1px] bg-zinc-200 dark:bg-white/15 my-6 group-hover:w-20 group-hover:bg-[#c07a48] transition-all duration-500" />
-
-                  <p className="text-xs sm:text-sm font-light text-zinc-600 dark:text-zinc-300 leading-relaxed">
-                    {pillar.description}
-                  </p>
-                </div>
-
-                {/* Bottom Link Action */}
-                <div className="mt-8 pt-5 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between">
-                  <Link
-                    href={pillar.href}
-                    className="inline-flex items-center space-x-2 text-xs uppercase tracking-[0.2em] font-medium text-zinc-900 dark:text-white hover:text-[#c07a48] dark:hover:text-[#e09865] transition-colors"
-                  >
-                    <span>{pillar.linkText}</span>
-                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-
-                  <span className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-white/10 flex items-center justify-center text-zinc-600 dark:text-white group-hover:bg-[#c07a48] group-hover:text-white transition-all duration-300">
-                    <ArrowUpRight className="w-4 h-4" />
+                <Image
+                  src={shot.image}
+                  alt="De flores Instagram Couture"
+                  fill
+                  sizes="(max-width: 640px) 50vw, 20vw"
+                  className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white p-3 text-center">
+                  <InstagramIcon className="w-6 h-6 text-[#C5A059] mb-2 transform scale-75 group-hover:scale-100 transition-transform duration-300" />
+                  <span className="text-[10px] uppercase tracking-widest font-semibold text-[#FDFBF7]">
+                    {shot.tag}
                   </span>
                 </div>
-              </div>
+              </a>
             ))}
           </div>
         </div>
@@ -1589,11 +2016,25 @@ export default function HomePage() {
       {/* 6. MOBILE DRAWER */}
       {isMobileMenuOpen && (
         <div
-          className={`fixed inset-0 z-50 flex flex-col justify-between p-8 md:hidden animate-fadeIn ${isWhiteMode ? "bg-white text-zinc-900" : "bg-black text-white"
+          className={`fixed inset-0 z-50 flex flex-col justify-between p-8 md:hidden animate-fadeIn ${isWhiteMode ? "bg-[#faf9f6] text-zinc-900" : "bg-black text-white"
             }`}
         >
           <div className="flex items-center justify-between">
-            <span className="font-serif tracking-[0.25em] text-2xl uppercase">De flores</span>
+            <Link
+              href="/"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex items-center group"
+              aria-label="De Flores Atelier"
+            >
+              <div className="relative h-[68px] sm:h-[76px] aspect-[5/6]">
+                <Image
+                  src="/logo.svg"
+                  alt="De flores"
+                  fill
+                  className="object-contain brightness-0 invert"
+                />
+              </div>
+            </Link>
             <button
               onClick={() => setIsMobileMenuOpen(false)}
               className="p-2"
@@ -1605,58 +2046,57 @@ export default function HomePage() {
 
           <nav className="flex flex-col space-y-6 text-xl uppercase tracking-[0.2em] font-light">
             <Link
-              href="/collections"
+              href="#lookbook"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="hover:opacity-60 transition-opacity"
+              className="hover:text-[#C5A059] transition-colors"
             >
-              Collections
+              Lookbook
             </Link>
             <Link
-              href="/about"
+              href="#craft"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="hover:opacity-60 transition-opacity"
+              className="hover:text-[#C5A059] transition-colors"
+            >
+              The Craft
+            </Link>
+            <Link
+              href="/founder"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="hover:text-[#C5A059] transition-colors"
             >
               About
             </Link>
             <Link
-              href="/journal"
+              href="#journal"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="hover:opacity-60 transition-opacity"
+              className="hover:text-[#C5A059] transition-colors"
             >
               Journal
             </Link>
             <Link
-              href="/sustainability"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="hover:opacity-60 transition-opacity"
-            >
-              Sustainability
-            </Link>
-            <Link
               href="/contact"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="hover:opacity-60 transition-opacity"
+              className="hover:text-[#C5A059] transition-colors"
             >
               Contact
             </Link>
           </nav>
 
-          <div className="flex flex-col space-y-4 pt-6 border-t border-zinc-200">
+          <div className="flex flex-col space-y-4 pt-6 border-t border-zinc-200 dark:border-white/10">
             <Link
               href="/login"
               onClick={() => setIsMobileMenuOpen(false)}
-              className={`text-center py-3 border rounded-full text-xs uppercase tracking-[0.2em] ${isWhiteMode ? "border-zinc-300" : "border-white/30"
+              className={`text-center py-3 border rounded-full text-xs uppercase tracking-[0.2em] font-semibold ${isWhiteMode ? "border-zinc-300 text-zinc-800" : "border-white/30 text-white"
                 }`}
             >
               Sign In
             </Link>
             <Link
-              href="/collections"
+              href="/contact"
               onClick={() => setIsMobileMenuOpen(false)}
-              className={`text-center py-3 rounded-full text-xs uppercase tracking-[0.2em] font-medium ${isWhiteMode ? "bg-zinc-950 text-white" : "bg-white text-black"
-                }`}
+              className="text-center py-3.5 rounded-full text-xs uppercase tracking-[0.22em] font-bold bg-[#2B0A0E] text-[#C5A059] border border-[#C5A059]"
             >
-              Shop Now
+              Book Consultation
             </Link>
           </div>
         </div>
