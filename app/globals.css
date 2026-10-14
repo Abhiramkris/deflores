@@ -319,5 +319,14 @@ body {
   100% { height: 12px; }
 }
 
+@keyframes coutureProgressFill {
+  0% {
+    transform: scaleX(0);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+
 
 

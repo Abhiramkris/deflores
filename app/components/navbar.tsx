@@ -39,8 +39,8 @@ export default function Navbar() {
       <header
         className={`fixed top-0 left-0 right-0 z-50 px-6 sm:px-12 flex items-center justify-between transition-all duration-300 ${
           isScrolled
-            ? "bg-white/95 backdrop-blur-md border-b border-zinc-200/80 text-zinc-900 py-4 shadow-sm"
-            : "bg-[#faf9f6]/95 backdrop-blur-md border-b border-zinc-200/70 text-zinc-900 py-5 sm:py-6"
+            ? "bg-white/95 backdrop-blur-md border-b border-zinc-200/80 text-zinc-900 py-3 sm:py-3.5 shadow-sm"
+            : "bg-[#faf9f6]/95 backdrop-blur-md border-b border-zinc-200/70 text-zinc-900 py-4 sm:py-5"
         }`}
       >
         {/* Brand Logo */}
@@ -49,7 +49,13 @@ export default function Navbar() {
           className="flex items-center group transition-transform duration-300 hover:scale-105"
           aria-label="De Flores Atelier"
         >
-          <div className="relative w-9 h-11 sm:w-10 sm:h-12 transition-all duration-300">
+          <div
+            className={`relative aspect-[5/6] transition-all duration-300 ${
+              isScrolled
+                ? "h-[50px] sm:h-[58px]"
+                : "h-[62px] sm:h-[76px] md:h-[90px]"
+            }`}
+          >
             <Image
               src="/logo.svg"
               alt="De flores"
@@ -131,7 +137,7 @@ export default function Navbar() {
               className="flex items-center group"
               aria-label="De Flores Atelier"
             >
-              <div className="relative w-9 h-11">
+              <div className="relative h-[68px] sm:h-[76px] aspect-[5/6]">
                 <Image
                   src="/logo.svg"
                   alt="De flores"

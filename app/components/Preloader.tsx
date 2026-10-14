@@ -40,7 +40,7 @@ export default function Preloader() {
     >
       <div className="relative flex flex-col items-center justify-center p-6 animate-pulse">
         {/* De flores Logo in Pure White */}
-        <div className="relative w-44 sm:w-56 h-52 sm:h-64 filter brightness-0 invert drop-shadow-[0_0_30px_rgba(255,255,255,0.4)]">
+        <div className="relative w-48 sm:w-64 h-56 sm:h-76 filter brightness-0 invert drop-shadow-[0_0_35px_rgba(255,255,255,0.45)]">
           <Image
             src="/logo.svg"
             alt="De flores"

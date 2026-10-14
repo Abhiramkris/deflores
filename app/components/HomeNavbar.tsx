@@ -37,7 +37,13 @@ export default function HomeNavbar() {
         
         {/* Brand Emblem */}
         <Link href="/" className="flex items-center group transition-transform duration-300 hover:scale-105" aria-label="De Flores Atelier">
-          <div className="relative w-9 h-11">
+          <div
+            className={`relative aspect-[5/6] transition-all duration-300 ${
+              isScrolled
+                ? "h-[50px] sm:h-[58px]"
+                : "h-[62px] sm:h-[76px] md:h-[90px]"
+            }`}
+          >
             <Image
               src="/logo.svg"
               alt="De flores"

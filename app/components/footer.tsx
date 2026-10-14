@@ -21,20 +21,17 @@ export default function Footer() {
         <div className="md:col-span-5 flex flex-col items-start space-y-6 text-left">
           <Link 
             href="/" 
-            className="flex items-center gap-3 group transition-transform duration-300"
+            className="flex items-center group transition-transform duration-300 hover:scale-105"
             aria-label="De Flores Atelier"
           >
-            <div className="relative w-8 h-8 md:w-9 md:h-9">
+            <div className="relative h-16 sm:h-20 aspect-[5/6]">
               <Image
-                src="/floral.svg"
-                alt="De Flores Emblem"
+                src="/logo.svg"
+                alt="De flores"
                 fill
-                className="object-contain"
+                className="object-contain brightness-0 invert drop-shadow-[0_2px_12px_rgba(255,255,255,0.15)] transition-all duration-300"
               />
             </div>
-            <span className="font-serif text-2xl md:text-3xl tracking-[0.25em] uppercase font-bold text-[#FDFBF7] group-hover:text-[#C5A059] transition-colors">
-              De flores
-            </span>
           </Link>
           <p className="text-zinc-400 text-xs md:text-sm leading-relaxed max-w-sm font-light tracking-wide">
             ‘de flores’ translates to ‘flowers’ in Spanish — symbolizing elegance, chastity, and loveliness in every attire we sculpt. Bespoke bridal couture, Varanasi & Kanchipuram handlooms, and red-carpet ensembles tailored to your fantasy.
@@ -124,7 +121,7 @@ export default function Footer() {
           <Link href="/admin/login" className="hover:text-white transition-colors uppercase tracking-widest font-semibold border-r border-white/10 pr-6 mr-2 text-[10px]">
             Admin
           </Link>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#C5A059] transition-colors flex items-center gap-1">
+          <a href="https://www.instagram.com/de_flores_official/" target="_blank" rel="noopener noreferrer" className="hover:text-[#C5A059] transition-colors flex items-center gap-1">
             Instagram <ArrowUpRight className="w-3 h-3" />
           </a>
           <a href="https://pinterest.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#C5A059] transition-colors flex items-center gap-1">
