@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function HomeNavbar() {
@@ -34,13 +35,17 @@ export default function HomeNavbar() {
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         
-        {/* Brand/Logo */}
-        <div className="flex flex-col text-left leading-tight text-white select-none">
-          <span className="text-[9px] tracking-[0.25em] font-semibold uppercase opacity-85">EST. 2025</span>
-          <Link href="/" className="text-sm font-bold tracking-[0.2em] uppercase mt-0.5 hover:opacity-80 transition-opacity">
-            DE FLORA
-          </Link>
-        </div>
+        {/* Brand Emblem */}
+        <Link href="/" className="flex items-center group transition-transform duration-300 hover:scale-105" aria-label="De Flores Atelier">
+          <div className="relative w-9 h-11">
+            <Image
+              src="/logo.svg"
+              alt="De flores"
+              fill
+              className="object-contain brightness-0 invert"
+            />
+          </div>
+        </Link>
 
         {/* Desktop Navigation Links */}
         <div className="hidden md:flex items-center gap-8 lg:gap-12">

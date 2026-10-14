@@ -1,23 +1,51 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
+  --background: #faf9f6;
   --foreground: #111111;
-  --primary-accent: #8b7355; /* Luxury Gold/Bronze accent */
+  --primary-accent: #C5A059; /* Antique Gold */
+  --royal-maroon: #2B0A0E;
+  --royal-maroon-dark: #1E070A;
+  --royal-gold: #C5A059;
+  --royal-gold-light: #DFBE82;
+  --burnt-orange: #D96C3A;
+  --cream-alabaster: #FDFBF7;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-inter), "Inter", sans-serif;
-  --font-serif: var(--font-serif), ui-serif, Georgia, "Times New Roman", serif;
+  --color-maroon: #2B0A0E;
+  --color-maroon-dark: #1E070A;
+  --color-gold: #C5A059;
+  --color-gold-light: #DFBE82;
+  --color-terracotta: #D96C3A;
+  --color-cream: #FDFBF7;
+  --font-sans: var(--font-sans), "Montserrat", sans-serif;
+  --font-serif: var(--font-serif), "Bodoni Moda", ui-serif, Georgia, serif;
 }
 
 body {
-  background: #0d0d0f;
-  color: #ffffff;
   overflow-x: clip;
   font-family: var(--font-sans);
+}
+
+/* Film grain subtle overlay */
+.film-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+}
+
+/* Luxury Editorial Buttons */
+.btn-editorial {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  border-radius: 9999px;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Glassmorphism effects */
