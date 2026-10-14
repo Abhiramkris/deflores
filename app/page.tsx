@@ -473,6 +473,7 @@ export default function HomePage() {
   const visionBgRef = useRef<HTMLDivElement>(null);
   const editorialPinnedRef = useRef<HTMLDivElement>(null);
   const editorialImageRef = useRef<HTMLDivElement>(null);
+  const editorialContentRef = useRef<HTMLDivElement>(null);
   const cachedCard = useRef<{
     docX: number;
     docY: number;
@@ -628,13 +629,24 @@ export default function HomePage() {
       // Skip calculation if section is far outside the viewport
       if (rect.bottom < -100 || rect.top > viewportH + 100) return;
 
-      // Progress of scroll across the section
-      const totalRange = rect.height + viewportH;
-      const p = Math.min(Math.max((viewportH - rect.top) / totalRange, 0), 1);
+      // Calculate progress of scroll through the pinned editorial track (0 at entry, 1 at full unpin)
+      const scrollRange = rect.height - viewportH;
+      const p = scrollRange > 0
+        ? Math.min(Math.max(-rect.top / scrollRange, 0), 1)
+        : Math.min(Math.max((viewportH - rect.top) / (rect.height + viewportH), 0), 1);
 
-      // Smooth parallax translation on the background image (-70px to +70px)
-      const imageOffset = (p - 0.5) * 140;
-      editorialImageRef.current.style.transform = `translate3d(0, ${imageOffset.toFixed(1)}px, 0) scale(1.08)`;
+      // Smooth fluid parallax translation and subtle optical zoom on background image
+      const imageOffset = -p * 140;
+      editorialImageRef.current.style.transform = `translate3d(0, ${imageOffset.toFixed(1)}px, 0) scale(${(1.06 + p * 0.05).toFixed(3)})`;
+
+      // Fluidly fade and shift the centered Explore button as The People Behind rolls on top
+      if (editorialContentRef.current) {
+        const contentOpacity = p < 0.25 ? 1 : Math.max(0, 1 - (p - 0.25) / 0.5);
+        const contentShift = p * -40;
+        editorialContentRef.current.style.opacity = contentOpacity.toFixed(3);
+        editorialContentRef.current.style.transform = `translate3d(0, ${contentShift.toFixed(1)}px, 0)`;
+        editorialContentRef.current.style.pointerEvents = contentOpacity < 0.2 ? "none" : "auto";
+      }
     };
 
     // Initial check on mount
@@ -1413,15 +1425,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 7 & 8: FULL-SCREEN EDITORIAL IMAGE WITH PARALLAX & THE TEAM SECTION ROLLING ABOVE */}
-      <div id="editorial-archive" ref={editorialPinnedRef} className="relative w-full">
-        {/* 7. Full-Screen Editorial Background Canvas with Parallax */}
-        <div className="relative w-full h-[135vh]">
+      {/* 7 & 8: FULL-SCREEN EDITORIAL IMAGE WITH PARALLAX & THE PEOPLE BEHIND ROLLING FLUIDLY ON TOP */}
+      <div id="editorial-archive" className="relative w-full">
+        {/* 7. Full-Screen Editorial Background Canvas with Parallax Scroll Track */}
+        <div ref={editorialPinnedRef} className="relative w-full h-[185vh]">
           <div className="sticky top-0 w-full h-screen z-10 overflow-hidden flex items-center justify-center">
             {/* Parallax Image Canvas */}
             <div
               ref={editorialImageRef}
-              className="absolute -top-[10%] -bottom-[10%] -left-[5%] -right-[5%] w-[110%] h-[120%] will-change-transform"
+              className="absolute -top-[12%] -bottom-[12%] -left-[6%] -right-[6%] w-[112%] h-[124%] will-change-transform"
             >
               <Image
                 src="/newimages/IMG_1058.webp"
@@ -1435,10 +1447,13 @@ export default function HomePage() {
             </div>
 
             {/* Subtle Depth Vignette */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-black/20 pointer-events-none z-[2]" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-black/25 pointer-events-none z-[2]" />
 
-            {/* Centered Explore Collection Button */}
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 text-center pointer-events-none">
+            {/* Centered Explore Collection Button (Fades and shifts slightly as The People Behind rolls on top) */}
+            <div
+              ref={editorialContentRef}
+              className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 text-center pointer-events-none will-change-transform transition-opacity duration-150"
+            >
               <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.3em] font-semibold text-[#FDFBF7]/90 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] mb-3 sm:mb-4 text-center pointer-events-auto">
                 The 2026 Bridal & Occasion Collection
               </span>
@@ -1468,9 +1483,9 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* 8. THE TEAM BEHIND SECTION (Side-by-side scrollable grey image boxes) */}
+        {/* 8. THE PEOPLE BEHIND DE FLORES (Glides fluidly ON TOP of the pinned editorial image) */}
         <section
-          className={`relative z-20 w-full py-20 sm:py-28 px-6 sm:px-12 lg:px-20 rounded-none border-t border-zinc-200/80 dark:border-white/10 transition-colors duration-500 ${
+          className={`relative z-30 w-full py-20 sm:py-28 px-6 sm:px-12 lg:px-20 rounded-t-[36px] sm:rounded-t-[50px] lg:rounded-t-[64px] border-t border-[#C5A059]/35 shadow-[0_-30px_90px_rgba(0,0,0,0.5),0_-10px_30px_rgba(0,0,0,0.25)] transition-colors duration-500 -mt-[15vh] sm:-mt-[22vh] ${
             isWhiteMode ? "bg-[#faf9f6] text-zinc-900" : "bg-zinc-950 text-white"
           }`}
         >
