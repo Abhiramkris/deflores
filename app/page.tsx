@@ -1437,21 +1437,21 @@ export default function HomePage() {
             {/* Subtle Depth Vignette */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-black/20 pointer-events-none z-[2]" />
 
-            {/* Prominently Viewable Explore Collection Button */}
-            <div className="absolute bottom-[20vh] sm:bottom-[23vh] md:bottom-[25vh] inset-x-0 z-20 flex flex-col items-center justify-center px-4 pointer-events-auto">
-              <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.3em] font-semibold text-[#FDFBF7]/90 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] mb-3 text-center">
+            {/* Centered Explore Collection Button */}
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 text-center pointer-events-none">
+              <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.3em] font-semibold text-[#FDFBF7]/90 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] mb-3 sm:mb-4 text-center pointer-events-auto">
                 The 2026 Bridal & Occasion Collection
               </span>
               <Link
                 href="/explore"
                 data-cursor="EXPLORE"
-                className="group relative inline-flex items-center gap-3.5 sm:gap-4 px-8 sm:px-10 py-4 sm:py-4.5 rounded-full bg-[#2B0A0E] hover:bg-[#3D0E14] text-[#FDFBF7] border border-[#C5A059] shadow-[0_15px_35px_rgba(0,0,0,0.6),0_0_25px_rgba(197,160,89,0.35)] overflow-hidden transition-all duration-500 hover:scale-105 active:scale-95"
+                className="group relative inline-flex items-center justify-center gap-3.5 sm:gap-4 pl-7 pr-6 sm:pl-8 sm:pr-7 py-4 sm:py-4.5 rounded-full bg-[#2B0A0E] hover:bg-[#3D0E14] text-[#FDFBF7] border border-[#C5A059] shadow-[0_15px_35px_rgba(0,0,0,0.6),0_0_25px_rgba(197,160,89,0.35)] overflow-hidden transition-all duration-500 hover:scale-105 active:scale-95 pointer-events-auto"
               >
                 {/* Shimmer light sweep - strictly contained inside overflow-hidden */}
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
 
                 {/* Continuous glowing radar beacon */}
-                <span className="relative flex h-2.5 w-2.5">
+                <span className="relative flex h-2.5 w-2.5 shrink-0">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C5A059] opacity-75" />
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#C5A059]" />
                 </span>
@@ -1460,7 +1460,7 @@ export default function HomePage() {
                   Explore Collection
                 </span>
 
-                <span className="w-7 h-7 rounded-full bg-[#C5A059]/20 border border-[#C5A059]/40 flex items-center justify-center text-[#C5A059] group-hover:bg-[#C5A059] group-hover:text-[#2B0A0E] group-hover:translate-x-1 transition-all duration-300">
+                <span className="w-7 h-7 rounded-full bg-[#C5A059]/20 border border-[#C5A059]/40 flex items-center justify-center text-[#C5A059] group-hover:bg-[#C5A059] group-hover:text-[#2B0A0E] group-hover:translate-x-1 transition-all duration-300 shrink-0">
                   <ArrowRight className="w-3.5 h-3.5 stroke-[2]" />
                 </span>
               </Link>
