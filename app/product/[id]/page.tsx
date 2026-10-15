@@ -466,9 +466,12 @@ export default function ProductPage({
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
 
                 {/* Left: Calendar Icon + Title */}
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-2 sm:gap-2.5">
                   <Calendar className="w-4 h-4 text-[#8F6B2A] shrink-0" />
-                  <span className="text-[11px] sm:text-xs font-bold tracking-[0.22em] uppercase text-[#2B0A0E] group-hover:text-[#8F6B2A] transition-colors whitespace-nowrap">
+                  <span className="sm:hidden text-[11px] font-bold tracking-[0.2em] uppercase text-[#2B0A0E] group-hover:text-[#8F6B2A] transition-colors whitespace-nowrap">
+                    Book
+                  </span>
+                  <span className="hidden sm:inline text-xs font-bold tracking-[0.22em] uppercase text-[#2B0A0E] group-hover:text-[#8F6B2A] transition-colors whitespace-nowrap">
                     Book Bridal Consultation
                   </span>
                 </div>
