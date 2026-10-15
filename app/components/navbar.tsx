@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, ShoppingBag, Menu, X, ArrowRight } from "lucide-react";
+import { Search, ShoppingBag, Menu, X, ArrowRight, Calendar } from "lucide-react";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -111,9 +111,11 @@ export default function Navbar() {
           <Link
             href="/contact"
             data-cursor="CONTACT"
-            className="inline-flex items-center space-x-2 px-5 sm:px-6 py-2.5 rounded-full text-xs font-semibold tracking-[0.2em] uppercase transition-all duration-300 shadow-md bg-[#2B0A0E] text-[#FDFBF7] border border-[#C5A059] hover:bg-[#C5A059] hover:text-[#2B0A0E]"
+            className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-6 py-2 sm:py-2.5 rounded-full text-[10px] sm:text-xs font-semibold tracking-[0.2em] uppercase transition-all duration-300 shadow-md bg-[#2B0A0E] text-[#FDFBF7] border border-[#C5A059] hover:bg-[#C5A059] hover:text-[#2B0A0E]"
           >
-            <span>Book Consultation</span>
+            <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C5A059] shrink-0" />
+            <span className="sm:hidden">Book</span>
+            <span className="hidden sm:inline">Book Consultation</span>
           </Link>
 
           {/* Mobile Hamburger Menu Toggle */}

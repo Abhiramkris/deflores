@@ -7,6 +7,7 @@ import {
   Search,
   Menu,
   X,
+  Calendar,
   ArrowRight,
   ArrowUpRight,
   Play,
@@ -861,12 +862,14 @@ export default function HomePage() {
           <Link
             href="/contact"
             data-cursor="BOOK"
-            className={`rounded-full px-6 sm:px-7 py-2.5 text-[11px] sm:text-xs uppercase tracking-[0.22em] font-semibold transition-all duration-300 shadow-sm ${isScrolled
+            className={`rounded-full px-3.5 sm:px-7 py-2 sm:py-2.5 text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.22em] font-semibold transition-all duration-300 shadow-sm inline-flex items-center gap-1.5 sm:gap-2 ${isScrolled
                 ? "bg-[#2B0A0E] text-[#C5A059] border border-[#C5A059]/40 hover:bg-black hover:text-white"
                 : "border border-[#C5A059] bg-[#2B0A0E]/70 text-[#FDFBF7] hover:bg-[#C5A059] hover:text-[#2B0A0E] backdrop-blur-sm"
               }`}
           >
-            Book Consultation
+            <Calendar className="w-3.5 h-3.5 text-[#C5A059] shrink-0" />
+            <span className="sm:hidden">Book</span>
+            <span className="hidden sm:inline">Book Consultation</span>
           </Link>
 
           {/* Mobile Menu */}
