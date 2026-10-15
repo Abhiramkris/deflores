@@ -799,7 +799,7 @@ export default function HomePage() {
 
         {/* Desktop Nav Links */}
         <nav
-          className={`hidden md:flex items-center space-x-9 text-xs tracking-[0.25em] uppercase font-medium transition-colors ${isScrolled ? "text-zinc-700" : "text-white/90"
+          className={`hidden md:flex items-center space-x-7 lg:space-x-9 text-xs tracking-[0.25em] uppercase font-medium transition-colors ${isScrolled ? "text-zinc-700" : "text-white/90"
             }`}
         >
           <Link
@@ -815,16 +815,22 @@ export default function HomePage() {
             The Craft
           </Link>
           <Link
+            href="/coming-soon"
+            className={isScrolled ? "hover:text-[#2B0A0E] transition-colors" : "hover:text-[#C5A059] transition-colors"}
+          >
+            Kids Wear
+          </Link>
+          <Link
             href="/founder"
             className={isScrolled ? "hover:text-[#2B0A0E] transition-colors" : "hover:text-[#C5A059] transition-colors"}
           >
             About
           </Link>
           <Link
-            href="#journal"
+            href="/blog"
             className={isScrolled ? "hover:text-[#2B0A0E] transition-colors" : "hover:text-[#C5A059] transition-colors"}
           >
-            Journal
+            Blogs
           </Link>
           <Link
             href="/contact"
@@ -849,13 +855,13 @@ export default function HomePage() {
             <Search className="w-4 h-4 sm:w-5 sm:h-5 stroke-[1.75]" />
           </button>
 
-          {/* Sign In */}
+          {/* Explore (Replaced Sign In) */}
           <Link
-            href="/login"
+            href="/explore"
             className={`hidden sm:inline-block text-xs uppercase tracking-[0.2em] font-medium transition-colors ${isScrolled ? "text-zinc-800 hover:text-black" : "text-white/90 hover:text-white"
               }`}
           >
-            Sign In
+            Explore
           </Link>
 
           {/* Book Consultation (Luxury Pill Button) */}
@@ -2078,6 +2084,14 @@ export default function HomePage() {
               The Craft
             </Link>
             <Link
+              href="/coming-soon"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="hover:text-[#C5A059] transition-colors flex items-center justify-between"
+            >
+              <span>Kids Wear</span>
+              <span className="text-[10px] tracking-widest px-2.5 py-0.5 rounded-full border border-[#C5A059]/40 text-[#C5A059] font-normal">SOON</span>
+            </Link>
+            <Link
               href="/founder"
               onClick={() => setIsMobileMenuOpen(false)}
               className="hover:text-[#C5A059] transition-colors"
@@ -2085,11 +2099,11 @@ export default function HomePage() {
               About
             </Link>
             <Link
-              href="#journal"
+              href="/blog"
               onClick={() => setIsMobileMenuOpen(false)}
               className="hover:text-[#C5A059] transition-colors"
             >
-              Journal
+              Blogs
             </Link>
             <Link
               href="/contact"
@@ -2102,12 +2116,12 @@ export default function HomePage() {
 
           <div className="flex flex-col space-y-4 pt-6 border-t border-zinc-200 dark:border-white/10">
             <Link
-              href="/login"
+              href="/explore"
               onClick={() => setIsMobileMenuOpen(false)}
               className={`text-center py-3 border rounded-full text-xs uppercase tracking-[0.2em] font-semibold ${isWhiteMode ? "border-zinc-300 text-zinc-800" : "border-white/30 text-white"
                 }`}
             >
-              Sign In
+              Explore
             </Link>
             <Link
               href="/contact"
