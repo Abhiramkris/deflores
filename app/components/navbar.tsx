@@ -29,15 +29,16 @@ export default function Navbar() {
   const navLinks = [
     { name: "Lookbook", href: "/explore" },
     { name: "The Craft", href: "/#craft" },
+    { name: "Kids Wear", href: "/coming-soon", badge: "SOON" },
     { name: "About", href: "/founder" },
-    { name: "Journal", href: "/blog" },
+    { name: "Blogs", href: "/blog" },
     { name: "Contact", href: "/contact" }
   ];
 
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 px-6 sm:px-12 flex items-center justify-between transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-50 px-6 sm:px-12 flex items-center justify-between transition-all duration-300 font-sans ${
           isScrolled
             ? "bg-white/95 backdrop-blur-md border-b border-zinc-200/80 text-zinc-900 py-3 sm:py-3.5 shadow-sm"
             : "bg-[#faf9f6]/95 backdrop-blur-md border-b border-zinc-200/70 text-zinc-900 py-4 sm:py-5"
@@ -66,8 +67,8 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* Desktop Nav Links */}
-        <nav className="hidden md:flex items-center space-x-9 text-xs tracking-[0.25em] uppercase font-medium transition-colors text-zinc-700">
+        {/* Desktop Nav Links (Font strictly matching homepage) */}
+        <nav className="hidden md:flex items-center space-x-7 lg:space-x-9 text-xs tracking-[0.25em] uppercase font-medium transition-colors font-sans text-zinc-700">
           {navLinks.map((link) => {
             const isActive = pathname === link.href || (link.href !== "/" && pathname?.startsWith(link.href));
             return (
@@ -99,12 +100,12 @@ export default function Navbar() {
             <Search className="w-4 h-4 sm:w-5 sm:h-5 stroke-[1.75]" />
           </button>
 
-          {/* Sign In */}
+          {/* Explore (Replaced Sign In) */}
           <Link
-            href="/login"
-            className="hidden sm:inline-block text-xs uppercase tracking-[0.2em] font-medium transition-colors text-zinc-800 hover:text-black"
+            href="/explore"
+            className="hidden sm:inline-block text-xs uppercase tracking-[0.2em] font-medium transition-colors text-zinc-800 hover:text-black font-sans"
           >
-            Sign In
+            Explore
           </Link>
 
           {/* Book Consultation Button */}
@@ -157,26 +158,31 @@ export default function Navbar() {
             </button>
           </div>
 
-          <nav className="flex flex-col space-y-6 text-xl uppercase tracking-[0.2em] font-light">
+          <nav className="flex flex-col space-y-6 text-xl uppercase tracking-[0.2em] font-light font-sans">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="text-zinc-800 hover:text-[#C5A059] transition-colors"
+                className="text-zinc-800 hover:text-[#C5A059] transition-colors flex items-center justify-between"
               >
-                {link.name}
+                <span>{link.name}</span>
+                {link.badge && (
+                  <span className="text-[10px] tracking-widest px-2.5 py-0.5 rounded-full border border-[#C5A059]/40 text-[#C5A059] font-normal">
+                    {link.badge}
+                  </span>
+                )}
               </Link>
             ))}
           </nav>
 
           <div className="flex flex-col space-y-4 pt-6 border-t border-zinc-200">
             <Link
-              href="/login"
+              href="/explore"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="text-center py-3 border border-zinc-300 text-zinc-800 rounded-full text-xs uppercase tracking-[0.2em] font-semibold"
+              className="text-center py-3 border border-zinc-300 text-zinc-800 rounded-full text-xs uppercase tracking-[0.2em] font-semibold hover:border-black transition-colors"
             >
-              Sign In
+              Explore
             </Link>
             <Link
               href="/contact"
