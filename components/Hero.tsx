@@ -102,6 +102,7 @@ export default function Hero({
                       alt={`De Flores Haute Couture - Slide ${index + 1}`}
                       fill
                       priority={index === 0}
+                      unoptimized={src.startsWith("http") || src.startsWith("/uploads/")}
                       sizes="(max-width: 1500px) 93vw, 1500px"
                       className="object-cover object-center"
                     />

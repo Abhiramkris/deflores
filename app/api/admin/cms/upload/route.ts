@@ -58,10 +58,14 @@ export async function POST(request: Request) {
       }
     }
 
+    const isHero = sectionKey === "hero";
+    const targetWidth = isHero ? 3840 : 2560;
+    const targetQuality = isHero ? 95 : 88;
+
     const webpBuffer = await sharp(originalBuffer)
       .rotate()
-      .resize({ width: 2000, withoutEnlargement: true })
-      .webp({ quality: 82, effort: 4 })
+      .resize({ width: targetWidth, withoutEnlargement: true })
+      .webp({ quality: targetQuality, effort: 5, smartSubsample: true })
       .toBuffer();
 
     const compressedSize = webpBuffer.length;
@@ -103,6 +107,7 @@ export async function POST(request: Request) {
       originalSize,
       compressedSize,
       savingsPercent,
+      quality: targetQuality,
     });
   } catch (error: unknown) {
     console.error("CMS Upload error:", error);

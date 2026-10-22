@@ -142,7 +142,7 @@ export default function StorefrontCms({ showNotification, actorEmail = "admin@de
           ...prev,
           [fieldKey]: {
             dimensions: `${data.width}×${data.height}`,
-            savings: `${data.savingsPercent}% (WebP 82)`,
+            savings: `${data.savingsPercent}% (WebP ${data.quality || 95})`,
           },
         }));
 
