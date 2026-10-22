@@ -76,6 +76,8 @@ export default function AdminDashboard() {
   const [adminCategories, setAdminCategories] = useState<any[]>([]);
   const [selectedCatIdx, setSelectedCatIdx] = useState<number>(0);
   const [isSavingCat, setIsSavingCat] = useState(false);
+  const [isUploadingCatImage, setIsUploadingCatImage] = useState(false);
+  const [uploadingSubIdx, setUploadingSubIdx] = useState<number | null>(null);
 
   // Forms states
   const [pId, setPId] = useState("");
@@ -1512,16 +1514,18 @@ export default function AdminDashboard() {
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <label className="block text-[10px] font-bold tracking-widest text-zinc-500 uppercase">Banner Image Path / URL</label>
-                        <label className="text-[9px] font-bold tracking-widest text-zinc-950 uppercase cursor-pointer hover:underline">
-                          <span>Upload Image</span>
+                        <label className={`text-[9px] font-bold tracking-widest uppercase cursor-pointer hover:underline ${isUploadingCatImage ? "text-zinc-400 pointer-events-none" : "text-zinc-950"}`}>
+                          <span>{isUploadingCatImage ? "Uploading..." : "Upload Image"}</span>
                           <input
                             type="file"
                             accept="image/*"
+                            disabled={isUploadingCatImage}
                             className="hidden"
                             onChange={async (e) => {
                               const file = e.target.files?.[0];
                               if (!file) return;
                               try {
+                                setIsUploadingCatImage(true);
                                 const form = new FormData();
                                 form.append("file", file);
                                 form.append("sectionKey", "categories");
@@ -1545,28 +1549,47 @@ export default function AdminDashboard() {
                                 setMessage("Upload error occurred");
                                 setIsError(true);
                               } finally {
+                                setIsUploadingCatImage(false);
                                 setTimeout(() => setMessage(""), 4000);
                               }
                             }}
                           />
                         </label>
                       </div>
-                      <input
-                        type="text"
-                        value={adminCategories[selectedCatIdx].image || ""}
-                        onChange={(e) => {
-                          const updated = [...adminCategories];
-                          updated[selectedCatIdx].image = e.target.value;
-                          setAdminCategories(updated);
-                        }}
-                        className="w-full border border-zinc-200 text-xs px-4 py-2.5 rounded-lg focus:outline-none focus:border-zinc-950 bg-transparent font-mono"
-                      />
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          value={adminCategories[selectedCatIdx].image || ""}
+                          placeholder="Image URL or upload"
+                          onChange={(e) => {
+                            const updated = [...adminCategories];
+                            updated[selectedCatIdx].image = e.target.value;
+                            setAdminCategories(updated);
+                          }}
+                          className="w-full border border-zinc-200 text-xs px-4 py-2.5 rounded-lg focus:outline-none focus:border-zinc-950 bg-transparent font-mono"
+                        />
+                        {adminCategories[selectedCatIdx].image && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = [...adminCategories];
+                              updated[selectedCatIdx].image = "";
+                              setAdminCategories(updated);
+                            }}
+                            className="text-red-500 hover:text-red-700 text-xs px-3 py-2 border border-zinc-200 rounded-lg hover:border-red-300 bg-white"
+                            title="Remove image"
+                          >
+                            ×
+                          </button>
+                        )}
+                      </div>
                       {adminCategories[selectedCatIdx].image && (
                         <div className="mt-2 relative w-32 h-20 rounded-md overflow-hidden border border-zinc-200 bg-zinc-100">
                           <Image
                             src={adminCategories[selectedCatIdx].image}
                             alt="Category Preview"
                             fill
+                            unoptimized
                             sizes="128px"
                             className="object-cover"
                           />
@@ -1668,12 +1691,13 @@ export default function AdminDashboard() {
                             Delete
                           </button>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <div className="md:col-span-1">
+                        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
+                          <div className="md:col-span-3">
                             <label className="block text-[9px] font-bold tracking-widest text-zinc-400 uppercase mb-1">Title</label>
                             <input
                               type="text"
                               value={sub.title || ""}
+                              placeholder="Subcategory Title"
                               onChange={(e) => {
                                 const updated = [...adminCategories];
                                 updated[selectedCatIdx].subcategories[subIdx].title = e.target.value;
@@ -1682,11 +1706,12 @@ export default function AdminDashboard() {
                               className="w-full border border-zinc-200 text-xs px-3 py-2 rounded-md focus:outline-none focus:border-zinc-950 bg-white font-semibold"
                             />
                           </div>
-                          <div className="md:col-span-2">
+                          <div className="md:col-span-5">
                             <label className="block text-[9px] font-bold tracking-widest text-zinc-400 uppercase mb-1">Description</label>
                             <input
                               type="text"
                               value={sub.desc || ""}
+                              placeholder="Short description or style highlights"
                               onChange={(e) => {
                                 const updated = [...adminCategories];
                                 updated[selectedCatIdx].subcategories[subIdx].desc = e.target.value;
@@ -1694,6 +1719,91 @@ export default function AdminDashboard() {
                               }}
                               className="w-full border border-zinc-200 text-xs px-3 py-2 rounded-md focus:outline-none focus:border-zinc-950 bg-white"
                             />
+                          </div>
+                          <div className="md:col-span-4">
+                            <div className="flex items-center justify-between mb-1">
+                              <label className="block text-[9px] font-bold tracking-widest text-zinc-400 uppercase">Image</label>
+                              <label className={`text-[9px] font-bold tracking-widest uppercase cursor-pointer hover:underline ${uploadingSubIdx === subIdx ? "text-zinc-400 pointer-events-none" : "text-zinc-950"}`}>
+                                <span>{uploadingSubIdx === subIdx ? "Uploading..." : "Upload Image"}</span>
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  disabled={uploadingSubIdx !== null}
+                                  className="hidden"
+                                  onChange={async (e) => {
+                                    const file = e.target.files?.[0];
+                                    if (!file) return;
+                                    try {
+                                      setUploadingSubIdx(subIdx);
+                                      const form = new FormData();
+                                      form.append("file", file);
+                                      form.append("sectionKey", "subcategories");
+                                      form.append("fieldKey", `${adminCategories[selectedCatIdx].key || "cat"}_sub_${subIdx}`);
+                                      const res = await fetch("/api/admin/cms/upload", {
+                                        method: "POST",
+                                        body: form,
+                                      });
+                                      const data = await res.json();
+                                      if (data.success && data.url) {
+                                        const updated = [...adminCategories];
+                                        updated[selectedCatIdx].subcategories[subIdx].image = data.url;
+                                        setAdminCategories(updated);
+                                        setMessage("Sub-category image uploaded successfully!");
+                                        setIsError(false);
+                                      } else {
+                                        setMessage(data.error || "Upload failed");
+                                        setIsError(true);
+                                      }
+                                    } catch {
+                                      setMessage("Upload error occurred");
+                                      setIsError(true);
+                                    } finally {
+                                      setUploadingSubIdx(null);
+                                      setTimeout(() => setMessage(""), 4000);
+                                    }
+                                  }}
+                                />
+                              </label>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="text"
+                                placeholder="Image URL or upload"
+                                value={sub.image || ""}
+                                onChange={(e) => {
+                                  const updated = [...adminCategories];
+                                  updated[selectedCatIdx].subcategories[subIdx].image = e.target.value;
+                                  setAdminCategories(updated);
+                                }}
+                                className="w-full border border-zinc-200 text-xs px-3 py-2 rounded-md focus:outline-none focus:border-zinc-950 bg-white font-mono text-[11px]"
+                              />
+                              {sub.image && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const updated = [...adminCategories];
+                                    updated[selectedCatIdx].subcategories[subIdx].image = "";
+                                    setAdminCategories(updated);
+                                  }}
+                                  className="text-red-500 hover:text-red-700 text-xs px-2 py-1.5 border border-zinc-200 rounded hover:border-red-300 bg-white"
+                                  title="Remove image"
+                                >
+                                  ×
+                                </button>
+                              )}
+                            </div>
+                            {sub.image && (
+                              <div className="mt-2 relative w-24 h-16 rounded-md overflow-hidden border border-zinc-200 bg-zinc-100">
+                                <Image
+                                  src={sub.image}
+                                  alt={sub.title || "Subcategory Preview"}
+                                  fill
+                                  unoptimized
+                                  sizes="96px"
+                                  className="object-cover"
+                                />
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>

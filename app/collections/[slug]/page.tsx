@@ -154,6 +154,17 @@ export default async function CollectionPage({
                         <span>STYLE #{sIdx + 1 < 10 ? `0${sIdx + 1}` : sIdx + 1}</span>
                         <span className="text-coral">BESPOKE</span>
                       </div>
+                      {sub.image && (
+                        <div className="relative w-full aspect-[4/3] overflow-hidden bg-zinc-100 my-2">
+                          <Image
+                            src={sub.image}
+                            alt={sub.title}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                            sizes="(max-width: 768px) 100vw, 33vw"
+                          />
+                        </div>
+                      )}
                       <h3 className="text-base font-serif font-normal text-ink group-hover:text-coral transition-colors">
                         {sub.title}
                       </h3>

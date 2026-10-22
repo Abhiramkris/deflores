@@ -6,6 +6,7 @@ import defaultCategories from "../app/data/categories.json";
 export interface SubCategory {
   title: string;
   desc: string;
+  image?: string;
 }
 
 export interface Category {
