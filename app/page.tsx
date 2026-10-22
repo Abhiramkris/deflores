@@ -51,6 +51,7 @@ export default async function HomePage() {
   const story = data.story || {};
   const founder = data.founder || {};
   const featured = data.featured_release || {};
+  const gallery = data.featured_gallery || {};
   const journal = data.journal || {};
   const instagram = data.instagram_grid || {};
   const showroom = data.store_locator || {};
@@ -66,7 +67,7 @@ export default async function HomePage() {
         <RampVideoOne />
         <Collections categories={categories} />
         {founder.is_visible !== false && <Founder {...founder} />}
-        <FeaturedGallery />
+        {gallery.is_visible !== false && <FeaturedGallery {...gallery} />}
         <RampVideoTwo />
         <Testimonials />
         {journal.is_visible !== false && <Journal {...journal} />}

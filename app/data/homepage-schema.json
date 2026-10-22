@@ -343,8 +343,115 @@
         }
       }
     },
+    "featured_gallery": {
+      "title": "05. Curated Style (Featured Gallery)",
+      "description": "Interactive scroll-morph atelier gallery with flying hero image and 7-tile masonry showcase",
+      "fields": {
+        "is_visible": {
+          "type": "boolean",
+          "label": "Display Section",
+          "default": true
+        },
+        "eyebrow": {
+          "type": "text",
+          "label": "Eyebrow Tag",
+          "min_chars": 2,
+          "max_chars": 25,
+          "placeholder": "Atelier",
+          "required": true
+        },
+        "headline_1": {
+          "type": "text",
+          "label": "Headline Line 1",
+          "min_chars": 4,
+          "max_chars": 30,
+          "placeholder": "CURATED STYLE.",
+          "required": true
+        },
+        "headline_2": {
+          "type": "text",
+          "label": "Headline Line 2",
+          "min_chars": 4,
+          "max_chars": 35,
+          "placeholder": "ELEVATED EVERY DAY.",
+          "required": true
+        },
+        "image_hero": {
+          "type": "image",
+          "label": "Hero Flying Image (Lands on Slot 1)",
+          "aspect_ratio": "4/5",
+          "cover_mode": true,
+          "min_width": 400,
+          "recommended": "4:5 Portrait (e.g. 1200×1500px)",
+          "required": false
+        },
+        "image_1": {
+          "type": "image",
+          "label": "Tile 2 - Silhouette",
+          "aspect_ratio": "1/1",
+          "cover_mode": true,
+          "min_width": 400,
+          "recommended": "1:1 Square (e.g. 1000×1000px)",
+          "required": false
+        },
+        "image_2": {
+          "type": "image",
+          "label": "Tile 3 - Texture",
+          "aspect_ratio": "3/4",
+          "cover_mode": true,
+          "min_width": 400,
+          "recommended": "3:4 Portrait (e.g. 900×1200px)",
+          "required": false
+        },
+        "image_3": {
+          "type": "image",
+          "label": "Tile 4 - Archive",
+          "aspect_ratio": "4/5",
+          "cover_mode": true,
+          "min_width": 400,
+          "recommended": "4:5 Portrait (e.g. 1000×1250px)",
+          "required": false
+        },
+        "image_4": {
+          "type": "image",
+          "label": "Tile 5 - Detail",
+          "aspect_ratio": "2/3",
+          "cover_mode": true,
+          "min_width": 400,
+          "recommended": "2:3 Portrait (e.g. 800×1200px)",
+          "required": false
+        },
+        "image_5": {
+          "type": "image",
+          "label": "Tile 6 - Craft",
+          "aspect_ratio": "3/4",
+          "cover_mode": true,
+          "min_width": 400,
+          "recommended": "3:4 Portrait (e.g. 900×1200px)",
+          "required": false
+        },
+        "image_6": {
+          "type": "image",
+          "label": "Tile 7 - Heritage",
+          "aspect_ratio": "4/5",
+          "cover_mode": true,
+          "min_width": 400,
+          "recommended": "4:5 Portrait (e.g. 1000×1250px)",
+          "required": false
+        },
+        "image_7": {
+          "type": "image",
+          "label": "Tile 8 - Runway",
+          "aspect_ratio": "1/1",
+          "cover_mode": true,
+          "min_width": 400,
+          "recommended": "1:1 Square (e.g. 1000×1000px)",
+          "required": false
+        }
+      }
+    },
     "journal": {
-      "title": "05. Atelier Journal",
+      "title": "06. Atelier Journal",
       "description": "Editorial notes, craftsmanship features, and styling guides",
       "fields": {
         "is_visible": {
@@ -387,7 +494,7 @@
       }
     },
     "instagram_grid": {
-      "title": "06. Instagram Showcase",
+      "title": "07. Instagram Showcase",
       "description": "Clean square grid social proof without standard rounded UI",
       "fields": {
         "is_visible": {
@@ -422,7 +529,7 @@
       }
     },
     "store_locator": {
-      "title": "07. Flagship Showroom",
+      "title": "08. Flagship Showroom",
       "description": "Physical atelier location, visiting hours, directions, and appointments",
       "fields": {
         "is_visible": {
@@ -507,7 +614,7 @@
       }
     },
     "bespoke": {
-      "title": "08. Bespoke Consultation",
+      "title": "09. Bespoke Consultation",
       "description": "Tailoring commission intake, consultation booking CTA, and service notes",
       "fields": {
         "is_visible": {
