@@ -7,32 +7,7 @@
     "title": "Lehenga",
     "image": "/newimages/IMG_1060.webp",
     "description": "Bespoke bridal lehengas, Pakistani cuts, draped silhouettes, and fusion couture tailored to perfection.",
-    "subcategories": [
-      {
-        "title": "Bridal Lehengas",
-        "desc": "Heavy, traditional, and heavily embroidered pieces meant specifically for the bride."
-      },
-      {
-        "title": "Pakistani Lehengas",
-        "desc": "Characterized by long, flowing shirts (kurtis) paired with voluminous skirts, intricate thread work, and sheer dupattas."
-      },
-      {
-        "title": "Draped Lehengas",
-        "desc": "Contemporary pre-draped or saree-style lehengas featuring attached pallus or cowl drapes for modern comfort."
-      },
-      {
-        "title": "Fusion / Indo-Western Lehengas",
-        "desc": "Modern silhouettes incorporating capes, structured crop tops, jackets, or asymmetric cuts."
-      },
-      {
-        "title": "Light / Festive Lehengas",
-        "desc": "Lighter embroidery, prints, or organza styles ideal for bridesmaids, sangeet, or mehendi guests."
-      },
-      {
-        "title": "Reception Lehengas",
-        "desc": "Glamorous, statement-heavy pieces featuring metallic accents, sequins, or modern cuts for evening celebrations."
-      }
-    ]
+    "subcategories": []
   },
   {
     "id": 2,
@@ -42,32 +17,7 @@
     "title": "Gown",
     "image": "/newimages/IMG_1058.webp",
     "description": "Red carpet ball gowns, mermaid cuts, and Indo-Western flared silhouettes engineered to stand out.",
-    "subcategories": [
-      {
-        "title": "Ball Gowns",
-        "desc": "Voluminous, dramatic princess-style silhouettes with heavy layering."
-      },
-      {
-        "title": "A-Line Gowns",
-        "desc": "Fitted at the bodice and gradually flaring out to form an 'A' shape, flattering for all body types."
-      },
-      {
-        "title": "Mermaid / Fishtail Gowns",
-        "desc": "Fitted through the body and flaring out dramatically at the knees."
-      },
-      {
-        "title": "Indo-Western Gowns",
-        "desc": "Traditional Indian embroideries and fabrics (like georgette, silk, or tissue) tailored into Western gown silhouettes."
-      },
-      {
-        "title": "Reception / Cocktail Gowns",
-        "desc": "Sleek, high-slit, or sequined evening wear designed for night events."
-      },
-      {
-        "title": "Tiered / Layered Gowns",
-        "desc": "Feature cascading ruffles or multiple tiers for enhanced texture and movement."
-      }
-    ]
+    "subcategories": []
   },
   {
     "id": 3,
@@ -77,32 +27,7 @@
     "title": "Saree",
     "image": "/new_images2/IMG_1077.webp",
     "description": "Traditional Kanjeevarams, pre-draped ready-to-wear sarees, ruffles, and handloom silks.",
-    "subcategories": [
-      {
-        "title": "Bridal Sarees",
-        "desc": "Heavy Kanjeevarams, traditional heavy silks, and heavily embellished designer weaves for the main wedding day."
-      },
-      {
-        "title": "Ruffle & Tiered Sarees",
-        "desc": "Modern trendy sarees featuring ruffled pleats or pallus for a playful, voluminous look."
-      },
-      {
-        "title": "Pre-Draped / Ready-to-Wear Sarees",
-        "desc": "Zip-up or pre-stitched sarees that offer the elegance of a saree with the ease of a skirt."
-      },
-      {
-        "title": "Designer / Organza Sarees",
-        "desc": "Lightweight, translucent floral-printed or embroidered organza and tissue sarees."
-      },
-      {
-        "title": "Party Wear / Cocktail Sarees",
-        "desc": "Heavy net, shimmer, metallic, or sequin-embellished sarees for evening events."
-      },
-      {
-        "title": "Handloom & Traditional Silks",
-        "desc": "Classic weaves like Banarasi, Chanderi, Tussar, and Gadwal for traditional elegance."
-      }
-    ]
+    "subcategories": []
   },
   {
     "id": 4,
@@ -112,28 +37,7 @@
     "title": "Party Wears",
     "image": "/newimages/IMG_1062.webp",
     "description": "Anarkalis, sharara sets, palazzo suits, and embroidered capes for sangeets, mehendi & celebrations.",
-    "subcategories": [
-      {
-        "title": "Anarkali Suits",
-        "desc": "Floor-length or mid-length flowing flared suits paired with fitted churidars."
-      },
-      {
-        "title": "Sharara & Gharara Sets",
-        "desc": "Short or mid-length kurtis paired with flared, ruffled pants or traditional double-flared trousers."
-      },
-      {
-        "title": "Indo-Western Co-ord Sets",
-        "desc": "Matching contemporary crop tops with wide-leg pants, skirts, or draped dhotis."
-      },
-      {
-        "title": "Palazzo & Pant Suits",
-        "desc": "Long straight-cut or asymmetric kurtis paired with chic palazzos or cigarette pants."
-      },
-      {
-        "title": "Cape Sets",
-        "desc": "Elegant tunics or lehengas accompanied by sheer or heavily embellished embroidered capes."
-      }
-    ]
+    "subcategories": []
   },
   {
     "id": 5,
@@ -143,31 +47,6 @@
     "title": "Men's Wear",
     "image": "/new_images2/IMG_1076.webp",
     "description": "Regal sherwanis, Jodhpuri bandhgalas, Indo-Western fusion suits, and classic kurta pyjama sets.",
-    "subcategories": [
-      {
-        "title": "Sherwanis",
-        "desc": "Grand, structured long coats traditionally worn for weddings and grand receptions."
-      },
-      {
-        "title": "Indo-Western Suits",
-        "desc": "Contemporary fusion wear combining traditional Indian embroidery or cuts with Western blazers and trousers."
-      },
-      {
-        "title": "Bandhgalas (Jodhpuri Suits)",
-        "desc": "High-necked, fitted formal jackets offering a sharp, regal look."
-      },
-      {
-        "title": "Kurta Pyjama Sets",
-        "desc": "Classic cotton, silk, or linen straight kurtas paired with churidars or pyjamas."
-      },
-      {
-        "title": "Nehru Jackets & Waistcoats",
-        "desc": "Layering pieces worn over standard kurta sets to instantly elevate a festive or wedding outfit."
-      },
-      {
-        "title": "Tuxedos & Formal Suits",
-        "desc": "Classic Western two-piece or three-piece suits for western-themed cocktail nights or receptions."
-      }
-    ]
+    "subcategories": []
   }
 ]

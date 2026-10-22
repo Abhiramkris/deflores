@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
+import StorefrontCms from "../../../components/admin/StorefrontCms";
 
 interface StatData {
   totalLogs: number;
@@ -57,7 +59,7 @@ interface Product {
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<"stats" | "product" | "gallery" | "newsletter" | "logs" | "reviews" | "categories">("stats");
+  const [activeTab, setActiveTab] = useState<"stats" | "product" | "gallery" | "newsletter" | "logs" | "categories" | "cms">("stats");
   const [activeLogSubTab, setActiveLogSubTab] = useState<"admin" | "user">("admin");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
@@ -98,11 +100,6 @@ export default function AdminDashboard() {
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
-  const [reviews, setReviews] = useState<any[]>([]);
-  const [editingReviewId, setEditingReviewId] = useState<number | null>(null);
-  const [editAuthor, setEditAuthor] = useState("");
-  const [editRating, setEditRating] = useState(5);
-  const [editQuote, setEditQuote] = useState("");
 
   // Fetch Dashboard details
   const fetchDashboardData = async () => {
@@ -117,7 +114,6 @@ export default function AdminDashboard() {
         setUserDevices(data.userDevices || []);
         setSubscribers(data.subscribers);
         setProducts(data.products);
-        setReviews(data.reviews || []);
         setSelectedProductIds([]);
       } else {
         router.push("/admin/login");
@@ -127,7 +123,22 @@ export default function AdminDashboard() {
       const catRes = await fetch("/api/categories");
       const catData = await catRes.json();
       if (catData.success && catData.categories) {
-        setAdminCategories(catData.categories);
+        const normalized = catData.categories.map((c: any) => ({
+          ...c,
+          subcategories: Array.isArray(c.subcategories)
+            ? c.subcategories
+            : typeof c.subcategories === "string"
+            ? (() => {
+                try {
+                  const p = JSON.parse(c.subcategories);
+                  return Array.isArray(p) ? p : [];
+                } catch {
+                  return [];
+                }
+              })()
+            : [],
+        }));
+        setAdminCategories(normalized);
       }
     } catch (err) {
       router.push("/admin/login");
@@ -139,31 +150,6 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchDashboardData();
   }, []);
-
-  const handleUpdateReview = async (id: number) => {
-    if (!editAuthor.trim() || !editQuote.trim()) {
-      showNotification("Please fill in all review fields.", true);
-      return;
-    }
-
-    try {
-      const res = await fetch("/api/admin/reviews/update", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, author: editAuthor, rating: editRating, quote: editQuote })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        showNotification("Review updated successfully.");
-        setEditingReviewId(null);
-        fetchDashboardData();
-      } else {
-        showNotification(data.error || "Failed to update review", true);
-      }
-    } catch (err) {
-      showNotification("Error updating review", true);
-    }
-  };
 
   const handleDeleteProducts = async (ids: string[]) => {
     const confirmMsg = ids.length === 1 
@@ -469,20 +455,20 @@ export default function AdminDashboard() {
                 ) 
               },
               { 
-                id: "reviews", 
-                label: "Reviews Manager", 
-                icon: (
-                  <svg className="w-4 h-4 stroke-current fill-none" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499c-.107-.218-.284-.348-.508-.348s-.401.13-.508.348L8.27 7.747l-4.69.682c-.24.035-.418.2-.468.435-.05.235.04.482.23.652l3.393 3.308-.8 4.672c-.04.24.06.48.265.626.205.146.475.148.68.006l4.195-2.206 4.196 2.206c.205.142.475.14.68-.006.205-.146.305-.386.265-.626l-.8-4.672 3.393-3.308c.19-.17.28-.417.23-.652-.05-.235-.228-.4-.468-.435l-4.69-.682-2.197-4.248z" />
-                  </svg>
-                ) 
-              },
-              { 
                 id: "categories", 
                 label: "Categories & Sub-Categories", 
                 icon: (
                   <svg className="w-4 h-4 stroke-current fill-none" strokeWidth="2" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+                  </svg>
+                ) 
+              },
+              { 
+                id: "cms", 
+                label: "Storefront CMS", 
+                icon: (
+                  <svg className="w-4 h-4 stroke-current fill-none" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 4.5v15m6-15v15m-10.875 0h17.75c.621 0 1.125-.504 1.125-1.125V5.625c0-.621-.504-1.125-1.125-1.125H4.125C3.504 4.5 3 5.004 3 5.625v12.75c0 .621.504 1.125 1.125 1.125z" />
                   </svg>
                 ) 
               }
@@ -1390,121 +1376,6 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* TAB 5: Reviews Manager */}
-        {activeTab === "reviews" && (
-          <div className="space-y-8 text-left">
-            <div className="space-y-2">
-              <h2 className="font-serif text-3xl font-light text-zinc-950">Reviews Manager</h2>
-              <p className="text-xs text-zinc-500 leading-relaxed font-light tracking-wide">
-                View, moderate, and edit all customer reviews across your catalog items.
-              </p>
-            </div>
-
-            <div className="bg-white border border-zinc-200/60 p-6 md:p-8 rounded-xl shadow-xs">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs border-collapse">
-                  <thead>
-                    <tr className="border-b border-zinc-150 text-zinc-400 font-bold uppercase tracking-wider text-[10px]">
-                      <th className="py-3 px-4">Product ID</th>
-                      <th className="py-3 px-4">Author</th>
-                      <th className="py-3 px-4">Rating</th>
-                      <th className="py-3 px-4">Review Message</th>
-                      <th className="py-3 px-4 text-right">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {reviews.length > 0 ? (
-                      reviews.map((r) => {
-                        const isEditing = editingReviewId === r.id;
-                        return (
-                          <tr key={r.id} className="border-b border-zinc-50 hover:bg-zinc-50/50">
-                            <td className="py-3 px-4 font-mono font-bold text-zinc-900">
-                              #{r.productId || r.product_id}
-                            </td>
-                            <td className="py-3 px-4">
-                              {isEditing ? (
-                                <input
-                                  type="text"
-                                  value={editAuthor}
-                                  onChange={(e) => setEditAuthor(e.target.value)}
-                                  className="border border-zinc-200 text-xs px-2 py-1 focus:outline-none focus:border-zinc-500 rounded bg-transparent w-full"
-                                />
-                              ) : (
-                                <span className="font-semibold text-zinc-950">{r.author}</span>
-                              )}
-                            </td>
-                            <td className="py-3 px-4">
-                              {isEditing ? (
-                                <input
-                                  type="number"
-                                  min={1}
-                                  max={5}
-                                  value={editRating}
-                                  onChange={(e) => setEditRating(parseInt(e.target.value) || 5)}
-                                  className="border border-zinc-200 text-xs px-2 py-1 focus:outline-none focus:border-zinc-500 rounded bg-transparent w-16"
-                                />
-                              ) : (
-                                <span className="text-amber-500">{"★".repeat(r.rating)}</span>
-                              )}
-                            </td>
-                            <td className="py-3 px-4">
-                              {isEditing ? (
-                                <textarea
-                                  value={editQuote}
-                                  onChange={(e) => setEditQuote(e.target.value)}
-                                  className="border border-zinc-200 text-xs px-2 py-1 focus:outline-none focus:border-zinc-500 rounded bg-transparent w-full resize-none"
-                                  rows={2}
-                                />
-                              ) : (
-                                <p className="text-zinc-600 font-light italic">"{r.quote}"</p>
-                              )}
-                            </td>
-                            <td className="py-3 px-4 text-right">
-                              {isEditing ? (
-                                <div className="flex justify-end gap-2">
-                                  <button
-                                    onClick={() => handleUpdateReview(r.id)}
-                                    className="bg-zinc-950 text-white px-2.5 py-1 rounded text-[8px] tracking-wider uppercase font-bold hover:bg-zinc-800 transition-colors"
-                                  >
-                                    Save
-                                  </button>
-                                  <button
-                                    onClick={() => setEditingReviewId(null)}
-                                    className="border border-zinc-200 text-zinc-500 px-2.5 py-1 rounded text-[8px] tracking-wider uppercase font-bold hover:bg-zinc-100 transition-colors"
-                                  >
-                                    Cancel
-                                  </button>
-                                </div>
-                              ) : (
-                                <button
-                                  onClick={() => {
-                                    setEditingReviewId(r.id);
-                                    setEditAuthor(r.author);
-                                    setEditRating(r.rating);
-                                    setEditQuote(r.quote);
-                                  }}
-                                  className="text-zinc-950 underline hover:opacity-75 font-bold text-[9px] tracking-widest uppercase cursor-pointer"
-                                >
-                                  Edit Review
-                                </button>
-                              )}
-                            </td>
-                          </tr>
-                        );
-                      })
-                    ) : (
-                      <tr>
-                        <td colSpan={5} className="py-8 text-center text-zinc-400 font-light text-xs">No customer reviews found.</td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 6: Categories & Sub-Categories Manager */}
         {activeTab === "categories" && (
           <div className="space-y-8 text-left">
             <div className="flex flex-col md:flex-row md:justify-between md:items-end border-b border-zinc-200 pb-5 gap-4">
@@ -1546,8 +1417,7 @@ export default function AdminDashboard() {
               </button>
             </div>
 
-            {/* Category Selector Tabs */}
-            <div className="flex flex-wrap gap-2 border-b border-zinc-200 pb-3">
+            <div className="flex flex-wrap items-center gap-2 border-b border-zinc-200 pb-3">
               {adminCategories.map((cat, idx) => (
                 <button
                   key={cat.key || idx}
@@ -1558,19 +1428,56 @@ export default function AdminDashboard() {
                       : "bg-white text-zinc-600 border border-zinc-200 hover:border-zinc-400"
                   }`}
                 >
-                  {cat.num || `0${idx + 1}`}. {cat.title} ({cat.subcategories?.length || 0})
+                  {cat.num || `0${idx + 1}`}. {cat.title} ({Array.isArray(cat.subcategories) ? cat.subcategories.length : 0})
                 </button>
               ))}
+
+              <button
+                type="button"
+                onClick={() => {
+                  const newNum = adminCategories.length + 1;
+                  const newCat = {
+                    key: `category-${newNum}`,
+                    num: newNum < 10 ? `0${newNum}` : `${newNum}`,
+                    tag: "NEW COLLECTION",
+                    title: `Category ${newNum}`,
+                    image: "",
+                    description: "Bespoke handcrafted collection by De Flores atelier.",
+                    subcategories: [],
+                  };
+                  setAdminCategories([...adminCategories, newCat]);
+                  setSelectedCatIdx(adminCategories.length);
+                }}
+                className="px-4 py-2.5 rounded-lg text-xs font-bold tracking-wider uppercase border border-dashed border-zinc-300 text-zinc-600 hover:border-zinc-950 hover:text-zinc-950 transition-all bg-white cursor-pointer"
+              >
+                + Add Category
+              </button>
             </div>
 
-            {/* Current Category Form & Sub-Categories Manager */}
             {adminCategories[selectedCatIdx] && (
               <div className="space-y-8">
-                {/* Main Category Metadata */}
                 <div className="bg-white border border-zinc-200 p-6 md:p-8 rounded-xl space-y-6 shadow-xs">
-                  <h3 className="text-sm font-bold tracking-wider uppercase text-zinc-900 border-b border-zinc-150 pb-3">
-                    Main Category Information: {adminCategories[selectedCatIdx].title}
-                  </h3>
+                  <div className="flex justify-between items-center border-b border-zinc-150 pb-3">
+                    <h3 className="text-sm font-bold tracking-wider uppercase text-zinc-900">
+                      Main Category Information: {adminCategories[selectedCatIdx].title}
+                    </h3>
+                    {adminCategories.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const catTitle = adminCategories[selectedCatIdx].title;
+                          if (confirm(`Are you sure you want to delete category "${catTitle}"?`)) {
+                            const updated = adminCategories.filter((_, i) => i !== selectedCatIdx);
+                            setAdminCategories(updated);
+                            setSelectedCatIdx(Math.max(0, selectedCatIdx - 1));
+                          }
+                        }}
+                        className="text-red-600 hover:text-red-800 text-[10px] font-bold tracking-widest uppercase transition-colors cursor-pointer"
+                      >
+                        Delete Category
+                      </button>
+                    )}
+                  </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
@@ -1603,7 +1510,47 @@ export default function AdminDashboard() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-2">Banner Image Path / URL</label>
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="block text-[10px] font-bold tracking-widest text-zinc-500 uppercase">Banner Image Path / URL</label>
+                        <label className="text-[9px] font-bold tracking-widest text-zinc-950 uppercase cursor-pointer hover:underline">
+                          <span>Upload Image</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0];
+                              if (!file) return;
+                              try {
+                                const form = new FormData();
+                                form.append("file", file);
+                                form.append("sectionKey", "categories");
+                                form.append("fieldKey", adminCategories[selectedCatIdx].key || "banner");
+                                const res = await fetch("/api/admin/cms/upload", {
+                                  method: "POST",
+                                  body: form,
+                                });
+                                const data = await res.json();
+                                if (data.success && data.url) {
+                                  const updated = [...adminCategories];
+                                  updated[selectedCatIdx].image = data.url;
+                                  setAdminCategories(updated);
+                                  setMessage("Category image uploaded & optimized successfully!");
+                                  setIsError(false);
+                                } else {
+                                  setMessage(data.error || "Upload failed");
+                                  setIsError(true);
+                                }
+                              } catch {
+                                setMessage("Upload error occurred");
+                                setIsError(true);
+                              } finally {
+                                setTimeout(() => setMessage(""), 4000);
+                              }
+                            }}
+                          />
+                        </label>
+                      </div>
                       <input
                         type="text"
                         value={adminCategories[selectedCatIdx].image || ""}
@@ -1614,6 +1561,17 @@ export default function AdminDashboard() {
                         }}
                         className="w-full border border-zinc-200 text-xs px-4 py-2.5 rounded-lg focus:outline-none focus:border-zinc-950 bg-transparent font-mono"
                       />
+                      {adminCategories[selectedCatIdx].image && (
+                        <div className="mt-2 relative w-32 h-20 rounded-md overflow-hidden border border-zinc-200 bg-zinc-100">
+                          <Image
+                            src={adminCategories[selectedCatIdx].image}
+                            alt="Category Preview"
+                            fill
+                            sizes="128px"
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
                     </div>
                     <div>
                       <label className="block text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-2">Display Number</label>
@@ -1649,13 +1607,25 @@ export default function AdminDashboard() {
                 <div className="bg-white border border-zinc-200 p-6 md:p-8 rounded-xl space-y-6 shadow-xs">
                   <div className="flex justify-between items-center border-b border-zinc-150 pb-3">
                     <h3 className="text-sm font-bold tracking-wider uppercase text-zinc-900">
-                      Sub-Categories for {adminCategories[selectedCatIdx].title} ({adminCategories[selectedCatIdx].subcategories?.length || 0})
+                      Sub-Categories for {adminCategories[selectedCatIdx].title} ({Array.isArray(adminCategories[selectedCatIdx].subcategories) ? adminCategories[selectedCatIdx].subcategories.length : 0})
                     </h3>
                     <button
                       type="button"
                       onClick={() => {
                         const updated = [...adminCategories];
-                        const currentSubs = updated[selectedCatIdx].subcategories || [];
+                        const rawSubs = updated[selectedCatIdx].subcategories;
+                        const currentSubs = Array.isArray(rawSubs)
+                          ? rawSubs
+                          : typeof rawSubs === "string"
+                          ? (() => {
+                              try {
+                                const p = JSON.parse(rawSubs);
+                                return Array.isArray(p) ? p : [];
+                              } catch {
+                                return [];
+                              }
+                            })()
+                          : [];
                         updated[selectedCatIdx].subcategories = [
                           ...currentSubs,
                           { title: "New Sub-Category", desc: "Description for this new sub-category." }
@@ -1669,7 +1639,19 @@ export default function AdminDashboard() {
                   </div>
 
                   <div className="space-y-4">
-                    {adminCategories[selectedCatIdx].subcategories?.map((sub: any, subIdx: number) => (
+                    {(Array.isArray(adminCategories[selectedCatIdx]?.subcategories)
+                      ? adminCategories[selectedCatIdx].subcategories
+                      : typeof adminCategories[selectedCatIdx]?.subcategories === "string"
+                      ? (() => {
+                          try {
+                            const p = JSON.parse(adminCategories[selectedCatIdx].subcategories);
+                            return Array.isArray(p) ? p : [];
+                          } catch {
+                            return [];
+                          }
+                        })()
+                      : []
+                    ).map((sub: any, subIdx: number) => (
                       <div key={subIdx} className="border border-zinc-200/80 p-5 rounded-xl space-y-3 bg-zinc-50/50 relative group">
                         <div className="flex justify-between items-center">
                           <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase">SUB-CATEGORY #{subIdx + 1}</span>
@@ -1677,7 +1659,8 @@ export default function AdminDashboard() {
                             type="button"
                             onClick={() => {
                               const updated = [...adminCategories];
-                              updated[selectedCatIdx].subcategories = updated[selectedCatIdx].subcategories.filter((_: any, i: number) => i !== subIdx);
+                              const cur = Array.isArray(updated[selectedCatIdx].subcategories) ? updated[selectedCatIdx].subcategories : [];
+                              updated[selectedCatIdx].subcategories = cur.filter((_: any, i: number) => i !== subIdx);
                               setAdminCategories(updated);
                             }}
                             className="text-red-600 hover:text-red-800 text-[10px] font-bold tracking-widest uppercase"
@@ -1719,6 +1702,12 @@ export default function AdminDashboard() {
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {activeTab === "cms" && (
+          <div className="space-y-8 animate-fade-in">
+            <StorefrontCms showNotification={showNotification} actorEmail="admin@deflores.com" />
           </div>
         )}
 

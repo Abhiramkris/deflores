@@ -1,0 +1,561 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "De Flores Homepage Master Schema",
+  "description": "Single source of truth defining layout constraints, character boundaries, and image requirements",
+  "sections": {
+    "seo": {
+      "title": "SEO & Social Sharing",
+      "description": "Global homepage search engine metadata and OpenGraph social preview cards",
+      "fields": {
+        "meta_title": {
+          "type": "text",
+          "label": "Meta Title",
+          "min_chars": 20,
+          "max_chars": 65,
+          "placeholder": "De Flores Haute Couture | Luxury Bridal & Bespoke Occasion Wear",
+          "required": true
+        },
+        "meta_description": {
+          "type": "textarea",
+          "label": "Meta Description",
+          "min_chars": 70,
+          "max_chars": 160,
+          "placeholder": "Cochin atelier crafting bespoke bridal heirlooms, lehengas, gowns, and contemporary luxury pret attire.",
+          "required": true
+        },
+        "og_image": {
+          "type": "image",
+          "label": "OpenGraph Share Image (1200x630)",
+          "aspect_ratio": "1.91/1",
+          "cover_mode": true,
+          "min_width": 400,
+          "min_height": 200,
+          "recommended": "Landscape (Cover mode - auto-fits preview)",
+          "required": false
+        },
+        "canonical_url": {
+          "type": "text",
+          "label": "Canonical URL",
+          "min_chars": 10,
+          "max_chars": 100,
+          "placeholder": "https://deflores.com",
+          "required": false
+        }
+      }
+    },
+    "hero": {
+      "title": "01. Hero Entrance",
+      "description": "Primary luxury statement block, split-word rising title, and call to action",
+      "fields": {
+        "is_visible": {
+          "type": "boolean",
+          "label": "Display Section",
+          "default": true
+        },
+        "eyebrow": {
+          "type": "text",
+          "label": "Eyebrow Subtitle",
+          "min_chars": 8,
+          "max_chars": 35,
+          "placeholder": "EST. 2025 · HAUTE COUTURE",
+          "required": true
+        },
+        "headline_word_1": {
+          "type": "text",
+          "label": "Headline Line 1 - Word 1",
+          "min_chars": 2,
+          "max_chars": 12,
+          "placeholder": "DEFINE",
+          "required": true
+        },
+        "headline_word_2": {
+          "type": "text",
+          "label": "Headline Line 1 - Word 2",
+          "min_chars": 2,
+          "max_chars": 12,
+          "placeholder": "YOUR",
+          "required": true
+        },
+        "headline_word_3": {
+          "type": "text",
+          "label": "Headline Line 2 - Word 3",
+          "min_chars": 2,
+          "max_chars": 12,
+          "placeholder": "LOOK",
+          "required": true
+        },
+        "description": {
+          "type": "textarea",
+          "label": "Editorial Statement",
+          "min_chars": 30,
+          "max_chars": 160,
+          "placeholder": "Style, quality, craftsmanship, confidence. Premium apparel designed for those who refuse to blend in.",
+          "required": true
+        },
+        "cta_text": {
+          "type": "text",
+          "label": "CTA Button Text",
+          "min_chars": 4,
+          "max_chars": 25,
+          "placeholder": "VIEW COLLECTION →",
+          "required": true
+        },
+        "cta_link": {
+          "type": "text",
+          "label": "CTA Button Link",
+          "min_chars": 1,
+          "max_chars": 80,
+          "placeholder": "/collections/new-arrivals",
+          "required": true
+        },
+        "image_1": {
+          "type": "image",
+          "label": "Hero Showcase Image 1 (Primary)",
+          "aspect_ratio": "16/9",
+          "cover_mode": true,
+          "min_width": 800,
+          "recommended": "Landscape (Cover mode - auto-fits frame)",
+          "required": false
+        },
+        "image_2": {
+          "type": "image",
+          "label": "Hero Showcase Image 2",
+          "aspect_ratio": "16/9",
+          "cover_mode": true,
+          "min_width": 800,
+          "recommended": "Landscape (Cover mode - auto-fits frame)",
+          "required": false
+        },
+        "image_3": {
+          "type": "image",
+          "label": "Hero Showcase Image 3",
+          "aspect_ratio": "16/9",
+          "cover_mode": true,
+          "min_width": 800,
+          "recommended": "Landscape (Cover mode - auto-fits frame)",
+          "required": false
+        },
+        "image_4": {
+          "type": "image",
+          "label": "Hero Showcase Image 4",
+          "aspect_ratio": "16/9",
+          "cover_mode": true,
+          "min_width": 800,
+          "recommended": "Landscape (Cover mode - auto-fits frame)",
+          "required": false
+        }
+      }
+    },
+    "story": {
+      "title": "02. The Story & Carousel",
+      "description": "Heritage narrative with rotating clientele carousel and atelier portrait",
+      "fields": {
+        "is_visible": {
+          "type": "boolean",
+          "label": "Display Section",
+          "default": true
+        },
+        "title": {
+          "type": "text",
+          "label": "Section Static Title",
+          "min_chars": 10,
+          "max_chars": 35,
+          "placeholder": "THE DE FLORES STORY",
+          "required": true
+        },
+        "connector": {
+          "type": "text",
+          "label": "Italic Connector Word",
+          "min_chars": 2,
+          "max_chars": 10,
+          "placeholder": "for",
+          "required": true
+        },
+        "word_1": {
+          "type": "text",
+          "label": "Carousel Word 1",
+          "min_chars": 4,
+          "max_chars": 20,
+          "placeholder": "EVERY WOMAN",
+          "required": true
+        },
+        "word_2": {
+          "type": "text",
+          "label": "Carousel Word 2",
+          "min_chars": 4,
+          "max_chars": 20,
+          "placeholder": "EVERY MAN",
+          "required": true
+        },
+        "word_3": {
+          "type": "text",
+          "label": "Carousel Word 3",
+          "min_chars": 4,
+          "max_chars": 20,
+          "placeholder": "EVERY COUPLE",
+          "required": true
+        },
+        "word_4": {
+          "type": "text",
+          "label": "Carousel Word 4",
+          "min_chars": 4,
+          "max_chars": 20,
+          "placeholder": "EVERY ACHIEVER",
+          "required": true
+        },
+        "location_tag": {
+          "type": "text",
+          "label": "Location & Est Tag",
+          "min_chars": 8,
+          "max_chars": 30,
+          "placeholder": "COCHIN · EST. 2025",
+          "required": true
+        },
+        "description": {
+          "type": "textarea",
+          "label": "Story Narrative Body",
+          "min_chars": 100,
+          "max_chars": 450,
+          "placeholder": "De Flores stemmed from a young fashion designer's passion...",
+          "required": true
+        },
+        "image": {
+          "type": "image",
+          "label": "Atelier Portrait",
+          "aspect_ratio": "4/5",
+          "cover_mode": true,
+          "min_width": 400,
+          "min_height": 400,
+          "recommended": "4:5 portrait recommended (Cover mode - any ratio fits)",
+          "required": false
+        }
+      }
+    },
+    "founder": {
+      "title": "03. The Founder",
+      "description": "Founder biography, atelier vision, and formal couture portrait",
+      "fields": {
+        "is_visible": {
+          "type": "boolean",
+          "label": "Display Section",
+          "default": true
+        },
+        "eyebrow": {
+          "type": "text",
+          "label": "Eyebrow",
+          "min_chars": 6,
+          "max_chars": 25,
+          "placeholder": "THE FOUNDER",
+          "required": true
+        },
+        "name": {
+          "type": "text",
+          "label": "Founder Name",
+          "min_chars": 4,
+          "max_chars": 30,
+          "placeholder": "Anisree Sreeraj",
+          "required": true
+        },
+        "bio": {
+          "type": "textarea",
+          "label": "Biography Paragraph",
+          "min_chars": 100,
+          "max_chars": 350,
+          "placeholder": "A designer by instinct and a perfectionist by craft...",
+          "required": true
+        },
+        "signature": {
+          "type": "text",
+          "label": "Signature Line",
+          "min_chars": 10,
+          "max_chars": 45,
+          "placeholder": "— Founder, De Flores Haute Couture",
+          "required": true
+        },
+        "cta_text": {
+          "type": "text",
+          "label": "CTA Button Text",
+          "min_chars": 6,
+          "max_chars": 25,
+          "placeholder": "EXPLORE DE FLORES →",
+          "required": true
+        },
+        "cta_link": {
+          "type": "text",
+          "label": "CTA Link",
+          "min_chars": 1,
+          "max_chars": 80,
+          "placeholder": "/explore",
+          "required": true
+        },
+        "image": {
+          "type": "image",
+          "label": "Founder Portrait",
+          "aspect_ratio": "3/4",
+          "cover_mode": true,
+          "min_width": 400,
+          "min_height": 400,
+          "recommended": "3:4 portrait recommended (Cover mode - any ratio fits)",
+          "required": false
+        }
+      }
+    },
+    "featured_release": {
+      "title": "04. Featured Patrons",
+      "description": "Horizontally scrollable signature couture creations and patron lookbook",
+      "fields": {
+        "is_visible": {
+          "type": "boolean",
+          "label": "Display Section",
+          "default": true
+        },
+        "eyebrow": {
+          "type": "text",
+          "label": "Eyebrow",
+          "min_chars": 6,
+          "max_chars": 30,
+          "placeholder": "FEATURED RELEASE",
+          "required": true
+        },
+        "headline": {
+          "type": "text",
+          "label": "Headline",
+          "min_chars": 4,
+          "max_chars": 30,
+          "placeholder": "OUR PATRONS",
+          "required": true
+        },
+        "subhead_link_text": {
+          "type": "text",
+          "label": "Subhead Link Text",
+          "min_chars": 4,
+          "max_chars": 20,
+          "placeholder": "View All",
+          "required": true
+        },
+        "subhead_link_href": {
+          "type": "text",
+          "label": "Subhead Link Route",
+          "min_chars": 1,
+          "max_chars": 80,
+          "placeholder": "/collections/all",
+          "required": true
+        }
+      }
+    },
+    "journal": {
+      "title": "05. Atelier Journal",
+      "description": "Editorial notes, craftsmanship features, and styling guides",
+      "fields": {
+        "is_visible": {
+          "type": "boolean",
+          "label": "Display Section",
+          "default": true
+        },
+        "eyebrow": {
+          "type": "text",
+          "label": "Eyebrow",
+          "min_chars": 6,
+          "max_chars": 25,
+          "placeholder": "THE JOURNAL",
+          "required": true
+        },
+        "headline": {
+          "type": "text",
+          "label": "Headline",
+          "min_chars": 8,
+          "max_chars": 40,
+          "placeholder": "Notes from the Atelier.",
+          "required": true
+        },
+        "link_text": {
+          "type": "text",
+          "label": "Link Text",
+          "min_chars": 6,
+          "max_chars": 25,
+          "placeholder": "Read All Stories →",
+          "required": true
+        },
+        "link_href": {
+          "type": "text",
+          "label": "Link Route",
+          "min_chars": 1,
+          "max_chars": 80,
+          "placeholder": "/explore",
+          "required": true
+        }
+      }
+    },
+    "instagram_grid": {
+      "title": "06. Instagram Showcase",
+      "description": "Clean square grid social proof without standard rounded UI",
+      "fields": {
+        "is_visible": {
+          "type": "boolean",
+          "label": "Display Section",
+          "default": true
+        },
+        "eyebrow": {
+          "type": "text",
+          "label": "Eyebrow",
+          "min_chars": 6,
+          "max_chars": 25,
+          "placeholder": "FOLLOW ALONG",
+          "required": true
+        },
+        "headline": {
+          "type": "text",
+          "label": "Handle Headline",
+          "min_chars": 6,
+          "max_chars": 30,
+          "placeholder": "@deflores.india",
+          "required": true
+        },
+        "profile_url": {
+          "type": "text",
+          "label": "Instagram Profile URL",
+          "min_chars": 10,
+          "max_chars": 100,
+          "placeholder": "https://instagram.com/deflores.india",
+          "required": true
+        }
+      }
+    },
+    "store_locator": {
+      "title": "07. Flagship Showroom",
+      "description": "Physical atelier location, visiting hours, directions, and appointments",
+      "fields": {
+        "is_visible": {
+          "type": "boolean",
+          "label": "Display Section",
+          "default": true
+        },
+        "eyebrow": {
+          "type": "text",
+          "label": "Eyebrow",
+          "min_chars": 6,
+          "max_chars": 25,
+          "placeholder": "THE SHOWROOM",
+          "required": true
+        },
+        "headline": {
+          "type": "text",
+          "label": "Headline",
+          "min_chars": 8,
+          "max_chars": 35,
+          "placeholder": "Visit the Atelier.",
+          "required": true
+        },
+        "address": {
+          "type": "text",
+          "label": "Physical Address",
+          "min_chars": 15,
+          "max_chars": 90,
+          "placeholder": "Near Cochin International Airport, Kerala.",
+          "required": true
+        },
+        "hours": {
+          "type": "text",
+          "label": "Visiting Hours",
+          "min_chars": 15,
+          "max_chars": 90,
+          "placeholder": "Mon – Sat · 10:00 AM – 7:00 PM (By Appointment Only)",
+          "required": true
+        },
+        "directions_text": {
+          "type": "text",
+          "label": "Directions Text",
+          "min_chars": 8,
+          "max_chars": 25,
+          "placeholder": "GET DIRECTIONS →",
+          "required": true
+        },
+        "directions_url": {
+          "type": "text",
+          "label": "Google Maps Link",
+          "min_chars": 10,
+          "max_chars": 120,
+          "placeholder": "https://maps.google.com/?q=Cochin+International+Airport+Kerala",
+          "required": true
+        },
+        "cta_button_text": {
+          "type": "text",
+          "label": "Appointment Button Text",
+          "min_chars": 8,
+          "max_chars": 25,
+          "placeholder": "BOOK APPOINTMENT",
+          "required": true
+        },
+        "cta_button_link": {
+          "type": "text",
+          "label": "Appointment Link",
+          "min_chars": 1,
+          "max_chars": 80,
+          "placeholder": "/#bespoke",
+          "required": true
+        },
+        "map_image": {
+          "type": "image",
+          "label": "Showroom Map & Atelier Image",
+          "aspect_ratio": "1/1",
+          "cover_mode": true,
+          "min_width": 400,
+          "min_height": 400,
+          "recommended": "Square or landscape (Cover mode - any ratio fits)",
+          "required": false
+        }
+      }
+    },
+    "bespoke": {
+      "title": "08. Bespoke Consultation",
+      "description": "Tailoring commission intake, consultation booking CTA, and service notes",
+      "fields": {
+        "is_visible": {
+          "type": "boolean",
+          "label": "Display Section",
+          "default": true
+        },
+        "eyebrow": {
+          "type": "text",
+          "label": "Eyebrow",
+          "min_chars": 4,
+          "max_chars": 25,
+          "placeholder": "BESPOKE",
+          "required": true
+        },
+        "headline": {
+          "type": "text",
+          "label": "Headline",
+          "min_chars": 8,
+          "max_chars": 35,
+          "placeholder": "Made to your measure.",
+          "required": true
+        },
+        "description": {
+          "type": "textarea",
+          "label": "Commission Statement",
+          "min_chars": 50,
+          "max_chars": 200,
+          "placeholder": "Every De Flores commission begins with a conversation. Choose your silhouette, fabric, and finish — we tailor the rest.",
+          "required": true
+        },
+        "cta_text": {
+          "type": "text",
+          "label": "CTA Button Text",
+          "min_chars": 8,
+          "max_chars": 30,
+          "placeholder": "BOOK A CONSULTATION",
+          "required": true
+        },
+        "note": {
+          "type": "text",
+          "label": "Consultation Availability Note",
+          "min_chars": 15,
+          "max_chars": 80,
+          "placeholder": "Consultations available in-studio and virtually.",
+          "required": true
+        }
+      }
+    }
+  }
+}

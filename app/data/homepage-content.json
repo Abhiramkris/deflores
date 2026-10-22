@@ -1,0 +1,94 @@
+{
+  "seo": {
+    "meta_title": "De Flores Haute Couture | Luxury Bridal & Bespoke Occasion Wear",
+    "meta_description": "Cochin atelier crafting bespoke bridal heirlooms, lehengas, gowns, and contemporary luxury pret attire with organic geometric precision.",
+    "og_image": "",
+    "canonical_url": "https://deflores.com"
+  },
+  "hero": {
+    "is_visible": true,
+    "eyebrow": "EST. 2022 · HAUTE COUTURE",
+    "headline_word_1": "DEFINE",
+    "headline_word_2": "YOUR",
+    "headline_word_3": "LOOK",
+    "description": "Style, quality, craftsmanship, confidence. Premium apparel designed for those who refuse to blend in.",
+    "cta_text": "VIEW COLLECTIONS →",
+    "cta_link": "/collections/new-arrivals",
+    "image_1": "",
+    "image_2": "",
+    "image_3": "",
+    "image_4": "",
+    "image1": "",
+    "image2": "",
+    "image3": "",
+    "image4": "",
+    "ctaLink": "/collections/new-arrivals",
+    "ctaText": "VIEW COLLECTIONS →",
+    "isVisible": true,
+    "headlineWord1": "DEFINE",
+    "headlineWord2": "YOUR",
+    "headlineWord3": "LOOK"
+  },
+  "story": {
+    "is_visible": true,
+    "title": "Test Title",
+    "connector": "for",
+    "word_1": "EVERY WOMAN",
+    "word_2": "EVERY MAN",
+    "word_3": "EVERY COUPLE",
+    "word_4": "EVERY ACHIEVER",
+    "location_tag": "COCHIN · EST. 2025",
+    "description": "De Flores stemmed from a young fashion designer's passion for crafting unique and novel style statements — to create a distinction. Translating to 'flowers' in Spanish, the name symbolises elegance, chastity, and loveliness in every attire we design. With a profusion of colours, high-calibre fabric, and aesthetic appeal, De Flores is a one-stop designer boutique for every woman who wants to flaunt an enchanting style.",
+    "image": "https://dstnndwcabofckwpjjqa.supabase.co/storage/v1/object/public/deflores-bucket/cms/cms_story_image_1792642720104.webp"
+  },
+  "founder": {
+    "is_visible": true,
+    "eyebrow": "THE FOUNDER",
+    "name": "Anisree Sreeraj",
+    "bio": "A designer by instinct and a perfectionist by craft. Anisree founded De Flores to give every woman a wardrobe that feels like her own — designed, not selected. From bridal heirlooms to contemporary pret, each commission carries her signature: thoughtful silhouettes, refined colour, and embroidery that tells a story.",
+    "signature": "— Founder, De Flores Haute Couture",
+    "cta_text": "EXPLORE DE FLORES →",
+    "cta_link": "/explore",
+    "image": ""
+  },
+  "featured_release": {
+    "is_visible": true,
+    "eyebrow": "FEATURED RELEASE",
+    "headline": "OUR PATRONS",
+    "subhead_link_text": "View All",
+    "subhead_link_href": "/collections/all"
+  },
+  "journal": {
+    "is_visible": true,
+    "eyebrow": "THE JOURNAL",
+    "headline": "Notes from the Atelier.",
+    "link_text": "Read All Stories →",
+    "link_href": "/explore"
+  },
+  "instagram_grid": {
+    "is_visible": true,
+    "eyebrow": "FOLLOW ALONG",
+    "headline": "@deflores.india",
+    "profile_url": "https://instagram.com/deflores.india"
+  },
+  "store_locator": {
+    "is_visible": true,
+    "eyebrow": "THE SHOWROOM",
+    "headline": "Visit the Atelier.",
+    "address": "Near Cochin International Airport, Kerala.",
+    "hours": "Mon – Sat · 10:00 AM – 7:00 PM (By Appointment Only)",
+    "directions_text": "GET DIRECTIONS →",
+    "directions_url": "https://maps.google.com/?q=Cochin+International+Airport+Kerala",
+    "cta_button_text": "BOOK APPOINTMENT",
+    "cta_button_link": "/#bespoke",
+    "map_image": ""
+  },
+  "bespoke": {
+    "is_visible": true,
+    "eyebrow": "BESPOKE",
+    "headline": "Made to your measure.",
+    "description": "Every De Flores commission begins with a conversation. Choose your silhouette, fabric, and finish — we tailor the rest.",
+    "cta_text": "BOOK A CONSULTATION",
+    "note": "Consultations available in-studio and virtually."
+  }
+}
