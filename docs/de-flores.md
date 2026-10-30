@@ -139,8 +139,8 @@ Flat `--phBg`, no radius, no shadow. Label: 11px / 0.2em / `--grey` / uppercase 
   - User interaction (manual scrolling or navigation button click) immediately disables/cancels the hint to avoid interfering with user input.
   - Respects `prefers-reduced-motion: reduce` by disabling transforms.
 - **Each card:**
-  - Placeholder tall portrait `ratio="2/3"` for elongated couture silhouettes, with a small solid-white + button anchored bottom-right (24×24, no radius).
-  - Product name below: serif, 16px, `--ink`.
+  - Product showcase tall portrait `ratio="2/3"` loaded dynamically from the database (prioritizing products with "Feature in Our Patrons" enabled), with a small solid-white + button anchored bottom-right (24×24, no radius) linking to `/product/[id]`.
+  - Product name below: serif, 16px, `--ink`, linking to product details.
   - Price below: serif, 15px, `--grey`, centered.
 - **Copy:**
   - **Eyebrow:** FEATURED RELEASE

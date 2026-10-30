@@ -19,6 +19,8 @@ import { getHomepageData } from "../lib/cms";
 import { getCategories } from "../lib/categories";
 import { sql } from "./lib/db";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata(): Promise<Metadata> {
   const data = await getHomepageData();
   const seo = data.seo || {};
@@ -59,27 +61,51 @@ export default async function HomePage() {
   const showroom = data.store_locator || {};
   const bespoke = data.bespoke || {};
 
+  let featuredProducts: Array<{ id: string; name: string; price: string; image?: string; href: string }> = [];
   let patronItems = undefined;
+
   try {
-    const patronProducts = await sql`
-      SELECT p.id, p.title, p.patron_quote as "patronQuote", p.patron_author as "patronAuthor",
-             (SELECT image_url FROM product_images WHERE product_id = p.id AND (image_type = 'showcase' OR image_type IS NULL) ORDER BY id ASC LIMIT 1) as "imageUrl"
+    const rawProducts = await sql`
+      SELECT p.id, p.title, p.price, p.is_patron as "isPatron",
+             p.patron_quote as "patronQuote", p.patron_author as "patronAuthor",
+             (
+               SELECT image_url 
+               FROM product_images 
+               WHERE product_id = p.id AND (image_type = 'showcase' OR image_type IS NULL) 
+               ORDER BY id ASC 
+               LIMIT 1
+             ) as "imageUrl"
       FROM products p
-      WHERE p.is_patron = TRUE AND p.deleted_at IS NULL
-      LIMIT 6
+      WHERE p.deleted_at IS NULL
+      ORDER BY p.is_patron DESC, p.created_at DESC
+      LIMIT 12
     `;
-    if (patronProducts.length > 0) {
-      patronItems = patronProducts.map((p) => ({
-        id: p.id,
-        productId: p.id,
-        title: p.title,
-        quote: p.patronQuote || "“The silhouette and craftsmanship fit like a second skin.”",
-        author: p.patronAuthor || "Patron of De Flores",
-        image: p.imageUrl || "/crop_green.png",
+
+    if (rawProducts && rawProducts.length > 0) {
+      const patronOnly = rawProducts.filter((p) => Boolean(p.isPatron));
+      const chosen = patronOnly.length > 0 ? patronOnly : rawProducts;
+
+      featuredProducts = chosen.map((p) => ({
+        id: String(p.id),
+        name: p.title,
+        price: p.price || "Haute Couture",
+        image: p.imageUrl || undefined,
+        href: `/product/${p.id}`,
       }));
+
+      if (patronOnly.length > 0) {
+        patronItems = patronOnly.map((p) => ({
+          id: String(p.id),
+          productId: String(p.id),
+          title: p.title,
+          quote: p.patronQuote || "“The silhouette and craftsmanship fit like a second skin.”",
+          author: p.patronAuthor || "Patron of De Flores",
+          image: p.imageUrl || "/crop_green.png",
+        }));
+      }
     }
   } catch (err) {
-    console.warn("Patron products query:", err);
+    console.warn("Patron / featured products query:", err);
   }
 
   return (
@@ -88,7 +114,7 @@ export default async function HomePage() {
       <main>
         {hero.is_visible !== false && <Hero {...hero} />}
         {story.is_visible !== false && <Story {...story} />}
-        {featured.is_visible !== false && <FeaturedRelease {...featured} />}
+        {featured.is_visible !== false && <FeaturedRelease {...featured} items={featuredProducts} />}
         <RampVideoOne />
         <Collections categories={categories} />
         {founder.is_visible !== false && <Founder {...founder} />}

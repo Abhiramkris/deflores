@@ -3,7 +3,85 @@ import Image from "next/image";
 import Link from "next/link";
 import Nav from "../../../components/Nav";
 import Footer from "../../../components/Footer";
-import { getCategoryByKey, getCategories } from "../../../lib/categories";
+import { getCategoryByKey, getCategories, Category } from "../../../lib/categories";
+import { sql } from "../../lib/db";
+import defaultProducts from "../../data/products.json";
+
+interface CollectionProduct {
+  id: string;
+  title: string;
+  price: string;
+  category?: string;
+  subcategory?: string;
+  badge?: string;
+  gender?: string;
+  fabric?: string;
+  craft?: string;
+  description?: string;
+  image: string;
+}
+
+async function getCollectionProducts(slug: string, cat: Category | null): Promise<CollectionProduct[]> {
+  try {
+    const dbRows = await sql`
+      SELECT p.id, p.title, p.price, p.category, p.subcategory, p.badge, p.gender, p.occasion, p.fabric, p.craft, p.description,
+             COALESCE(
+               (SELECT json_agg(pi.image_url ORDER BY pi.id ASC) FROM product_images pi WHERE pi.product_id = p.id AND (pi.image_type = 'showcase' OR pi.image_type IS NULL)),
+               '[]'::json
+             ) as images
+      FROM products p
+      WHERE p.deleted_at IS NULL
+      ORDER BY p.created_at DESC
+    `;
+
+    const activeList = dbRows && dbRows.length > 0 ? dbRows : (defaultProducts as any[]);
+
+    const isAll = slug.toLowerCase() === "all";
+    const targetKey = (cat?.key || slug).toLowerCase();
+    const targetTitle = (cat?.title || "").toLowerCase();
+    const normalizedSlug = slug.toLowerCase().replace(/-/g, " ");
+
+    const matched = isAll
+      ? activeList
+      : activeList.filter((item: any) => {
+          const c = (item.category || "").toLowerCase();
+          const s = (item.subcategory || "").toLowerCase();
+          const t = (item.title || "").toLowerCase();
+          return (
+            c === targetKey ||
+            c === targetTitle ||
+            c === normalizedSlug ||
+            c.includes(targetKey) ||
+            targetTitle.includes(c) ||
+            s === targetKey ||
+            s.includes(targetKey) ||
+            t.includes(targetKey) ||
+            t.includes(targetTitle)
+          );
+        });
+
+    return matched.map((item: any) => {
+      const rawImgs = Array.isArray(item.images) ? item.images : [];
+      const primary = rawImgs[0] || "/crop_green.png";
+      return {
+        id: item.id,
+        title: item.title,
+        price: item.price || "Haute Couture",
+        category: item.category || cat?.title || "Bespoke",
+        subcategory: item.subcategory || "",
+        badge: item.badge || item.category || "Bespoke",
+        gender: item.gender || "Women",
+        fabric: item.fabric || "",
+        craft: item.craft || "",
+        description: item.description || "",
+        image: primary,
+      };
+    });
+  } catch (err) {
+    console.error("Error fetching collection products:", err);
+    return [];
+  }
+}
 
 export async function generateMetadata({
   params,
@@ -37,6 +115,7 @@ export default async function CollectionPage({
     getCategories(),
   ]);
 
+  const products = await getCollectionProducts(slug, cat);
   const displayName = cat?.title || slug.replace(/-/g, " ");
   const subcategories = cat && Array.isArray(cat.subcategories) ? cat.subcategories : [];
 
@@ -127,7 +206,102 @@ export default async function CollectionPage({
         )}
 
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 min-[900px]:px-12 space-y-16">
-          {subcategories.length > 0 ? (
+          {products.length > 0 ? (
+            <section aria-labelledby="collection-creations-heading" className="space-y-8">
+              <div className="border-b border-line pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+                <div>
+                  <span className="text-[10px] font-bold tracking-widest uppercase text-grey block mb-1">
+                    ATELIER ARCHIVE & RUNWAY PIECES
+                  </span>
+                  <h2 id="collection-creations-heading" className="text-xl sm:text-2xl font-serif font-normal text-ink">
+                    {displayName} Creations ({products.length})
+                  </h2>
+                </div>
+                <span className="text-xs text-grey font-light">
+                  Bespoke made-to-measure tailoring & custom draping
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {products.map((product) => (
+                  <Link
+                    key={product.id}
+                    href={`/product/${product.id}`}
+                    className="group border border-line bg-paper flex flex-col overflow-hidden hover:border-ink transition-all duration-300"
+                  >
+                    <div className="relative aspect-[9/16] w-full bg-phBg overflow-hidden border-b border-line">
+                      <Image
+                        src={product.image}
+                        alt={product.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      />
+                      <div className="absolute top-3 left-3 bg-paper/95 text-ink text-[9px] font-bold tracking-widest uppercase px-2.5 py-1 border border-line backdrop-blur-xs">
+                        {product.badge || product.category || "Bespoke"}
+                      </div>
+                    </div>
+
+                    <div className="p-5 flex flex-col justify-between flex-1 gap-4">
+                      <div className="space-y-1.5">
+                        <div className="flex items-center justify-between text-[10px] tracking-widest uppercase text-grey">
+                          <span>{product.gender || "Women"}</span>
+                          {product.fabric && <span>{product.fabric}</span>}
+                        </div>
+
+                        <h3 className="font-serif text-lg font-normal text-ink group-hover:text-coral transition-colors line-clamp-1">
+                          {product.title}
+                        </h3>
+
+                        {product.craft && (
+                          <p className="text-[11px] text-grey font-light line-clamp-1">
+                            {product.craft}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="pt-3 border-t border-line/60 flex items-center justify-between">
+                        <span className="font-serif text-base text-ink font-normal">
+                          {product.price}
+                        </span>
+                        <span className="text-[10px] uppercase tracking-widest font-bold text-ink group-hover:text-coral transition-colors">
+                          View Creation →
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          ) : subcategories.length === 0 ? (
+            <div className="p-12 border border-line bg-white/50 text-center space-y-4">
+              <span className="text-[10px] font-bold tracking-widest uppercase text-grey block">
+                ATELIER ARCHIVE
+              </span>
+              <h3 className="text-xl font-serif font-normal text-ink">
+                Atelier Collection Currently In Curation
+              </h3>
+              <p className="text-xs text-grey max-w-md mx-auto leading-relaxed font-light">
+                Our bespoke tailoring team crafts individual commissions for {displayName}. Contact us to schedule an atelier preview or consultation in Cochin.
+              </p>
+              <div className="pt-2 flex flex-wrap justify-center gap-4">
+                <Link
+                  href="/#bespoke"
+                  className="inline-block bg-ink text-white hover:bg-coral text-[11px] uppercase tracking-[0.18em] font-medium px-6 py-3 transition-colors duration-200"
+                >
+                  Request Bespoke Commission
+                </Link>
+                <Link
+                  href="/explore"
+                  className="inline-block border border-line bg-paper text-ink hover:border-ink text-[11px] uppercase tracking-[0.18em] font-medium px-6 py-3 transition-colors duration-200"
+                >
+                  Explore All Creations
+                </Link>
+              </div>
+            </div>
+          ) : null}
+
+          {subcategories.length > 0 && (
             <section aria-labelledby="subcategories-heading" className="space-y-8">
               <div className="border-b border-line pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
                 <div>
@@ -187,15 +361,6 @@ export default async function CollectionPage({
                 ))}
               </div>
             </section>
-          ) : (
-            <div className="p-8 border border-line bg-white/50 text-center space-y-3">
-              <h3 className="text-lg font-serif font-normal text-ink">
-                Atelier Collection Currently In Curation
-              </h3>
-              <p className="text-xs text-grey max-w-md mx-auto leading-relaxed">
-                Our bespoke tailoring team crafts individual commissions for this category. Contact us to schedule an atelier preview or consultation.
-              </p>
-            </div>
           )}
 
           <div className="border border-line bg-white p-8 sm:p-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
