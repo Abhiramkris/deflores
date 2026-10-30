@@ -123,105 +123,37 @@ export default async function CollectionPage({
     <>
       <Nav categories={allCategories} />
       <main className="min-h-screen bg-paper text-ink pb-24">
-        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 min-[900px]:px-12 pt-8 pb-4">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 min-[900px]:px-12 pt-4 sm:pt-6 pb-2">
           <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-grey">
             <Link href="/" className="hover:text-ink transition-colors">
               Home
             </Link>
             <span>/</span>
-            <span className="text-grey">Collections</span>
+            <Link href="/collections/all" className="hover:text-ink transition-colors">
+              Collections
+            </Link>
             <span>/</span>
             <span className="text-ink font-semibold">{displayName}</span>
           </div>
         </div>
 
-        {cat?.image ? (
-          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 min-[900px]:px-12 mb-12">
-            <div className="relative w-full h-[300px] sm:h-[400px] md:h-[480px] overflow-hidden bg-zinc-950 border border-line">
-              <Image
-                src={cat.image}
-                alt={cat.title}
-                fill
-                priority
-                className="object-cover object-center"
-                sizes="(max-width: 1280px) 100vw, 1280px"
-              />
-              <div className="absolute inset-0 bg-black/45" />
-
-              <div className="absolute inset-0 p-6 sm:p-10 md:p-14 flex flex-col justify-end text-white">
-                <div className="flex items-center gap-3 mb-3">
-                  {cat.tag && (
-                    <span className="text-[9px] font-bold tracking-widest uppercase bg-white/20 text-white backdrop-blur-xs px-2.5 py-1">
-                      {cat.tag}
-                    </span>
-                  )}
-                  {cat.num && (
-                    <span className="text-[10px] font-mono tracking-widest text-white/70">
-                      NO. {cat.num}
-                    </span>
-                  )}
-                </div>
-
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif font-light tracking-wide text-white mb-3">
-                  {cat.title}
-                </h1>
-
-                {cat.description && (
-                  <p className="max-w-2xl text-xs sm:text-sm text-white/90 leading-relaxed font-light tracking-wide">
-                    {cat.description}
-                  </p>
-                )}
-              </div>
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 min-[900px]:px-12 space-y-12">
+          <div className="border-b border-line pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+            <div>
+              <span className="text-[10px] font-bold tracking-widest uppercase text-grey block mb-1">
+                {cat?.tag || "ATELIER ARCHIVE & RUNWAY PIECES"} {cat?.num ? `• NO. ${cat.num}` : ""}
+              </span>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-normal text-ink">
+                {displayName} Creations {products.length > 0 ? `(${products.length})` : ""}
+              </h1>
             </div>
+            <span className="text-xs text-grey font-light">
+              Bespoke made-to-measure tailoring & custom draping
+            </span>
           </div>
-        ) : (
-          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 min-[900px]:px-12 py-12 border-b border-line mb-12">
-            <div className="flex items-center gap-3 mb-3">
-              {cat?.tag && (
-                <span className="text-[9px] font-bold tracking-widest uppercase bg-zinc-100 text-zinc-800 px-2.5 py-1">
-                  {cat.tag}
-                </span>
-              )}
-              {cat?.num && (
-                <span className="text-[10px] font-mono tracking-widest text-grey">
-                  NO. {cat.num}
-                </span>
-              )}
-            </div>
 
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-light text-ink tracking-wide mb-4">
-              {displayName}
-            </h1>
-
-            {cat?.description ? (
-              <p className="max-w-2xl text-xs sm:text-sm text-grey leading-relaxed">
-                {cat.description}
-              </p>
-            ) : (
-              <p className="text-xs sm:text-sm text-grey leading-relaxed">
-                Bespoke luxury silhouettes curated by De Flores atelier.
-              </p>
-            )}
-          </div>
-        )}
-
-        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 min-[900px]:px-12 space-y-16">
           {products.length > 0 ? (
             <section aria-labelledby="collection-creations-heading" className="space-y-8">
-              <div className="border-b border-line pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
-                <div>
-                  <span className="text-[10px] font-bold tracking-widest uppercase text-grey block mb-1">
-                    ATELIER ARCHIVE & RUNWAY PIECES
-                  </span>
-                  <h2 id="collection-creations-heading" className="text-xl sm:text-2xl font-serif font-normal text-ink">
-                    {displayName} Creations ({products.length})
-                  </h2>
-                </div>
-                <span className="text-xs text-grey font-light">
-                  Bespoke made-to-measure tailoring & custom draping
-                </span>
-              </div>
-
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {products.map((product) => (
                   <Link
