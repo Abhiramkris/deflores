@@ -181,6 +181,9 @@ export default function AdminDashboard() {
   const [includeExtraLookbook, setIncludeExtraLookbook] = useState(false);
   const [extraLookbookFiles, setExtraLookbookFiles] = useState<File[]>([]);
   const [existingLookbookUrls, setExistingLookbookUrls] = useState<string[]>([]);
+  const [isPublishingProduct, setIsPublishingProduct] = useState(false);
+  const [publishStatusText, setPublishStatusText] = useState("");
+  const [fileInputKey, setFileInputKey] = useState(0);
 
   const [galleryFile, setGalleryFile] = useState<File | null>(null);
   const [galleryDesc, setGalleryDesc] = useState("");
@@ -343,6 +346,7 @@ export default function AdminDashboard() {
     setIncludeExtraLookbook(false);
     setExtraLookbookFiles([]);
     setExistingLookbookUrls([]);
+    setFileInputKey((prev) => prev + 1);
   };
 
   const handleEditProduct = (p: Product) => {
@@ -412,8 +416,13 @@ export default function AdminDashboard() {
 
   const handleAddProduct = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!pId || !pTitle) {
-      showNotification("Please fill in ID and Title.", true);
+    if (isPublishingProduct) return;
+
+    const trimmedTitle = (pTitle || "").trim();
+    const cleanId = (pId || trimmedTitle.toLowerCase().replace(/[^a-z0-9]+/g, "_")).trim().replace(/^_+|_+$/g, "");
+
+    if (!cleanId || !trimmedTitle) {
+      showNotification("Please provide both Product ID and Title.", true);
       return;
     }
 
@@ -423,10 +432,13 @@ export default function AdminDashboard() {
       return;
     }
 
+    setIsPublishingProduct(true);
+    setPublishStatusText(isEditMode ? "Optimizing media & updating product..." : "Compressing images with Sharp WebP & publishing...");
+
     const formData = new FormData();
     formData.append("type", "product");
-    formData.append("id", pId);
-    formData.append("title", pTitle);
+    formData.append("id", cleanId);
+    formData.append("title", trimmedTitle);
     formData.append("price", pPrice || "Haute Couture");
     formData.append("category", pCategory || "Bespoke");
     formData.append("subcategory", pSubcategory || "");
@@ -476,24 +488,33 @@ export default function AdminDashboard() {
     }
 
     try {
+      setPublishStatusText("Uploading and processing files via secure backend...");
       const res = await fetch("/api/admin/upload", {
         method: "POST",
         body: formData,
       });
       const data = await res.json();
-      if (res.ok) {
-        showNotification(isEditMode ? "Product updated successfully!" : "Product published successfully!");
+      if (res.ok && data.success) {
+        showNotification(isEditMode ? `Product "${trimmedTitle}" updated successfully!` : `Dynamic product "${trimmedTitle}" published successfully!`);
         handleResetProductForm();
-        fetchDashboardData();
+        await fetchDashboardData();
+        if (typeof document !== "undefined") {
+          const catalogEl = document.getElementById("active-catalog-items");
+          if (catalogEl) {
+            catalogEl.scrollIntoView({ behavior: "smooth" });
+          }
+        }
       } else {
-        showNotification(data.error || "Save failed", true);
+        showNotification(data.error || "Save failed. Please check image formats or field sizes.", true);
       }
     } catch {
-      showNotification("Server error during save", true);
+      showNotification("Server error or connection interrupted during save", true);
+    } finally {
+      setIsPublishingProduct(false);
+      setPublishStatusText("");
     }
   };
 
-  // Gallery Upload Handler
   const handleUploadGallery = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!galleryFile) {
@@ -909,8 +930,7 @@ export default function AdminDashboard() {
 
               </div>
 
-              {/* Catalog list section */}
-              <div className="bg-white border border-zinc-200/60 p-6 md:p-8 rounded-xl shadow-xs space-y-4">
+              <div id="active-catalog-items" className="bg-white border border-zinc-200/60 p-6 md:p-8 rounded-xl shadow-xs space-y-4">
                 <div className="flex justify-between items-center">
                   <h3 className="font-serif text-lg font-bold text-zinc-950">Active Catalog Items</h3>
                   <div className="flex gap-4 items-center">
@@ -1049,7 +1069,7 @@ export default function AdminDashboard() {
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               <div className="lg:col-span-8">
-                <form onSubmit={handleAddProduct} className="bg-white border border-zinc-200/60 p-6 sm:p-8 rounded-xl shadow-xs space-y-6">
+                <form key={fileInputKey} onSubmit={handleAddProduct} className="bg-white border border-zinc-200/60 p-6 sm:p-8 rounded-xl shadow-xs space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">Product Title *</label>
@@ -1766,18 +1786,47 @@ export default function AdminDashboard() {
                     </div>
                   )}
 
+                  {isPublishingProduct && (
+                    <div className="p-3.5 bg-zinc-50 border border-zinc-200 text-zinc-700 text-xs flex items-center gap-3 animate-pulse">
+                      <svg className="animate-spin h-4 w-4 text-zinc-900 shrink-0" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-zinc-900 text-[11px] tracking-wider uppercase">
+                          {isEditMode ? "Updating Product Item" : "Publishing Dynamic Product Item"}
+                        </span>
+                        <span className="text-[10px] text-zinc-500 font-light">
+                          {publishStatusText || "Compressing images with Sharp WebP & recording to database..."}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="pt-4 border-t border-zinc-100 flex gap-4">
                     <button
                       type="submit"
-                      className="flex-1 bg-zinc-950 text-white text-[11px] font-bold tracking-widest uppercase py-4 hover:bg-zinc-800 transition-colors cursor-pointer shadow-xs"
+                      disabled={isPublishingProduct}
+                      className="flex-1 bg-zinc-950 text-white text-[11px] font-bold tracking-widest uppercase py-4 hover:bg-zinc-800 transition-all cursor-pointer shadow-xs disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-3"
                     >
-                      {isEditMode ? "Save Changes & Update Product" : "Publish Dynamic Product Item"}
+                      {isPublishingProduct ? (
+                        <>
+                          <svg className="animate-spin h-4 w-4 text-white shrink-0" viewBox="0 0 24 24" fill="none">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                          </svg>
+                          <span>{isEditMode ? "Saving Changes & Optimizing Media..." : "Publishing Dynamic Product Item..."}</span>
+                        </>
+                      ) : (
+                        <span>{isEditMode ? "Save Changes & Update Product" : "Publish Dynamic Product Item"}</span>
+                      )}
                     </button>
                     {isEditMode && (
                       <button
                         type="button"
+                        disabled={isPublishingProduct}
                         onClick={handleResetProductForm}
-                        className="px-6 border border-zinc-300 text-zinc-700 text-[11px] font-bold tracking-widest uppercase hover:bg-zinc-100 transition-colors cursor-pointer"
+                        className="px-6 border border-zinc-300 text-zinc-700 text-[11px] font-bold tracking-widest uppercase hover:bg-zinc-100 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         Cancel
                       </button>
