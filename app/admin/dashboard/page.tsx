@@ -50,11 +50,30 @@ interface Subscriber {
   createdAt: string;
 }
 
+interface ProductColor {
+  name: string;
+  hex: string;
+}
+
 interface Product {
   id: string;
   title: string;
   price: string;
+  category?: string;
+  subcategory?: string;
+  badge?: string;
   description: string;
+  colors?: ProductColor[];
+  sizes?: string[];
+  details?: Record<string, any>;
+  rating?: number;
+  reviewCount?: number;
+  reviewAuthor?: string;
+  reviewRating?: number;
+  reviewQuote?: string;
+  images?: string[];
+  lookbookImages?: string[];
+  createdAt?: string;
 }
 
 export default function AdminDashboard() {
@@ -63,7 +82,6 @@ export default function AdminDashboard() {
   const [activeLogSubTab, setActiveLogSubTab] = useState<"admin" | "user">("admin");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  // Dashboard Data States
   const [stats, setStats] = useState<StatData>({ totalLogs: 0, totalSubscribers: 0, totalProducts: 0, totalGalleryImages: 0, uniqueDevices: 0, uniqueSessions: 0, totalActivities: 0 });
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [userActivities, setUserActivities] = useState<UserActivity[]>([]);
@@ -72,25 +90,44 @@ export default function AdminDashboard() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Categories management state
   const [adminCategories, setAdminCategories] = useState<any[]>([]);
   const [selectedCatIdx, setSelectedCatIdx] = useState<number>(0);
   const [isSavingCat, setIsSavingCat] = useState(false);
   const [isUploadingCatImage, setIsUploadingCatImage] = useState(false);
   const [uploadingSubIdx, setUploadingSubIdx] = useState<number | null>(null);
 
-  // Forms states
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editingProductId, setEditingProductId] = useState("");
   const [pId, setPId] = useState("");
   const [pTitle, setPTitle] = useState("");
+  const [pPrice, setPPrice] = useState("₹28,500");
+  const [pCategory, setPCategory] = useState("Bespoke");
+  const [pSubcategory, setPSubcategory] = useState("");
+  const [pBadge, setPBadge] = useState("Bespoke");
   const [pDescription, setPDescription] = useState("");
-  const [pColors, setPColors] = useState("Mint, Ivory");
-  const [productFiles, setProductFiles] = useState<File[]>([]);
+  const [pColors, setPColors] = useState<ProductColor[]>([
+    { name: "Mint", hex: "#a3ebd6" },
+    { name: "Ivory", hex: "#fdfaf2" },
+  ]);
+  const [newColorName, setNewColorName] = useState("");
+  const [newColorHex, setNewColorHex] = useState("#f0705e");
+  const [pSizes, setPSizes] = useState<string[]>(["S", "M", "L", "XL"]);
+  const [pLeadTime, setPLeadTime] = useState("5-7 Working Days");
+  const [slot0File, setSlot0File] = useState<File | null>(null);
+  const [slot0Existing, setSlot0Existing] = useState("");
+  const [slot1File, setSlot1File] = useState<File | null>(null);
+  const [slot1Existing, setSlot1Existing] = useState("");
+  const [slot2File, setSlot2File] = useState<File | null>(null);
+  const [slot2Existing, setSlot2Existing] = useState("");
+  const [slot3File, setSlot3File] = useState<File | null>(null);
+  const [slot3Existing, setSlot3Existing] = useState("");
   const [reviewAuthor, setReviewAuthor] = useState("Alexander Stewart");
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewQuote, setReviewQuote] = useState("Spectacular hand loom work. Stitched perfectly, fitting details are flawless.");
   const [includeReview, setIncludeReview] = useState(false);
   const [includeExtraLookbook, setIncludeExtraLookbook] = useState(false);
   const [extraLookbookFiles, setExtraLookbookFiles] = useState<File[]>([]);
+  const [existingLookbookUrls, setExistingLookbookUrls] = useState<string[]>([]);
 
   const [galleryFile, setGalleryFile] = useState<File | null>(null);
   const [galleryDesc, setGalleryDesc] = useState("");
@@ -192,54 +229,156 @@ export default function AdminDashboard() {
 
   const handleTitleChange = (val: string) => {
     setPTitle(val);
-    
-    // Generate clean lowercase key with underscores instead of spaces
-    let generatedKey = val
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9]+/g, "_") // Replace spaces and special characters with underscore
-      .replace(/^_+|_+$/g, "");    // Clean leading/trailing underscores
+    if (!isEditMode) {
+      let generatedKey = val
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "");
 
-    if (generatedKey) {
-      // Check if key already exists in local products list
-      const keyExists = products.some(p => p.id === generatedKey);
-      if (keyExists) {
-        const randomNum = Math.floor(1000 + Math.random() * 9000);
-        generatedKey = `${generatedKey}_${randomNum}`;
+      if (generatedKey) {
+        const keyExists = products.some((p) => p.id === generatedKey);
+        if (keyExists) {
+          const randomNum = Math.floor(1000 + Math.random() * 9000);
+          generatedKey = `${generatedKey}_${randomNum}`;
+        }
+        setPId(generatedKey);
+      } else {
+        setPId("");
       }
-      setPId(generatedKey);
-    } else {
-      setPId("");
     }
   };
 
-  // Add Product Submit Handler
+  const handleResetProductForm = () => {
+    setIsEditMode(false);
+    setEditingProductId("");
+    setPId("");
+    setPTitle("");
+    setPPrice("₹28,500");
+    setPCategory("Bespoke");
+    setPSubcategory("");
+    setPBadge("Bespoke");
+    setPDescription("");
+    setPColors([
+      { name: "Mint", hex: "#a3ebd6" },
+      { name: "Ivory", hex: "#fdfaf2" },
+    ]);
+    setNewColorName("");
+    setNewColorHex("#f0705e");
+    setPSizes(["S", "M", "L", "XL"]);
+    setPLeadTime("5-7 Working Days");
+    setSlot0File(null);
+    setSlot0Existing("");
+    setSlot1File(null);
+    setSlot1Existing("");
+    setSlot2File(null);
+    setSlot2Existing("");
+    setSlot3File(null);
+    setSlot3Existing("");
+    setIncludeReview(false);
+    setReviewAuthor("Alexander Stewart");
+    setReviewRating(5);
+    setReviewQuote("Spectacular hand loom work. Stitched perfectly, fitting details are flawless.");
+    setIncludeExtraLookbook(false);
+    setExtraLookbookFiles([]);
+    setExistingLookbookUrls([]);
+  };
+
+  const handleEditProduct = (p: Product) => {
+    setIsEditMode(true);
+    setEditingProductId(p.id);
+    setPId(p.id);
+    setPTitle(p.title || "");
+    setPPrice(p.price || "Haute Couture");
+    setPCategory(p.category || "Bespoke");
+    setPSubcategory(p.subcategory || "");
+    setPBadge(p.badge || p.category || "Bespoke");
+    setPDescription(p.description || "");
+
+    let parsedColors: ProductColor[] = [];
+    if (Array.isArray(p.colors) && p.colors.length > 0) {
+      parsedColors = p.colors;
+    } else {
+      parsedColors = [{ name: "Ivory", hex: "#fdfaf2" }];
+    }
+    setPColors(parsedColors);
+
+    let parsedSizes: string[] = [];
+    if (Array.isArray(p.sizes) && p.sizes.length > 0) {
+      parsedSizes = p.sizes;
+    } else {
+      parsedSizes = ["S", "M", "L", "XL"];
+    }
+    setPSizes(parsedSizes);
+
+    setPLeadTime(p.details?.leadTime || "5-7 Working Days");
+
+    const showcase = p.images || [];
+    setSlot0File(null);
+    setSlot0Existing(showcase[0] || "");
+    setSlot1File(null);
+    setSlot1Existing(showcase[1] || "");
+    setSlot2File(null);
+    setSlot2Existing(showcase[2] || "");
+    setSlot3File(null);
+    setSlot3Existing(showcase[3] || "");
+
+    const hasRev = Boolean(p.reviewAuthor && p.reviewQuote);
+    setIncludeReview(hasRev);
+    setReviewAuthor(p.reviewAuthor || "Alexander Stewart");
+    setReviewRating(p.reviewRating || 5);
+    setReviewQuote(p.reviewQuote || "");
+
+    const lookbooks = p.lookbookImages || [];
+    setIncludeExtraLookbook(lookbooks.length > 0);
+    setExistingLookbookUrls(lookbooks);
+    setExtraLookbookFiles([]);
+
+    setActiveTab("product");
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   const handleAddProduct = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (productFiles.length !== 4) {
-      showNotification("Please select exactly 4 showcase photos (minimum and limit required).", true);
-      return;
-    }
     if (!pId || !pTitle) {
       showNotification("Please fill in ID and Title.", true);
       return;
     }
 
+    const hasSlot0 = slot0File || slot0Existing;
+    if (!hasSlot0) {
+      showNotification("Please provide at least Showcase Photo 1 (Main Hero image).", true);
+      return;
+    }
+
     const formData = new FormData();
-    productFiles.forEach((file, idx) => {
-      formData.append(`file_${idx}`, file);
-    });
     formData.append("type", "product");
     formData.append("id", pId);
     formData.append("title", pTitle);
-    formData.append("description", pDescription);
-    
-    // Convert colors list to JSON string
-    const colorArray = pColors.split(",").map(c => ({ name: c.trim(), hex: "#ffffff" }));
-    formData.append("colors", JSON.stringify(colorArray));
+    formData.append("price", pPrice || "Haute Couture");
+    formData.append("category", pCategory || "Bespoke");
+    formData.append("subcategory", pSubcategory || "");
+    formData.append("badge", pBadge || pCategory || "Bespoke");
+    formData.append("description", pDescription || "");
+    formData.append("colors", JSON.stringify(pColors));
+    formData.append("sizes", JSON.stringify(pSizes));
+    formData.append("details", JSON.stringify({ leadTime: pLeadTime }));
 
-    // Append reviews data if enabled
-    if (includeReview) {
+    if (slot0File) formData.append("file_0", slot0File);
+    else if (slot0Existing) formData.append("existing_image_0", slot0Existing);
+
+    if (slot1File) formData.append("file_1", slot1File);
+    else if (slot1Existing) formData.append("existing_image_1", slot1Existing);
+
+    if (slot2File) formData.append("file_2", slot2File);
+    else if (slot2Existing) formData.append("existing_image_2", slot2Existing);
+
+    if (slot3File) formData.append("file_3", slot3File);
+    else if (slot3Existing) formData.append("existing_image_3", slot3Existing);
+
+    if (includeReview && reviewAuthor && reviewQuote) {
       formData.append("reviewAuthor", reviewAuthor);
       formData.append("reviewRating", reviewRating.toString());
       formData.append("reviewQuote", reviewQuote);
@@ -249,8 +388,8 @@ export default function AdminDashboard() {
       formData.append("reviewQuote", "");
     }
 
-    // Append extra lookbook gallery files if enabled
-    if (includeExtraLookbook && extraLookbookFiles.length > 0) {
+    if (includeExtraLookbook) {
+      formData.append("existing_lookbook_images", JSON.stringify(existingLookbookUrls));
       formData.append("extraFilesCount", extraLookbookFiles.length.toString());
       extraLookbookFiles.forEach((file, idx) => {
         formData.append(`extra_file_${idx}`, file);
@@ -262,27 +401,18 @@ export default function AdminDashboard() {
     try {
       const res = await fetch("/api/admin/upload", {
         method: "POST",
-        body: formData
+        body: formData,
       });
       const data = await res.json();
       if (res.ok) {
-        showNotification("Product catalog item and WebP compressed showcase photos registered successfully!");
-        setPId("");
-        setPTitle("");
-        setPDescription("");
-        setProductFiles([]);
-        setReviewAuthor("Alexander Stewart");
-        setReviewRating(5);
-        setReviewQuote("Spectacular hand loom work. Stitched perfectly, fitting details are flawless.");
-        setIncludeReview(false);
-        setIncludeExtraLookbook(false);
-        setExtraLookbookFiles([]);
+        showNotification(isEditMode ? "Product updated successfully!" : "Product published successfully!");
+        handleResetProductForm();
         fetchDashboardData();
       } else {
-        showNotification(data.error || "Upload failed", true);
+        showNotification(data.error || "Save failed", true);
       }
-    } catch (err) {
-      showNotification("Server error during upload", true);
+    } catch {
+      showNotification("Server error during save", true);
     }
   };
 
@@ -775,6 +905,12 @@ export default function AdminDashboard() {
                               <span className="px-2 py-0.5 text-[8px] font-bold bg-emerald-50 text-emerald-700 tracking-wide rounded-full uppercase border border-emerald-100">Live</span>
                             </td>
                             <td className="py-3 px-4 text-right space-x-4">
+                              <button
+                                onClick={() => handleEditProduct(p)}
+                                className="text-zinc-950 hover:text-coral font-bold text-[9px] tracking-widest uppercase cursor-pointer"
+                              >
+                                Edit
+                              </button>
                               <Link href={`/product/${p.id}`} target="_blank" className="text-zinc-950 underline hover:opacity-70 font-bold text-[9px] tracking-widest uppercase">
                                 View
                               </Link>
@@ -797,73 +933,443 @@ export default function AdminDashboard() {
           );
         })()}
 
-        {/* TAB 2: Add Dynamic Product */}
         {activeTab === "product" && (
           <div className="space-y-8 text-left">
-            <div className="space-y-2">
-              <h2 className="font-serif text-3xl font-light text-zinc-950">Add Dynamic Product</h2>
-              <p className="text-xs text-zinc-500 leading-relaxed font-light tracking-wide">
-                Upload exactly 4 showcase photos. Images will be optimized to WebP and saved in Supabase Storage.
-              </p>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-3">
+                  <h2 className="font-serif text-3xl font-light text-zinc-950">
+                    {isEditMode ? `Edit Product: ${pTitle || pId}` : "Product Catalog Manager"}
+                  </h2>
+                  {isEditMode && (
+                    <span className="text-[9px] font-bold tracking-widest uppercase bg-amber-100 text-amber-900 px-2.5 py-0.5 rounded-full border border-amber-200">
+                      Edit Mode (#{pId})
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-zinc-500 leading-relaxed font-light tracking-wide">
+                  Configure titles, categories, pricing, color swatches, sizes, showcase photos, and client reviews.
+                </p>
+              </div>
+              {isEditMode && (
+                <button
+                  type="button"
+                  onClick={handleResetProductForm}
+                  className="self-start sm:self-auto text-[10px] tracking-widest uppercase font-bold text-zinc-700 hover:text-zinc-950 px-4 py-2 border border-zinc-300 bg-white hover:bg-zinc-50 shadow-xs cursor-pointer transition-colors"
+                >
+                  Cancel Edit / Add New
+                </button>
+              )}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-              
-              {/* Left Column: Form Inputs */}
               <div className="lg:col-span-8">
-                <form onSubmit={handleAddProduct} className="bg-white border border-zinc-200/60 p-6 rounded-xl shadow-xs space-y-6">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">Product Title</label>
-                    <input
-                      type="text"
-                      required
-                      value={pTitle}
-                      onChange={(e) => handleTitleChange(e.target.value)}
-                      placeholder="e.g. Mint Sequin Lehenga"
-                      className="w-full border border-zinc-200 text-xs px-4 py-3 tracking-wider text-zinc-950 focus:outline-none focus:border-zinc-500 rounded-none bg-transparent"
-                    />
+                <form onSubmit={handleAddProduct} className="bg-white border border-zinc-200/60 p-6 sm:p-8 rounded-xl shadow-xs space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">Product Title *</label>
+                      <input
+                        type="text"
+                        required
+                        value={pTitle}
+                        onChange={(e) => handleTitleChange(e.target.value)}
+                        placeholder="e.g. Mint Sequin Lehenga"
+                        className="w-full border border-zinc-200 text-xs px-4 py-3 tracking-wider text-zinc-950 focus:outline-none focus:border-zinc-500 rounded-none bg-transparent"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">Product ID / Key *</label>
+                      <input
+                        type="text"
+                        required
+                        value={pId}
+                        readOnly={isEditMode}
+                        onChange={(e) => setPId(e.target.value)}
+                        placeholder="e.g. mint_sequin_lehenga"
+                        className={`w-full border border-zinc-200 text-xs px-4 py-3 tracking-wider text-zinc-950 focus:outline-none focus:border-zinc-500 rounded-none font-mono ${isEditMode ? "bg-zinc-100 text-zinc-500 cursor-not-allowed" : "bg-zinc-50/50"}`}
+                      />
+                    </div>
                   </div>
 
-                  <div className="space-y-2">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-zinc-100 pt-6">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">Category *</label>
+                      <select
+                        value={pCategory}
+                        onChange={(e) => {
+                          setPCategory(e.target.value);
+                          setPSubcategory("");
+                        }}
+                        className="w-full border border-zinc-200 text-xs px-4 py-3 tracking-wider text-zinc-950 focus:outline-none focus:border-zinc-500 rounded-none bg-white cursor-pointer"
+                      >
+                        {adminCategories.length > 0 ? (
+                          adminCategories.map((c: any) => (
+                            <option key={c.key} value={c.title}>
+                              {c.title}
+                            </option>
+                          ))
+                        ) : (
+                          <>
+                            <option value="Bespoke">Bespoke</option>
+                            <option value="Lehenga">Lehenga</option>
+                            <option value="Gown">Gown</option>
+                            <option value="Saree">Saree</option>
+                            <option value="Party Wear">Party Wear</option>
+                            <option value="Mens Wear">Mens Wear</option>
+                          </>
+                        )}
+                      </select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">Subcategory (Optional)</label>
+                      {(() => {
+                        const matchedCat = adminCategories.find((c: any) => c.title === pCategory || c.key === pCategory.toLowerCase());
+                        const subs = matchedCat && Array.isArray(matchedCat.subcategories) ? matchedCat.subcategories : [];
+                        return (
+                          <div className="flex gap-2">
+                            {subs.length > 0 ? (
+                              <select
+                                value={pSubcategory}
+                                onChange={(e) => setPSubcategory(e.target.value)}
+                                className="w-full border border-zinc-200 text-xs px-4 py-3 tracking-wider text-zinc-950 focus:outline-none focus:border-zinc-500 rounded-none bg-white cursor-pointer"
+                              >
+                                <option value="">-- Select Subcategory --</option>
+                                {subs.map((s: any, idx: number) => (
+                                  <option key={idx} value={s.title}>
+                                    {s.title}
+                                  </option>
+                                ))}
+                              </select>
+                            ) : (
+                              <input
+                                type="text"
+                                value={pSubcategory}
+                                onChange={(e) => setPSubcategory(e.target.value)}
+                                placeholder="e.g. Bridal, Pret, Handloom"
+                                className="w-full border border-zinc-200 text-xs px-4 py-3 tracking-wider text-zinc-950 focus:outline-none focus:border-zinc-500 rounded-none bg-transparent"
+                              />
+                            )}
+                          </div>
+                        );
+                      })()}
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">Badge / Tag</label>
+                      <input
+                        type="text"
+                        value={pBadge}
+                        onChange={(e) => setPBadge(e.target.value)}
+                        placeholder="e.g. Bespoke, Haute Couture"
+                        className="w-full border border-zinc-200 text-xs px-4 py-3 tracking-wider text-zinc-950 focus:outline-none focus:border-zinc-500 rounded-none bg-transparent"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest self-center mr-1">Badge Presets:</span>
+                    {["Bespoke", "Haute Couture", "Ready to Wear", "Atelier Exclusive", "New Arrival"].map((b) => (
+                      <button
+                        key={b}
+                        type="button"
+                        onClick={() => setPBadge(b)}
+                        className={`text-[9px] tracking-widest uppercase font-semibold px-2.5 py-1 border transition-colors cursor-pointer ${
+                          pBadge === b ? "bg-zinc-950 text-white border-zinc-950" : "bg-zinc-50 text-zinc-600 border-zinc-200 hover:border-zinc-400"
+                        }`}
+                      >
+                        {b}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="space-y-2 border-t border-zinc-100 pt-6">
+                    <div className="flex justify-between items-center">
+                      <label className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">Price / Inquiry Label</label>
+                      <button
+                        type="button"
+                        onClick={() => setPPrice("Haute Couture • Price on Request")}
+                        className="text-[9px] font-semibold tracking-wider text-zinc-500 hover:text-zinc-950 underline cursor-pointer"
+                      >
+                        Set to "Price on Request"
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      value={pPrice}
+                      onChange={(e) => setPPrice(e.target.value)}
+                      placeholder="e.g. ₹28,500 or Haute Couture"
+                      className="w-full border border-zinc-200 text-xs px-4 py-3 tracking-wider text-zinc-950 focus:outline-none focus:border-zinc-500 rounded-none bg-transparent"
+                    />
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      {["₹22,500", "₹24,000", "₹28,500", "₹32,000", "₹45,000", "Price on Request"].map((pr) => (
+                        <button
+                          key={pr}
+                          type="button"
+                          onClick={() => setPPrice(pr)}
+                          className="text-[9px] tracking-wider uppercase font-medium px-2 py-0.5 bg-zinc-50 border border-zinc-200 text-zinc-600 hover:border-zinc-400 cursor-pointer"
+                        >
+                          {pr}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 border-t border-zinc-100 pt-6">
                     <label className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">Description</label>
                     <textarea
                       rows={3}
                       value={pDescription}
                       onChange={(e) => setPDescription(e.target.value)}
-                      placeholder="Bespoke Circular Lehenga detailed threadwork..."
-                      className="w-full border border-zinc-200 text-xs px-4 py-3 tracking-wider text-zinc-950 focus:outline-none focus:border-zinc-500 rounded-none bg-transparent resize-none"
+                      placeholder="Detailed description of silhouette, hand embroidery, fabric, and circular draping..."
+                      className="w-full border border-zinc-200 text-xs px-4 py-3 tracking-wider text-zinc-950 focus:outline-none focus:border-zinc-500 rounded-none bg-transparent resize-none leading-relaxed"
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">Colors (Comma List)</label>
-                    <input
-                      type="text"
-                      value={pColors}
-                      onChange={(e) => setPColors(e.target.value)}
-                      placeholder="Mint, Ivory"
-                      className="w-full border border-zinc-200 text-xs px-4 py-3 tracking-wider text-zinc-950 focus:outline-none focus:border-zinc-500 rounded-none bg-transparent"
-                    />
+                  <div className="space-y-4 border-t border-zinc-100 pt-6">
+                    <label className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase block">Color Swatches Manager</label>
+                    
+                    <div className="flex flex-wrap gap-3 items-center">
+                      {pColors.map((color, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center gap-2 bg-zinc-50 border border-zinc-200 px-3 py-1.5 shadow-xs"
+                        >
+                          <div
+                            className="w-4 h-4 border border-zinc-300 shrink-0"
+                            style={{ backgroundColor: color.hex }}
+                          />
+                          <span className="text-[10px] font-semibold text-zinc-900 tracking-wider uppercase">{color.name}</span>
+                          <span className="text-[9px] font-mono text-zinc-400">({color.hex})</span>
+                          <button
+                            type="button"
+                            onClick={() => setPColors(pColors.filter((_, i) => i !== idx))}
+                            className="text-zinc-400 hover:text-red-600 font-bold text-xs ml-1 cursor-pointer"
+                            title="Remove color"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 items-center pt-2">
+                      <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Color Presets:</span>
+                      {[
+                        { name: "Mint", hex: "#a3ebd6" },
+                        { name: "Ivory", hex: "#fdfaf2" },
+                        { name: "Scarlet", hex: "#cc0000" },
+                        { name: "Emerald", hex: "#046342" },
+                        { name: "Gold", hex: "#d4af37" },
+                        { name: "Blush", hex: "#f6d5cc" },
+                        { name: "Coral", hex: "#f0705e" },
+                        { name: "Midnight Black", hex: "#111111" },
+                      ].map((preset) => (
+                        <button
+                          key={preset.name}
+                          type="button"
+                          onClick={() => {
+                            if (!pColors.some((c) => c.name.toLowerCase() === preset.name.toLowerCase())) {
+                              setPColors([...pColors, preset]);
+                            }
+                          }}
+                          className="flex items-center gap-1.5 text-[9px] tracking-wider uppercase px-2 py-1 bg-white border border-zinc-200 hover:border-zinc-400 transition-colors cursor-pointer"
+                        >
+                          <span className="w-2.5 h-2.5 border border-zinc-300" style={{ backgroundColor: preset.hex }} />
+                          <span>{preset.name}</span>
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 items-center pt-2">
+                      <input
+                        type="text"
+                        value={newColorName}
+                        onChange={(e) => setNewColorName(e.target.value)}
+                        placeholder="Custom Color Name (e.g. Royal Navy)"
+                        className="border border-zinc-200 text-xs px-3 py-2 text-zinc-950 focus:outline-none focus:border-zinc-500 rounded-none w-52"
+                      />
+                      <input
+                        type="color"
+                        value={newColorHex}
+                        onChange={(e) => setNewColorHex(e.target.value)}
+                        className="w-9 h-9 border border-zinc-200 cursor-pointer p-0.5 bg-white"
+                        title="Pick Color Hex"
+                      />
+                      <span className="text-[10px] font-mono text-zinc-500">{newColorHex}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (newColorName.trim()) {
+                            setPColors([...pColors, { name: newColorName.trim(), hex: newColorHex }]);
+                            setNewColorName("");
+                          }
+                        }}
+                        className="bg-zinc-950 text-white text-[9px] font-bold tracking-widest uppercase px-3 py-2 hover:bg-zinc-800 transition-colors cursor-pointer"
+                      >
+                        + Add Custom Color
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase block font-semibold text-zinc-700">Showcase Photos (Exactly 4 Required)</label>
-                    <input
-                      type="file"
-                      multiple
-                      required
-                      accept="image/*"
-                      onChange={(e) => {
-                        const files = Array.from(e.target.files || []);
-                        setProductFiles(files);
-                      }}
-                      className="text-xs text-zinc-500"
-                    />
-                    <p className="text-[9px] text-zinc-400 mt-1 font-light">Selected: {productFiles.length} / 4 files</p>
+                  <div className="space-y-3 border-t border-zinc-100 pt-6">
+                    <label className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase block">Available Sizes</label>
+                    <div className="flex flex-wrap gap-2">
+                      {["XS", "S", "M", "L", "XL", "XXL", "Custom / Made to Measure"].map((size) => {
+                        const isSelected = pSizes.includes(size);
+                        return (
+                          <button
+                            key={size}
+                            type="button"
+                            onClick={() => {
+                              if (isSelected) {
+                                setPSizes(pSizes.filter((s) => s !== size));
+                              } else {
+                                setPSizes([...pSizes, size]);
+                              }
+                            }}
+                            className={`text-[10px] tracking-widest uppercase font-semibold px-3 py-1.5 border transition-colors cursor-pointer ${
+                              isSelected ? "bg-zinc-950 text-white border-zinc-950" : "bg-zinc-50 text-zinc-600 border-zinc-200 hover:border-zinc-400"
+                            }`}
+                          >
+                            {isSelected ? `✓ ${size}` : size}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
 
-                  {/* Reviews Toggle Checkbox */}
-                  <div className="flex items-center gap-2 pt-2 pb-2">
+                  <div className="space-y-4 border-t border-zinc-100 pt-6">
+                    <div>
+                      <label className="text-[10px] font-bold tracking-widest text-zinc-900 uppercase block">
+                        Showcase Photos (4 Dedicated Slots) *
+                      </label>
+                      <p className="text-[10px] text-zinc-400 font-light mt-0.5">
+                        Matches the product detail gallery layout. Upload high-res images (compressed to WebP automatically).
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="border border-zinc-200 p-4 space-y-3 bg-zinc-50/50">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] font-bold tracking-widest uppercase text-zinc-900">Slot 1: Main Front (4:3) *</span>
+                          {(slot0File || slot0Existing) && (
+                            <span className="text-[8px] font-bold tracking-widest uppercase text-emerald-700 bg-emerald-50 px-2 py-0.5 border border-emerald-200">
+                              {slot0File ? "New File" : "Current"}
+                            </span>
+                          )}
+                        </div>
+                        <div className="aspect-[4/3] bg-zinc-200 relative overflow-hidden flex items-center justify-center">
+                          {slot0File ? (
+                            <img src={URL.createObjectURL(slot0File)} alt="Slot 1" className="w-full h-full object-cover" />
+                          ) : slot0Existing ? (
+                            <img src={slot0Existing} alt="Slot 1" className="w-full h-full object-cover" />
+                          ) : (
+                            <span className="text-[10px] text-zinc-400 font-medium">Hero / Front 4:3</span>
+                          )}
+                        </div>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0] || null;
+                            setSlot0File(f);
+                          }}
+                          className="text-xs text-zinc-500 w-full"
+                        />
+                      </div>
+
+                      <div className="border border-zinc-200 p-4 space-y-3 bg-zinc-50/50">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] font-bold tracking-widest uppercase text-zinc-900">Slot 2: Angle 1 (4:3)</span>
+                          {(slot1File || slot1Existing) && (
+                            <span className="text-[8px] font-bold tracking-widest uppercase text-emerald-700 bg-emerald-50 px-2 py-0.5 border border-emerald-200">
+                              {slot1File ? "New File" : "Current"}
+                            </span>
+                          )}
+                        </div>
+                        <div className="aspect-[4/3] bg-zinc-200 relative overflow-hidden flex items-center justify-center">
+                          {slot1File ? (
+                            <img src={URL.createObjectURL(slot1File)} alt="Slot 2" className="w-full h-full object-cover" />
+                          ) : slot1Existing ? (
+                            <img src={slot1Existing} alt="Slot 2" className="w-full h-full object-cover" />
+                          ) : (
+                            <span className="text-[10px] text-zinc-400 font-medium">Side / Angle 4:3</span>
+                          )}
+                        </div>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0] || null;
+                            setSlot1File(f);
+                          }}
+                          className="text-xs text-zinc-500 w-full"
+                        />
+                      </div>
+
+                      <div className="border border-zinc-200 p-4 space-y-3 bg-zinc-50/50">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] font-bold tracking-widest uppercase text-zinc-900">Slot 3: Angle 2 (4:3)</span>
+                          {(slot2File || slot2Existing) && (
+                            <span className="text-[8px] font-bold tracking-widest uppercase text-emerald-700 bg-emerald-50 px-2 py-0.5 border border-emerald-200">
+                              {slot2File ? "New File" : "Current"}
+                            </span>
+                          )}
+                        </div>
+                        <div className="aspect-[4/3] bg-zinc-200 relative overflow-hidden flex items-center justify-center">
+                          {slot2File ? (
+                            <img src={URL.createObjectURL(slot2File)} alt="Slot 3" className="w-full h-full object-cover" />
+                          ) : slot2Existing ? (
+                            <img src={slot2Existing} alt="Slot 3" className="w-full h-full object-cover" />
+                          ) : (
+                            <span className="text-[10px] text-zinc-400 font-medium">Back / Draping 4:3</span>
+                          )}
+                        </div>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0] || null;
+                            setSlot2File(f);
+                          }}
+                          className="text-xs text-zinc-500 w-full"
+                        />
+                      </div>
+
+                      <div className="border border-zinc-200 p-4 space-y-3 bg-zinc-50/50">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] font-bold tracking-widest uppercase text-zinc-900">Slot 4: Detail Panoramic (2:1)</span>
+                          {(slot3File || slot3Existing) && (
+                            <span className="text-[8px] font-bold tracking-widest uppercase text-emerald-700 bg-emerald-50 px-2 py-0.5 border border-emerald-200">
+                              {slot3File ? "New File" : "Current"}
+                            </span>
+                          )}
+                        </div>
+                        <div className="aspect-[2/1] bg-zinc-200 relative overflow-hidden flex items-center justify-center">
+                          {slot3File ? (
+                            <img src={URL.createObjectURL(slot3File)} alt="Slot 4" className="w-full h-full object-cover" />
+                          ) : slot3Existing ? (
+                            <img src={slot3Existing} alt="Slot 4" className="w-full h-full object-cover" />
+                          ) : (
+                            <span className="text-[10px] text-zinc-400 font-medium">Embroidery Detail 2:1</span>
+                          )}
+                        </div>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0] || null;
+                            setSlot3File(f);
+                          }}
+                          className="text-xs text-zinc-500 w-full"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-2 border-t border-zinc-100">
                     <input
                       type="checkbox"
                       id="includeReview"
@@ -871,49 +1377,15 @@ export default function AdminDashboard() {
                       onChange={(e) => setIncludeReview(e.target.checked)}
                       className="rounded border-zinc-300 text-zinc-950 focus:ring-zinc-950 h-3.5 w-3.5 cursor-pointer"
                     />
-                    <label htmlFor="includeReview" className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase cursor-pointer select-none">
-                      Include Customer Review
+                    <label htmlFor="includeReview" className="text-[10px] font-bold tracking-widest text-zinc-600 uppercase cursor-pointer select-none">
+                      Include Customer Review Testimonial
                     </label>
                   </div>
 
-                  {/* Extra Lookbook Gallery Toggle Checkbox */}
-                  <div className="flex items-center gap-2 pb-2">
-                    <input
-                      type="checkbox"
-                      id="includeExtraLookbook"
-                      checked={includeExtraLookbook}
-                      onChange={(e) => setIncludeExtraLookbook(e.target.checked)}
-                      className="rounded border-zinc-300 text-zinc-950 focus:ring-zinc-950 h-3.5 w-3.5 cursor-pointer"
-                    />
-                    <label htmlFor="includeExtraLookbook" className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase cursor-pointer select-none">
-                      Add Extra Gallery Images (Lookbook)
-                    </label>
-                  </div>
-
-                  {/* Extra Lookbook Files input */}
-                  {includeExtraLookbook && (
-                    <div className="border-t border-zinc-100 pt-6 space-y-4">
-                      <label className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase block font-semibold text-zinc-700">Extra Lookbook / Gallery Photos</label>
-                      <input
-                        type="file"
-                        multiple
-                        accept="image/*"
-                        onChange={(e) => {
-                          const files = Array.from(e.target.files || []);
-                          setExtraLookbookFiles(files);
-                        }}
-                        className="text-xs text-zinc-500"
-                      />
-                      <p className="text-[9px] text-zinc-400 mt-1 font-light">Selected: {extraLookbookFiles.length} lookbook files</p>
-                    </div>
-                  )}
-
-                  {/* Reviews Segment */}
                   {includeReview && (
-                    <div className="border-t border-zinc-100 pt-6 space-y-4">
+                    <div className="border border-zinc-200 p-5 space-y-4 bg-zinc-50/40">
                       <h3 className="font-serif text-sm font-bold text-zinc-950 uppercase">Customer Review</h3>
-                      
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <label className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">Author Name</label>
                           <input
@@ -921,7 +1393,7 @@ export default function AdminDashboard() {
                             value={reviewAuthor}
                             onChange={(e) => setReviewAuthor(e.target.value)}
                             placeholder="Alexander Stewart"
-                            className="w-full border border-zinc-200 text-xs px-4 py-3 tracking-wider text-zinc-950 focus:outline-none focus:border-zinc-500 rounded-none bg-transparent"
+                            className="w-full border border-zinc-200 text-xs px-4 py-3 tracking-wider text-zinc-950 focus:outline-none focus:border-zinc-500 rounded-none bg-white"
                           />
                         </div>
                         <div className="space-y-2">
@@ -932,7 +1404,7 @@ export default function AdminDashboard() {
                             max={5}
                             value={reviewRating}
                             onChange={(e) => setReviewRating(parseInt(e.target.value) || 5)}
-                            className="w-full border border-zinc-200 text-xs px-4 py-3 tracking-wider text-zinc-950 focus:outline-none focus:border-zinc-500 rounded-none bg-transparent"
+                            className="w-full border border-zinc-200 text-xs px-4 py-3 tracking-wider text-zinc-950 focus:outline-none focus:border-zinc-500 rounded-none bg-white"
                           />
                         </div>
                       </div>
@@ -944,137 +1416,222 @@ export default function AdminDashboard() {
                           value={reviewQuote}
                           onChange={(e) => setReviewQuote(e.target.value)}
                           placeholder="Spectacular hand loom work. Stitched perfectly, fitting details are flawless."
-                          className="w-full border border-zinc-200 text-xs px-4 py-3 tracking-wider text-zinc-950 focus:outline-none focus:border-zinc-500 rounded-none bg-transparent resize-none"
+                          className="w-full border border-zinc-200 text-xs px-4 py-3 tracking-wider text-zinc-950 focus:outline-none focus:border-zinc-500 rounded-none bg-white resize-none"
                         />
                       </div>
                     </div>
                   )}
 
-                  {/* Product ID Key (Auto Generated) */}
-                  <div className="space-y-2 border-t border-zinc-100 pt-6">
-                    <label className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">Product ID / Key</label>
+                  <div className="flex items-center gap-2 pt-2 border-t border-zinc-100">
                     <input
-                      type="text"
-                      required
-                      value={pId}
-                      onChange={(e) => setPId(e.target.value)}
-                      placeholder="e.g. mint_sequin_lehenga"
-                      className="w-full border border-zinc-200 text-xs px-4 py-3 tracking-wider text-zinc-950 focus:outline-none focus:border-zinc-500 rounded-none bg-zinc-50/50 font-mono"
+                      type="checkbox"
+                      id="includeExtraLookbook"
+                      checked={includeExtraLookbook}
+                      onChange={(e) => setIncludeExtraLookbook(e.target.checked)}
+                      className="rounded border-zinc-300 text-zinc-950 focus:ring-zinc-950 h-3.5 w-3.5 cursor-pointer"
                     />
-                    <p className="text-[8px] text-zinc-400 font-light mt-1">Generated automatically from Title. Duplicate values append a random unique suffix.</p>
+                    <label htmlFor="includeExtraLookbook" className="text-[10px] font-bold tracking-widest text-zinc-600 uppercase cursor-pointer select-none">
+                      Atmosphere Editorial Lookbook Photos
+                    </label>
                   </div>
 
-                  <button
-                    type="submit"
-                    className="w-full bg-zinc-950 text-white text-[10px] font-bold tracking-widest uppercase py-3.5 hover:bg-zinc-800 transition-colors"
-                  >
-                    Upload Product Item
-                  </button>
-                </form>
-              </div>
-
-              {/* Right Column: Live Storefront Preview */}
-              <div className="lg:col-span-4 bg-zinc-50/50 p-6 rounded-xl border border-zinc-200/50 max-h-[85vh] overflow-y-auto space-y-6">
-                <div className="flex justify-between items-center pb-2 border-b border-zinc-200">
-                  <h3 className="font-serif text-sm font-bold text-zinc-400 uppercase tracking-widest">Storefront Live Preview</h3>
-                  <span className="text-[8px] tracking-wider uppercase font-semibold text-zinc-400 bg-zinc-200 px-2.5 py-0.5 rounded-full">Responsive Layout Mock</span>
-                </div>
-
-                <div className="bg-white border border-zinc-150 p-6 rounded-xl shadow-xs space-y-8 font-sans">
-                  
-                  {/* Dynamic Images Grid (shows uploaded files as blob urls, fallbacks to blank) */}
-                  <div className="grid grid-cols-12 gap-3">
-                    <div className="col-span-6 bg-zinc-100 aspect-square relative overflow-hidden rounded-lg flex items-center justify-center text-[10px] text-zinc-400">
-                      {productFiles[0] ? (
-                        <img src={URL.createObjectURL(productFiles[0])} alt="Preview 1" className="w-full h-full object-cover" />
-                      ) : "Showcase 1 (Main)"}
-                    </div>
-
-                    <div className="col-span-6 grid grid-cols-2 gap-3">
-                      <div className="bg-zinc-100 aspect-square relative overflow-hidden rounded-lg flex items-center justify-center text-[8px] text-zinc-400">
-                        {productFiles[1] ? (
-                          <img src={URL.createObjectURL(productFiles[1])} alt="Preview 2" className="w-full h-full object-cover" />
-                        ) : "Showcase 2"}
-                      </div>
-                      <div className="bg-zinc-100 aspect-square relative overflow-hidden rounded-lg flex items-center justify-center text-[8px] text-zinc-400">
-                        {productFiles[2] ? (
-                          <img src={URL.createObjectURL(productFiles[2])} alt="Preview 3" className="w-full h-full object-cover" />
-                        ) : "Showcase 3"}
-                      </div>
-                      <div className="col-span-2 bg-zinc-100 aspect-[2/1] relative overflow-hidden rounded-lg flex items-center justify-center text-[8px] text-zinc-400">
-                        {productFiles[3] ? (
-                          <img src={URL.createObjectURL(productFiles[3])} alt="Preview 4" className="w-full h-full object-cover" />
-                        ) : "Showcase 4 (Detail)"}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Details and Review box */}
-                  <div className="flex flex-col gap-6 text-left">
-                    <div className="space-y-6">
-                      <div className="space-y-1.5">
-                        <span className="text-[8px] bg-zinc-950 text-white font-bold tracking-widest uppercase px-2 py-0.5 rounded-full inline-block">Bespoke</span>
-                        <h4 className="font-serif text-xl font-light text-zinc-950">{pTitle || "Product Title Preview"}</h4>
-                        <div className="flex gap-1 text-[9px] text-amber-500">★ 5.0 (New Reviews)</div>
+                  {includeExtraLookbook && (
+                    <div className="border border-zinc-200 p-5 space-y-4 bg-zinc-50/40">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase block font-semibold text-zinc-700">
+                          Editorial Atmosphere Photos
+                        </label>
+                        <p className="text-[9px] text-zinc-400">High-fashion campaign images displayed in the editorial lookbook gallery.</p>
                       </div>
 
-                      <div className="space-y-1.5">
-                        <span className="text-[9px] tracking-widest font-bold uppercase text-zinc-400 block">Colors</span>
-                        <div className="flex gap-1.5">
-                          {pColors.split(",").map((c, i) => (
-                            <span key={i} className="text-[8px] tracking-widest uppercase bg-zinc-50 border border-zinc-200 px-2 py-0.5 font-bold text-zinc-600 rounded-sm">{c.trim() || "Color"}</span>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="space-y-1.5 border-t border-zinc-100 pt-4">
-                        <span className="text-[8px] tracking-widest font-bold uppercase text-zinc-400 block">Description</span>
-                        <p className="text-[10px] text-zinc-500 font-light leading-relaxed">{pDescription || "Provide a custom circular lehenga description to preview details here..."}</p>
-                      </div>
-                    </div>
-
-                    <div className="space-y-4">
-                      {/* Inquiry button */}
-                      <div className="bg-zinc-950 text-white p-4 rounded-xl flex flex-col gap-2 items-center text-center">
-                        <span className="text-[8px] tracking-widest font-bold uppercase text-zinc-400">Inquiry Link</span>
-                        <div className="w-full text-white text-[9px] font-bold tracking-widest uppercase py-2 bg-white/10 rounded-lg hover:bg-white/15 transition-all text-center">Inquire via WhatsApp</div>
-                      </div>
-
-                      {/* Review details */}
-                      {includeReview && (
-                        <div className="border border-zinc-100 p-4 rounded-xl space-y-2">
-                          <div className="flex justify-between items-center">
-                            <span className="text-[9px] font-bold text-zinc-950">{reviewAuthor || "Reviewer"}</span>
-                            <span className="text-[8px] text-amber-500">{"★".repeat(Math.max(1, Math.min(5, reviewRating)))}</span>
-                          </div>
-                          <p className="text-[9px] text-zinc-500 font-light italic leading-relaxed">"{reviewQuote || "Spectacular design."}"</p>
-                        </div>
-                      )}
-
-                      {/* Extra Lookbook Gallery grid preview */}
-                      {includeExtraLookbook && extraLookbookFiles.length > 0 && (
-                        <div className="border-t border-zinc-100 pt-4 space-y-2">
-                          <span className="text-[8px] tracking-widest font-bold uppercase text-zinc-400 block">Lookbook Gallery Mockup</span>
-                          <div className="grid grid-cols-2 gap-2">
-                            {extraLookbookFiles.slice(0, 4).map((file, idx) => (
-                              <div key={idx} className="relative aspect-[3/4] bg-zinc-100 overflow-hidden rounded-md flex items-center justify-center text-[8px] text-zinc-400">
-                                <img src={URL.createObjectURL(file)} alt="" className="w-full h-full object-cover" />
+                      {existingLookbookUrls.length > 0 && (
+                        <div className="space-y-2">
+                          <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Existing Lookbook Images:</span>
+                          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                            {existingLookbookUrls.map((url, idx) => (
+                              <div key={idx} className="relative aspect-[3/4] bg-zinc-100 border border-zinc-200 overflow-hidden group">
+                                <img src={url} alt="" className="w-full h-full object-cover" />
+                                <button
+                                  type="button"
+                                  onClick={() => setExistingLookbookUrls(existingLookbookUrls.filter((_, i) => i !== idx))}
+                                  className="absolute top-1 right-1 bg-black/75 text-white w-5 h-5 flex items-center justify-center text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                                  title="Delete image"
+                                >
+                                  ×
+                                </button>
                               </div>
                             ))}
                           </div>
-                          {extraLookbookFiles.length > 4 && (
-                            <p className="text-[8px] text-zinc-400 font-light text-center">+ {extraLookbookFiles.length - 4} more photos</p>
-                          )}
                         </div>
                       )}
+
+                      <div className="space-y-2">
+                        <input
+                          type="file"
+                          multiple
+                          accept="image/*"
+                          onChange={(e) => {
+                            const files = Array.from(e.target.files || []);
+                            setExtraLookbookFiles(files);
+                          }}
+                          className="text-xs text-zinc-500"
+                        />
+                        <p className="text-[9px] text-zinc-400 font-light">Selected new lookbook files: {extraLookbookFiles.length}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="pt-4 border-t border-zinc-100 flex gap-4">
+                    <button
+                      type="submit"
+                      className="flex-1 bg-zinc-950 text-white text-[11px] font-bold tracking-widest uppercase py-4 hover:bg-zinc-800 transition-colors cursor-pointer shadow-xs"
+                    >
+                      {isEditMode ? "Save Changes & Update Product" : "Publish Dynamic Product Item"}
+                    </button>
+                    {isEditMode && (
+                      <button
+                        type="button"
+                        onClick={handleResetProductForm}
+                        className="px-6 border border-zinc-300 text-zinc-700 text-[11px] font-bold tracking-widest uppercase hover:bg-zinc-100 transition-colors cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                    )}
+                  </div>
+                </form>
+              </div>
+
+              <div className="lg:col-span-4 bg-paper p-6 border border-line max-h-[90vh] overflow-y-auto space-y-6">
+                <div className="flex justify-between items-center pb-2 border-b border-line">
+                  <h3 className="font-serif text-sm tracking-[0.18em] uppercase text-grey">Live Preview</h3>
+                  <span className="text-[8px] tracking-[0.18em] uppercase font-medium text-ink bg-white px-2 py-0.5 border border-line">
+                    0px Luxury Aesthetic
+                  </span>
+                </div>
+
+                <div className="space-y-6 text-left">
+                  <div className="grid grid-cols-12 gap-2">
+                    <div className="col-span-6 bg-phBg aspect-[4/3] relative overflow-hidden border border-line flex items-center justify-center">
+                      {slot0File ? (
+                        <img src={URL.createObjectURL(slot0File)} alt="Preview 1" className="w-full h-full object-cover" />
+                      ) : slot0Existing ? (
+                        <img src={slot0Existing} alt="Preview 1" className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-[9px] text-grey uppercase tracking-widest">Main 4:3</span>
+                      )}
+                      <span className="absolute top-2 left-2 bg-paper/95 text-ink text-[7px] font-medium tracking-[0.15em] uppercase px-2 py-0.5 border border-line">
+                        {pBadge || pCategory || "Bespoke"}
+                      </span>
+                    </div>
+
+                    <div className="col-span-6 grid grid-cols-2 gap-2">
+                      <div className="bg-phBg aspect-[4/3] relative overflow-hidden border border-line flex items-center justify-center">
+                        {slot1File ? (
+                          <img src={URL.createObjectURL(slot1File)} alt="Preview 2" className="w-full h-full object-cover" />
+                        ) : slot1Existing ? (
+                          <img src={slot1Existing} alt="Preview 2" className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-[8px] text-grey uppercase">Angle 1</span>
+                        )}
+                      </div>
+                      <div className="bg-phBg aspect-[4/3] relative overflow-hidden border border-line flex items-center justify-center">
+                        {slot2File ? (
+                          <img src={URL.createObjectURL(slot2File)} alt="Preview 3" className="w-full h-full object-cover" />
+                        ) : slot2Existing ? (
+                          <img src={slot2Existing} alt="Preview 3" className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-[8px] text-grey uppercase">Angle 2</span>
+                        )}
+                      </div>
+                      <div className="col-span-2 bg-phBg aspect-[2/1] relative overflow-hidden border border-line flex items-center justify-center">
+                        {slot3File ? (
+                          <img src={URL.createObjectURL(slot3File)} alt="Preview 4" className="w-full h-full object-cover" />
+                        ) : slot3Existing ? (
+                          <img src={slot3Existing} alt="Preview 4" className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-[8px] text-grey uppercase tracking-widest">Detail 2:1</span>
+                        )}
+                      </div>
                     </div>
                   </div>
 
+                  <div className="space-y-3">
+                    <span className="text-[9px] uppercase tracking-[0.18em] font-medium text-grey block">
+                      {pCategory} {pSubcategory ? `• ${pSubcategory}` : ""}
+                    </span>
+                    <h4 className="font-serif text-2xl uppercase tracking-[0.02em] text-ink leading-tight">
+                      {pTitle || "Product Title Preview"}
+                    </h4>
+                    <div className="font-serif text-lg text-ink">
+                      {pPrice || "Haute Couture"}
+                    </div>
+                    {includeReview && (
+                      <div className="flex items-center gap-1.5 text-[10px] text-coral">
+                        <span>★</span>
+                        <span className="font-medium text-ink">{reviewRating}.0</span>
+                        <span className="text-grey">(Verified Patron Review)</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {pColors.length > 0 && (
+                    <div className="space-y-2 border-t border-line pt-3">
+                      <span className="text-[9px] uppercase tracking-[0.18em] font-medium text-grey block">
+                        Color Swatches
+                      </span>
+                      <div className="flex flex-wrap gap-2">
+                        {pColors.map((c, i) => (
+                          <div key={i} className="flex items-center gap-1.5 border border-line px-2 py-1 bg-white">
+                            <span className="w-3 h-3 border border-line" style={{ backgroundColor: c.hex }} />
+                            <span className="text-[9px] uppercase tracking-wider text-ink font-medium">{c.name}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {pSizes.length > 0 && (
+                    <div className="space-y-2 border-t border-line pt-3">
+                      <span className="text-[9px] uppercase tracking-[0.18em] font-medium text-grey block">
+                        Size & Fit
+                      </span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {pSizes.map((s, i) => (
+                          <span key={i} className="text-[9px] uppercase tracking-widest px-2.5 py-1 border border-line bg-white text-ink font-medium">
+                            {s}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="border-t border-line pt-3">
+                    <span className="text-[9px] uppercase tracking-[0.18em] font-medium text-grey block mb-1">
+                      Description & Silhouette
+                    </span>
+                    <p className="text-[12px] text-ink/80 leading-relaxed font-light">
+                      {pDescription || "Silken drape with intricate embellishments crafted in our Cochin atelier."}
+                    </p>
+                  </div>
+
+                  <div className="pt-2">
+                    <div className="w-full bg-ink text-white text-[10px] uppercase tracking-[0.18em] font-medium py-3 text-center">
+                      Inquire via WhatsApp →
+                    </div>
+                  </div>
+
+                  {includeReview && reviewQuote && (
+                    <div className="border border-line p-3 bg-white space-y-1.5">
+                      <div className="flex justify-between items-center text-[10px]">
+                        <span className="font-serif text-ink">{reviewAuthor}</span>
+                        <span className="text-coral">{"★".repeat(reviewRating)}</span>
+                      </div>
+                      <p className="text-[10px] text-grey italic leading-relaxed">"{reviewQuote}"</p>
+                    </div>
+                  )}
                 </div>
               </div>
-
             </div>
-
           </div>
         )}
 

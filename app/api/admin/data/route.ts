@@ -4,7 +4,6 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY || "re_dummykey123");
 
-// GET all dashboard data (Logs, Subscribers, Products, Stats)
 export async function GET() {
   try {
     const logs = await sql`
@@ -35,24 +34,38 @@ export async function GET() {
     `;
 
     const productsRaw = await sql`
-      SELECT id, title, price, description, colors, sizes, rating, review_count as reviewCount
+      SELECT id, title, price, category, subcategory, badge, description, details, colors, sizes, rating,
+             review_count as reviewCount, review_author as reviewAuthor, review_quote as reviewQuote, review_rating as reviewRating,
+             created_at as createdAt
       FROM products
       WHERE deleted_at IS NULL
       ORDER BY created_at DESC
     `;
 
     const productImages = await sql`
-      SELECT product_id as productId, image_url as imageUrl
+      SELECT product_id as productId, image_url as imageUrl, image_type as imageType
       FROM product_images
+      ORDER BY id ASC
     `;
 
     const products = productsRaw.map((p) => {
-      const imgs = productImages
-        .filter((img: any) => img.productId === p.id)
+      const showcaseImgs = productImages
+        .filter((img: any) => img.productId === p.id && (img.imageType === "showcase" || !img.imageType))
+        .map((img: any) => img.imageUrl);
+      const lookbookImgs = productImages
+        .filter((img: any) => img.productId === p.id && img.imageType === "lookbook")
         .map((img: any) => img.imageUrl);
       return {
         ...p,
-        images: imgs
+        price: p.price || "Haute Couture",
+        category: p.category || "Bespoke",
+        subcategory: p.subcategory || "",
+        badge: p.badge || p.category || "Bespoke",
+        colors: p.colors || [],
+        sizes: p.sizes || [],
+        details: p.details || {},
+        images: showcaseImgs,
+        lookbookImages: lookbookImgs,
       };
     });
 
@@ -67,7 +80,6 @@ export async function GET() {
       ORDER BY created_at DESC
     `;
 
-    // Calculate unique tracking stats
     const uniqueDevices = await sql`SELECT COUNT(DISTINCT device_id)::int as count FROM user_activity_logs`;
     const uniqueSessions = await sql`SELECT COUNT(DISTINCT session_id)::int as count FROM user_activity_logs`;
     const totalActivities = await sql`SELECT COUNT(*)::int as count FROM user_activity_logs`;
@@ -96,14 +108,12 @@ export async function GET() {
   }
 }
 
-// POST to create dynamic actions (Add Subscriber, Send Email Campaigns)
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { action, email, subject, html, actorEmail } = body;
     const cleanActor = actorEmail || "admin@deflores.com";
 
-    // 1. Add subscriber manually
     if (action === "add_subscriber") {
       if (!email) {
         return NextResponse.json({ error: "Subscriber email is required" }, { status: 400 });
@@ -124,13 +134,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true, message: "Subscriber added successfully" });
     }
 
-    // 2. Send email campaign
     if (action === "send_campaign") {
       if (!subject || !html) {
         return NextResponse.json({ error: "Subject and HTML body are required" }, { status: 400 });
       }
 
-      // Fetch all subscribers
       const subscribers = await sql`
         SELECT email FROM newsletter_subscribers
       `;
@@ -142,7 +150,6 @@ export async function POST(request: Request) {
       const emailsList = subscribers.map((s) => s.email);
 
       if (process.env.RESEND_API_KEY) {
-        // Send batch or loop
         for (const recipient of emailsList) {
           await resend.emails.send({
             from: "de flores Haute Couture <onboarding@resend.dev>",

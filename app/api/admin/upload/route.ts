@@ -5,23 +5,19 @@ import sharp from "sharp";
 import { promises as fs } from "fs";
 import path from "path";
 
-// Initialize Supabase Client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 const supabase = supabaseUrl && supabaseServiceKey ? createClient(supabaseUrl, supabaseServiceKey) : null;
 
-// Helper function to compress and upload a single file buffer
 async function processAndUploadFile(file: File, type: string, index: number): Promise<{ url: string; filename: string; aspect: number }> {
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
 
-  // Compute aspect ratio
   const metadata = await sharp(buffer).metadata();
   const width = metadata.width || 1000;
   const height = metadata.height || 1500;
   const aspect = parseFloat((width / height).toFixed(3));
 
-  // Convert to WebP
   const webpBuffer = await sharp(buffer)
     .webp({ quality: 80 })
     .toBuffer();
@@ -46,7 +42,6 @@ async function processAndUploadFile(file: File, type: string, index: number): Pr
       .getPublicUrl(filename);
     fileUrl = publicUrlData.publicUrl;
   } else {
-    // Local fallback
     const uploadsDir = path.join(process.cwd(), "public", "uploads");
     await fs.mkdir(uploadsDir, { recursive: true });
     const filepath = path.join(uploadsDir, filename);
@@ -60,12 +55,9 @@ async function processAndUploadFile(file: File, type: string, index: number): Pr
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
-    const type = formData.get("type") as string; // 'product' or 'gallery'
+    const type = formData.get("type") as string;
     const email = (formData.get("email") as string) || "admin@deflores.com";
 
-    // ----------------------------------------------------
-    // Action A: Upload to editorial Gallery Lookbook
-    // ----------------------------------------------------
     if (type === "gallery") {
       const file = formData.get("file") as File;
       const description = (formData.get("description") as string) || "";
@@ -89,86 +81,147 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true, url: uploadResult.url });
     }
 
-    // ----------------------------------------------------
-    // Action B: Upload Product Item (4 photos required)
-    // ----------------------------------------------------
     if (type === "product") {
       const pId = formData.get("id") as string;
       const title = formData.get("title") as string;
+      const price = (formData.get("price") as string) || "Haute Couture";
+      const category = (formData.get("category") as string) || "Bespoke";
+      const subcategory = (formData.get("subcategory") as string) || "";
+      const badge = (formData.get("badge") as string) || category || "Bespoke";
       const description = (formData.get("description") as string) || "";
       const colors = (formData.get("colors") as string) || "[]";
-      
-      const reviewAuthor = formData.get("reviewAuthor") as string;
+      const sizes = (formData.get("sizes") as string) || "[]";
+      const details = (formData.get("details") as string) || "{}";
+
+      const reviewAuthor = (formData.get("reviewAuthor") as string) || "";
       const reviewRating = parseInt(formData.get("reviewRating") as string) || 5;
-      const reviewQuote = formData.get("reviewQuote") as string;
+      const reviewQuote = (formData.get("reviewQuote") as string) || "";
 
       if (!pId || !title) {
         return NextResponse.json({ error: "Missing product fields (id, title)" }, { status: 400 });
       }
 
-      // Check if all 4 files are selected
-      const files: File[] = [];
-      for (let i = 0; i < 4; i++) {
-        const file = formData.get(`file_${i}`) as File;
-        if (!file) {
-          return NextResponse.json({ error: `Showcase photo ${i + 1} is missing. Exactly 4 images are required.` }, { status: 400 });
-        }
-        files.push(file);
-      }
-
-      // Upload all 4 images
       const uploadUrls: string[] = [];
       for (let i = 0; i < 4; i++) {
-        const res = await processAndUploadFile(files[i], "product", i);
-        uploadUrls.push(res.url);
+        const file = formData.get(`file_${i}`) as File;
+        const existingUrl = (formData.get(`existing_image_${i}`) as string) || "";
+
+        if (file && typeof file.arrayBuffer === "function") {
+          const res = await processAndUploadFile(file, "product", i);
+          uploadUrls.push(res.url);
+        } else if (existingUrl) {
+          uploadUrls.push(existingUrl);
+        } else if (uploadUrls[0]) {
+          uploadUrls.push(uploadUrls[0]);
+        }
       }
 
-      // Parse colors list safely
+      if (uploadUrls.length === 0) {
+        const fallbackExisting = await sql`
+          SELECT image_url as imageUrl FROM product_images WHERE product_id = ${pId} AND (image_type = 'showcase' OR image_type IS NULL) ORDER BY id ASC
+        `;
+        if (fallbackExisting.length > 0) {
+          fallbackExisting.forEach((img: any) => uploadUrls.push(img.imageUrl));
+        } else {
+          return NextResponse.json({ error: "At least one showcase photo is required." }, { status: 400 });
+        }
+      }
+
+      while (uploadUrls.length < 4) {
+        uploadUrls.push(uploadUrls[0]);
+      }
+
       let colorsJson = [];
       try {
-        colorsJson = JSON.parse(colors);
-      } catch (err) {
-        colorsJson = colors.split(",").map(c => ({ name: c.trim(), hex: "#ffffff" }));
+        colorsJson = typeof colors === "string" ? JSON.parse(colors) : colors;
+      } catch {
+        colorsJson = colors.split(",").map((c) => ({ name: c.trim(), hex: "#ffffff" }));
       }
 
-      // Upsert product configuration (using blank price and sizes lists to satisfy SQL schema checks)
+      let sizesJson = [];
+      try {
+        sizesJson = typeof sizes === "string" ? JSON.parse(sizes) : sizes;
+      } catch {
+        sizesJson = sizes.split(",").map((s) => s.trim()).filter(Boolean);
+      }
+
+      let detailsJson = {};
+      try {
+        detailsJson = typeof details === "string" ? JSON.parse(details) : details;
+      } catch {
+        detailsJson = {};
+      }
+
       await sql`
-        INSERT INTO products (id, title, price, description, colors, sizes, review_author, review_quote, review_rating)
-        VALUES (${pId}, ${title}, '', ${description}, ${JSON.stringify(colorsJson)}, '[]'::jsonb, ${reviewAuthor}, ${reviewQuote}, ${reviewRating})
+        INSERT INTO products (
+          id, title, price, category, subcategory, badge, description,
+          colors, sizes, details, review_author, review_quote, review_rating, deleted_at
+        )
+        VALUES (
+          ${pId}, ${title}, ${price}, ${category}, ${subcategory}, ${badge}, ${description},
+          ${JSON.stringify(colorsJson)}, ${JSON.stringify(sizesJson)}, ${JSON.stringify(detailsJson)},
+          ${reviewAuthor}, ${reviewQuote}, ${reviewRating}, NULL
+        )
         ON CONFLICT (id) DO UPDATE SET
           title = EXCLUDED.title,
+          price = EXCLUDED.price,
+          category = EXCLUDED.category,
+          subcategory = EXCLUDED.subcategory,
+          badge = EXCLUDED.badge,
           description = EXCLUDED.description,
           colors = EXCLUDED.colors,
+          sizes = EXCLUDED.sizes,
+          details = EXCLUDED.details,
           review_author = EXCLUDED.review_author,
           review_quote = EXCLUDED.review_quote,
-          review_rating = EXCLUDED.review_rating
+          review_rating = EXCLUDED.review_rating,
+          deleted_at = NULL
       `;
 
-      // Insert customer review to product_reviews table if provided
       if (reviewAuthor && reviewQuote) {
-        await sql`
-          INSERT INTO product_reviews (product_id, author, rating, quote)
-          VALUES (${pId}, ${reviewAuthor}, ${reviewRating}, ${reviewQuote})
+        const existingReview = await sql`
+          SELECT id FROM product_reviews WHERE product_id = ${pId} LIMIT 1
         `;
+        if (existingReview.length > 0) {
+          await sql`
+            UPDATE product_reviews
+            SET author = ${reviewAuthor}, rating = ${reviewRating}, quote = ${reviewQuote}
+            WHERE id = ${existingReview[0].id}
+          `;
+        } else {
+          await sql`
+            INSERT INTO product_reviews (product_id, author, rating, quote)
+            VALUES (${pId}, ${reviewAuthor}, ${reviewRating}, ${reviewQuote})
+          `;
+        }
       }
 
-      // Retrieve extra lookbook files
-      const extraFilesCount = parseInt(formData.get("extraFilesCount") as string) || 0;
       const extraUrls: string[] = [];
+      const existingLookbookRaw = formData.get("existing_lookbook_images") as string;
+      if (existingLookbookRaw) {
+        try {
+          const parsed = JSON.parse(existingLookbookRaw);
+          if (Array.isArray(parsed)) {
+            parsed.forEach((url: string) => {
+              if (url && typeof url === "string") extraUrls.push(url);
+            });
+          }
+        } catch {}
+      }
+
+      const extraFilesCount = parseInt(formData.get("extraFilesCount") as string) || 0;
       for (let i = 0; i < extraFilesCount; i++) {
         const extraFile = formData.get(`extra_file_${i}`) as File;
-        if (extraFile) {
+        if (extraFile && typeof extraFile.arrayBuffer === "function") {
           const res = await processAndUploadFile(extraFile, "product_lookbook", i);
           extraUrls.push(res.url);
         }
       }
 
-      // Clear previous mapped product images and insert the new ones
       await sql`
         DELETE FROM product_images WHERE product_id = ${pId}
       `;
 
-      // 1. Insert 4 main showcase images (image_type = 'showcase')
       for (const url of uploadUrls) {
         await sql`
           INSERT INTO product_images (product_id, image_url, image_type)
@@ -176,7 +229,6 @@ export async function POST(request: Request) {
         `;
       }
 
-      // 2. Insert extra lookbook images (image_type = 'lookbook')
       for (const url of extraUrls) {
         await sql`
           INSERT INTO product_images (product_id, image_url, image_type)
@@ -186,7 +238,7 @@ export async function POST(request: Request) {
 
       await sql`
         INSERT INTO action_logs (actor_email, action_type, description)
-        VALUES (${email}, 'UPLOAD_PRODUCT', ${`Uploaded product item, 4 showcase photos and ${extraFilesCount} lookbook photos: ${title} (${pId})`})
+        VALUES (${email}, 'UPLOAD_PRODUCT', ${`Registered/updated product item: ${title} (${pId}) with ${uploadUrls.length} showcase and ${extraUrls.length} lookbook images`})
       `;
 
       return NextResponse.json({ success: true, urls: [...uploadUrls, ...extraUrls] });

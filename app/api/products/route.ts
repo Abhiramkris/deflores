@@ -1,33 +1,36 @@
 import { NextResponse } from "next/server";
 import { sql } from "../../lib/db";
+import defaultProducts from "../../data/products.json";
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
 
-    // 1. Fetch single product details
     if (id) {
       const product = await sql`
-        SELECT id, title, price, description, colors, sizes, rating, review_count as review_count,
+        SELECT id, title, price, description, category, subcategory, badge, details, colors, sizes, rating, review_count as review_count,
                review_author as review_author, review_quote as review_quote, review_rating as review_rating
         FROM products 
         WHERE id = ${id} AND deleted_at IS NULL
       `;
 
-      if (product.length === 0) {
-        return NextResponse.json({ error: "Product not found" }, { status: 404 });
+      let item = product[0];
+      if (!item) {
+        const fallback = (defaultProducts as any[]).find((p: any) => p.id === id);
+        if (!fallback) {
+          return NextResponse.json({ error: "Product not found" }, { status: 404 });
+        }
+        item = fallback;
       }
 
       const images = await sql`
         SELECT image_url as imageUrl, image_type as imageType 
         FROM product_images 
         WHERE product_id = ${id}
+        ORDER BY id ASC
       `;
 
-      // Map DB snake_case response to format expected by detail client template
-      const item = product[0];
-      
       const showcaseImages = images
         .filter((img: any) => img.imageType === "showcase" || !img.imageType)
         .map((img: any) => img.imageUrl);
@@ -35,7 +38,7 @@ export async function GET(request: Request) {
       const lookbookImages = images
         .filter((img: any) => img.imageType === "lookbook")
         .map((img: any) => img.imageUrl);
-      
+
       const reviews = await sql`
         SELECT id, author, rating, quote, created_at as createdAt
         FROM product_reviews
@@ -43,31 +46,53 @@ export async function GET(request: Request) {
         ORDER BY created_at DESC
       `;
 
+      const fallbackShowcase = (item.images && Array.isArray(item.images) && item.images.length > 0)
+        ? item.images
+        : ["/crop_green.png"];
+
+      const primaryImg = showcaseImages[0] || fallbackShowcase[0] || "/crop_green.png";
+      const fourImages = [
+        showcaseImages[0] || fallbackShowcase[0] || primaryImg,
+        showcaseImages[1] || fallbackShowcase[1] || primaryImg,
+        showcaseImages[2] || fallbackShowcase[2] || primaryImg,
+        showcaseImages[3] || fallbackShowcase[3] || primaryImg,
+      ];
+
       const formattedProduct = {
         id: item.id,
         title: item.title,
-        price: item.price,
-        description: item.description,
+        price: item.price || "Haute Couture",
+        category: item.category || "Bespoke",
+        subcategory: item.subcategory || "",
+        badge: item.badge || item.category || "Bespoke",
+        description: item.description || "",
+        details: item.details || {},
         colors: item.colors || [],
-        sizes: item.sizes || [],
+        sizes: item.sizes && item.sizes.length > 0 ? item.sizes : ["XS", "S", "M", "L", "XL", "Custom"],
         rating: parseFloat(item.rating || "5.0"),
-        reviewCount: reviews.length > 0 ? reviews.length : 1,
-        images: showcaseImages.length > 0 ? showcaseImages : ["/crop_green.png"],
-        lookbookImages: lookbookImages,
+        reviewCount: reviews.length > 0 ? reviews.length : (item.reviewCount || item.review_count || 1),
+        images: fourImages,
+        lookbookImages: lookbookImages.length > 0 ? lookbookImages : (item.lookbookImages || [fourImages[2], fourImages[3]]),
+        shipping: (item.details && item.details.shipping) || item.shipping || {
+          discount: "Complimentary Delivery",
+          package: "Atelier Silk Protective Packaging",
+          deliveryTime: "5-7 Working Days",
+          estimationArrive: "Made to Measure & Dispatched"
+        },
         reviews: reviews.length > 0 ? reviews.map((r: any) => ({
           id: r.id,
           author: r.author,
-          date: new Date(r.createdAt || Date.now()).toLocaleDateString('en-GB'),
+          date: new Date(r.createdAt || Date.now()).toLocaleDateString("en-GB"),
           rating: r.rating,
           quote: r.quote,
-          images: showcaseImages.slice(0, 3)
+          images: fourImages.slice(0, 3)
         })) : [
           {
-            author: item.review_author || "Alexander Stewart",
+            author: item.review_author || item.reviewAuthor || "Alexander Stewart",
             date: "13/12/2024",
-            rating: item.review_rating || 5,
-            quote: item.review_quote || "Spectacular hand loom work. Stitched perfectly, fitting details are flawless.",
-            images: showcaseImages.slice(0, 3)
+            rating: item.review_rating || item.reviewRating || 5,
+            quote: item.review_quote || item.reviewQuote || "Spectacular hand loom work. Stitched perfectly, fitting details are flawless.",
+            images: fourImages.slice(0, 3)
           }
         ]
       };
@@ -75,25 +100,33 @@ export async function GET(request: Request) {
       return NextResponse.json({ success: true, product: formattedProduct });
     }
 
-    // 2. Fetch all catalog listings (for /explore catalog)
     const list = await sql`
-      SELECT id, title, price, description, colors, sizes, rating, review_count
+      SELECT id, title, price, category, subcategory, badge, description, colors, sizes, rating, review_count
       FROM products
       WHERE deleted_at IS NULL
       ORDER BY created_at DESC
     `;
 
+    const activeList: any[] = list.length > 0 ? list : (defaultProducts as any[]);
+
     const listWithImages = [];
-    for (const item of list) {
+    for (const item of activeList) {
       const images = await sql`
-        SELECT image_url FROM product_images WHERE product_id = ${item.id} LIMIT 1
+        SELECT image_url as imageUrl FROM product_images WHERE product_id = ${item.id} AND (image_type = 'showcase' OR image_type IS NULL) ORDER BY id ASC LIMIT 4
       `;
+      const fallbackImgs = item.images || ["/crop_green.png"];
+      const dbImgs = images.map((img: any) => img.imageUrl);
+      const primary = dbImgs[0] || fallbackImgs[0] || "/crop_green.png";
       listWithImages.push({
         id: item.id,
         title: item.title,
-        price: item.price,
+        price: item.price || "Haute Couture",
+        category: item.category || "Bespoke",
+        subcategory: item.subcategory || "",
+        badge: item.badge || item.category || "Bespoke",
         description: item.description,
-        images: [images[0]?.imageUrl || "/crop_green.png"]
+        images: dbImgs.length > 0 ? dbImgs : fallbackImgs,
+        thumbnail: primary
       });
     }
 

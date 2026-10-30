@@ -41,12 +41,17 @@ CREATE TABLE IF NOT EXISTS products (
     id VARCHAR(100) PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     price VARCHAR(50) NOT NULL,
+    category VARCHAR(100) DEFAULT 'Bespoke',
+    subcategory VARCHAR(100) DEFAULT '',
+    badge VARCHAR(100) DEFAULT 'Bespoke',
     description TEXT,
+    details JSONB DEFAULT '{}'::jsonb,
     colors JSONB DEFAULT '[]'::jsonb,
     sizes JSONB DEFAULT '[]'::jsonb,
     rating DECIMAL(3, 2) DEFAULT 5.0,
     review_count INTEGER DEFAULT 0,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP WITH TIME ZONE DEFAULT NULL
 );
 
 -- Seed default products from the previous JSON dataset
