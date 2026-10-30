@@ -4,46 +4,14 @@ import { useEffect, useRef, useState } from "react";
 
 export default function RampVideoTwo() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    video.muted = false;
-    const playPromise = video.play();
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => {
-          setIsMuted(false);
-        })
-        .catch(() => {
-          video.muted = true;
-          setIsMuted(true);
-          video.play().catch(() => {});
-        });
-    }
-
-    const handleFirstInteraction = () => {
-      if (video) {
-        video.muted = false;
-        setIsMuted(false);
-        video.play().catch(() => {});
-      }
-      window.removeEventListener("pointerdown", handleFirstInteraction);
-      window.removeEventListener("touchstart", handleFirstInteraction);
-      window.removeEventListener("keydown", handleFirstInteraction);
-    };
-
-    window.addEventListener("pointerdown", handleFirstInteraction, { passive: true });
-    window.addEventListener("touchstart", handleFirstInteraction, { passive: true });
-    window.addEventListener("keydown", handleFirstInteraction, { passive: true });
-
-    return () => {
-      window.removeEventListener("pointerdown", handleFirstInteraction);
-      window.removeEventListener("touchstart", handleFirstInteraction);
-      window.removeEventListener("keydown", handleFirstInteraction);
-    };
+    video.muted = true;
+    video.play().catch(() => {});
   }, []);
 
   const toggleSound = (e?: React.MouseEvent) => {
