@@ -17,6 +17,7 @@ import Footer from "../components/Footer";
 import BackgroundPrefetch from "../components/BackgroundPrefetch";
 import { getHomepageData } from "../lib/cms";
 import { getCategories } from "../lib/categories";
+import { sql } from "./lib/db";
 
 export async function generateMetadata(): Promise<Metadata> {
   const data = await getHomepageData();
@@ -52,10 +53,34 @@ export default async function HomePage() {
   const founder = data.founder || {};
   const featured = data.featured_release || {};
   const gallery = data.featured_gallery || {};
+  const patrons = data.patrons || {};
   const journal = data.journal || {};
   const instagram = data.instagram_grid || {};
   const showroom = data.store_locator || {};
   const bespoke = data.bespoke || {};
+
+  let patronItems = undefined;
+  try {
+    const patronProducts = await sql`
+      SELECT p.id, p.title, p.patron_quote as "patronQuote", p.patron_author as "patronAuthor",
+             (SELECT image_url FROM product_images WHERE product_id = p.id AND (image_type = 'showcase' OR image_type IS NULL) ORDER BY id ASC LIMIT 1) as "imageUrl"
+      FROM products p
+      WHERE p.is_patron = TRUE AND p.deleted_at IS NULL
+      LIMIT 6
+    `;
+    if (patronProducts.length > 0) {
+      patronItems = patronProducts.map((p) => ({
+        id: p.id,
+        productId: p.id,
+        title: p.title,
+        quote: p.patronQuote || "“The silhouette and craftsmanship fit like a second skin.”",
+        author: p.patronAuthor || "Patron of De Flores",
+        image: p.imageUrl || "/crop_green.png",
+      }));
+    }
+  } catch (err) {
+    console.warn("Patron products query:", err);
+  }
 
   return (
     <>
@@ -69,7 +94,13 @@ export default async function HomePage() {
         {founder.is_visible !== false && <Founder {...founder} />}
         {gallery.is_visible !== false && <FeaturedGallery {...gallery} />}
         <RampVideoTwo />
-        <Testimonials />
+        {patrons.is_visible !== false && (
+          <Testimonials
+            eyebrow={typeof patrons.eyebrow === "string" ? patrons.eyebrow : undefined}
+            title={typeof patrons.title === "string" ? patrons.title : undefined}
+            items={patronItems}
+          />
+        )}
         {journal.is_visible !== false && <Journal {...journal} />}
         {instagram.is_visible !== false && <InstagramGrid {...instagram} />}
         {showroom.is_visible !== false && <StoreLocator {...showroom} />}

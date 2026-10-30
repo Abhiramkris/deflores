@@ -9,7 +9,9 @@ export async function GET(request: Request) {
 
     if (id) {
       const product = await sql`
-        SELECT id, title, price, description, category, subcategory, badge, details, colors, sizes, rating, review_count as review_count,
+        SELECT id, title, price, description, category, subcategory, badge, gender, occasion, fabric, craft,
+               is_patron as is_patron, patron_quote as patron_quote, patron_author as patron_author,
+               details, colors, sizes, rating, review_count as review_count,
                review_author as review_author, review_quote as review_quote, review_rating as review_rating
         FROM products 
         WHERE id = ${id} AND deleted_at IS NULL
@@ -58,6 +60,19 @@ export async function GET(request: Request) {
         showcaseImages[3] || fallbackShowcase[3] || primaryImg,
       ];
 
+      const parsedOccasion = Array.isArray(item.occasion)
+        ? item.occasion
+        : typeof item.occasion === "string"
+        ? (() => {
+            try {
+              const parsed = JSON.parse(item.occasion);
+              return Array.isArray(parsed) ? parsed : [];
+            } catch {
+              return [];
+            }
+          })()
+        : [];
+
       const formattedProduct = {
         id: item.id,
         title: item.title,
@@ -65,6 +80,13 @@ export async function GET(request: Request) {
         category: item.category || "Bespoke",
         subcategory: item.subcategory || "",
         badge: item.badge || item.category || "Bespoke",
+        gender: item.gender || "Women",
+        occasion: parsedOccasion,
+        fabric: item.fabric || "",
+        craft: item.craft || "",
+        isPatron: Boolean(item.is_patron ?? item.isPatron),
+        patronQuote: item.patron_quote || item.patronQuote || "",
+        patronAuthor: item.patron_author || item.patronAuthor || "",
         description: item.description || "",
         details: item.details || {},
         colors: item.colors || [],
@@ -100,8 +122,17 @@ export async function GET(request: Request) {
       return NextResponse.json({ success: true, product: formattedProduct });
     }
 
+    const genderParam = searchParams.get("gender");
+    const categoryParam = searchParams.get("category");
+    const occasionParam = searchParams.get("occasion");
+    const fabricParam = searchParams.get("fabric");
+    const searchParam = searchParams.get("search");
+    const patronOnly = searchParams.get("patron") === "true";
+
     const list = await sql`
-      SELECT id, title, price, category, subcategory, badge, description, colors, sizes, rating, review_count
+      SELECT id, title, price, category, subcategory, badge, gender, occasion, fabric, craft,
+             is_patron as is_patron, patron_quote as patron_quote, patron_author as patron_author,
+             description, colors, sizes, rating, review_count
       FROM products
       WHERE deleted_at IS NULL
       ORDER BY created_at DESC
@@ -117,6 +148,20 @@ export async function GET(request: Request) {
       const fallbackImgs = item.images || ["/crop_green.png"];
       const dbImgs = images.map((img: any) => img.imageUrl);
       const primary = dbImgs[0] || fallbackImgs[0] || "/crop_green.png";
+
+      const parsedOccasion = Array.isArray(item.occasion)
+        ? item.occasion
+        : typeof item.occasion === "string"
+        ? (() => {
+            try {
+              const parsed = JSON.parse(item.occasion);
+              return Array.isArray(parsed) ? parsed : [];
+            } catch {
+              return [];
+            }
+          })()
+        : [];
+
       listWithImages.push({
         id: item.id,
         title: item.title,
@@ -124,13 +169,64 @@ export async function GET(request: Request) {
         category: item.category || "Bespoke",
         subcategory: item.subcategory || "",
         badge: item.badge || item.category || "Bespoke",
+        gender: item.gender || "Women",
+        occasion: parsedOccasion,
+        fabric: item.fabric || "",
+        craft: item.craft || "",
+        isPatron: Boolean(item.is_patron ?? item.isPatron),
+        patronQuote: item.patron_quote || item.patronQuote || "",
+        patronAuthor: item.patron_author || item.patronAuthor || "",
         description: item.description,
         images: dbImgs.length > 0 ? dbImgs : fallbackImgs,
         thumbnail: primary
       });
     }
 
-    return NextResponse.json({ success: true, products: listWithImages });
+    let filtered = listWithImages;
+
+    if (patronOnly) {
+      filtered = filtered.filter((p) => p.isPatron);
+    }
+
+    if (genderParam && genderParam.toLowerCase() !== "all") {
+      filtered = filtered.filter(
+        (p) => (p.gender || "").toLowerCase() === genderParam.toLowerCase()
+      );
+    }
+
+    if (categoryParam && categoryParam.toLowerCase() !== "all") {
+      const target = categoryParam.toLowerCase();
+      filtered = filtered.filter((p) => {
+        const c = (p.category || "").toLowerCase();
+        const s = (p.subcategory || "").toLowerCase();
+        return c === target || c.includes(target) || s.includes(target);
+      });
+    }
+
+    if (occasionParam && occasionParam.toLowerCase() !== "all") {
+      const target = occasionParam.toLowerCase();
+      filtered = filtered.filter(
+        (p) => Array.isArray(p.occasion) && p.occasion.some((occ: string) => occ.toLowerCase() === target)
+      );
+    }
+
+    if (fabricParam && fabricParam.toLowerCase() !== "all") {
+      const target = fabricParam.toLowerCase();
+      filtered = filtered.filter((p) => (p.fabric || "").toLowerCase().includes(target));
+    }
+
+    if (searchParam) {
+      const q = searchParam.toLowerCase();
+      filtered = filtered.filter((p) =>
+        (p.title || "").toLowerCase().includes(q) ||
+        (p.description || "").toLowerCase().includes(q) ||
+        (p.fabric || "").toLowerCase().includes(q) ||
+        (p.craft || "").toLowerCase().includes(q) ||
+        (p.category || "").toLowerCase().includes(q)
+      );
+    }
+
+    return NextResponse.json({ success: true, products: filtered });
   } catch (error: any) {
     console.error("Products Public API Error:", error);
     return NextResponse.json({ error: error.message || "Server Error" }, { status: 500 });

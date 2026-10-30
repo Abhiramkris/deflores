@@ -34,7 +34,9 @@ export async function GET() {
     `;
 
     const productsRaw = await sql`
-      SELECT id, title, price, category, subcategory, badge, description, details, colors, sizes, rating,
+      SELECT id, title, price, category, subcategory, badge, gender, occasion, fabric, craft,
+             is_patron as isPatron, patron_quote as patronQuote, patron_author as patronAuthor,
+             description, details, colors, sizes, rating,
              review_count as reviewCount, review_author as reviewAuthor, review_quote as reviewQuote, review_rating as reviewRating,
              created_at as createdAt
       FROM products
@@ -55,12 +57,33 @@ export async function GET() {
       const lookbookImgs = productImages
         .filter((img: any) => img.productId === p.id && img.imageType === "lookbook")
         .map((img: any) => img.imageUrl);
+
+      const parsedOccasion = Array.isArray(p.occasion)
+        ? p.occasion
+        : typeof p.occasion === "string"
+        ? (() => {
+            try {
+              const parsed = JSON.parse(p.occasion);
+              return Array.isArray(parsed) ? parsed : [];
+            } catch {
+              return [];
+            }
+          })()
+        : [];
+
       return {
         ...p,
         price: p.price || "Haute Couture",
         category: p.category || "Bespoke",
         subcategory: p.subcategory || "",
         badge: p.badge || p.category || "Bespoke",
+        gender: p.gender || "Women",
+        occasion: parsedOccasion,
+        fabric: p.fabric || "",
+        craft: p.craft || "",
+        isPatron: Boolean(p.isPatron),
+        patronQuote: p.patronQuote || "",
+        patronAuthor: p.patronAuthor || "",
         colors: p.colors || [],
         sizes: p.sizes || [],
         details: p.details || {},
@@ -84,6 +107,9 @@ export async function GET() {
     const uniqueSessions = await sql`SELECT COUNT(DISTINCT session_id)::int as count FROM user_activity_logs`;
     const totalActivities = await sql`SELECT COUNT(*)::int as count FROM user_activity_logs`;
 
+    const igSyncMeta = await sql`SELECT handle, last_synced_at as lastSyncedAt FROM instagram_sync_meta WHERE id = 1`;
+    const igPostCount = await sql`SELECT COUNT(*)::int as count FROM instagram_posts`;
+
     return NextResponse.json({
       success: true,
       logs,
@@ -100,6 +126,9 @@ export async function GET() {
         uniqueDevices: uniqueDevices[0]?.count || 0,
         uniqueSessions: uniqueSessions[0]?.count || 0,
         totalActivities: totalActivities[0]?.count || 0,
+        instagramHandle: igSyncMeta[0]?.handle || "deflores.india",
+        instagramLastSynced: igSyncMeta[0]?.lastSyncedAt || null,
+        totalInstagramPosts: igPostCount[0]?.count || 0,
       }
     });
   } catch (error: any) {

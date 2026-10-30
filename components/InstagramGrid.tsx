@@ -1,4 +1,16 @@
-import Placeholder from "./Placeholder";
+"use client";
+
+import { useState, useEffect } from "react";
+import Image from "next/image";
+
+interface InstagramPost {
+  id: number;
+  postId: string;
+  mediaUrl: string;
+  permalink: string;
+  caption?: string;
+  mediaType?: string;
+}
 
 interface InstagramGridProps {
   eyebrow?: string;
@@ -11,14 +23,29 @@ export default function InstagramGrid({
   headline = "@deflores.india",
   profile_url = "https://instagram.com/deflores.india",
 }: InstagramGridProps) {
-  const tiles = [
-    { label: "ATELIER", id: "ig-1" },
-    { label: "DRAPING", id: "ig-2" },
-    { label: "DETAILS", id: "ig-3" },
-    { label: "FITTING", id: "ig-4" },
-    { label: "RUNWAY", id: "ig-5" },
-    { label: "SILHOUETTE", id: "ig-6" },
-  ];
+  const [posts, setPosts] = useState<InstagramPost[]>([
+    { id: 1, postId: "1", mediaUrl: "/crop_green.png", permalink: profile_url, caption: "Artisanal lehenga silhouette in pure georgette." },
+    { id: 2, postId: "2", mediaUrl: "/crop_white.png", permalink: profile_url, caption: "Hand-finished silk cotton festive chic." },
+    { id: 3, postId: "3", mediaUrl: "/crop_red.png", permalink: profile_url, caption: "Dramatic scarlet cowl drape gown." },
+    { id: 4, postId: "4", mediaUrl: "/gallery_purple.jpg", permalink: profile_url, caption: "Bespoke bridal heirlooms tailored to perfection." },
+    { id: 5, postId: "5", mediaUrl: "/crop_green.png", permalink: profile_url, caption: "Runway couture and architectural drape." },
+    { id: 6, postId: "6", mediaUrl: "/crop_white.png", permalink: profile_url, caption: "Atelier details. Hand-stitched precision." },
+  ]);
+
+  useEffect(() => {
+    const fetchInstagram = async () => {
+      try {
+        const res = await fetch("/api/instagram/sync");
+        const data = await res.json();
+        if (data.success && Array.isArray(data.posts) && data.posts.length > 0) {
+          setPosts(data.posts.slice(0, 6));
+        }
+      } catch (err) {
+        console.error("Failed to fetch synced Instagram posts:", err);
+      }
+    };
+    fetchInstagram();
+  }, []);
 
   return (
     <section
@@ -42,20 +69,45 @@ export default function InstagramGrid({
 
       <div className="w-full px-1">
         <div className="grid grid-cols-2 sm:grid-cols-3 min-[900px]:grid-cols-6 gap-1">
-          {tiles.map((tile) => (
+          {posts.map((post) => (
             <a
-              key={tile.id}
-              href={profile_url}
+              key={post.id || post.postId}
+              href={post.permalink || profile_url}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={`View ${tile.label} on Instagram`}
-              className="group block overflow-hidden bg-phBg transition-all duration-300 hover:brightness-110 select-none"
+              aria-label={post.caption || "View on Instagram"}
+              className="group block relative aspect-square overflow-hidden bg-phBg select-none border border-line"
             >
-              <Placeholder
-                ratio="1/1"
-                label={tile.label}
-                className="w-full h-full transition-all duration-300 group-hover:brightness-110"
+              <Image
+                src={post.mediaUrl}
+                alt={post.caption || "De Flores Instagram post"}
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 900px) 33vw, 16vw"
+                className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
               />
+              <div className="absolute inset-0 bg-ink/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-3.5 text-white">
+                <div className="flex justify-end">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    aria-hidden="true"
+                  >
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                  </svg>
+                </div>
+                <p className="text-[10px] line-clamp-3 leading-snug font-sans text-paper/90">
+                  {post.caption || "View on Instagram @deflores.india"}
+                </p>
+                <span className="text-[9px] uppercase tracking-widest text-coral font-semibold">
+                  View Post →
+                </span>
+              </div>
             </a>
           ))}
         </div>

@@ -59,12 +59,10 @@ export async function POST(request: Request) {
     }
 
     const isHero = sectionKey === "hero";
-    const targetWidth = isHero ? 3840 : 2560;
-    const targetQuality = isHero ? 95 : 88;
+    const targetQuality = isHero ? 95 : 90;
 
     const webpBuffer = await sharp(originalBuffer)
       .rotate()
-      .resize({ width: targetWidth, withoutEnlargement: true })
       .webp({ quality: targetQuality, effort: 5, smartSubsample: true })
       .toBuffer();
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import LogoLoader from "../components/LogoLoader";
 
 export const metadata: Metadata = {
   title: "DE FLORES HAUTE COUTURE",
@@ -13,7 +14,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-paper text-ink">{children}</body>
+      <body className="min-h-screen bg-paper text-ink">
+        <LogoLoader />
+        {children}
+      </body>
     </html>
   );
 }

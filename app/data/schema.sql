@@ -44,6 +44,13 @@ CREATE TABLE IF NOT EXISTS products (
     category VARCHAR(100) DEFAULT 'Bespoke',
     subcategory VARCHAR(100) DEFAULT '',
     badge VARCHAR(100) DEFAULT 'Bespoke',
+    gender VARCHAR(50) DEFAULT 'Women',
+    occasion JSONB DEFAULT '[]'::jsonb,
+    fabric VARCHAR(100) DEFAULT '',
+    craft VARCHAR(100) DEFAULT '',
+    is_patron BOOLEAN DEFAULT FALSE,
+    patron_quote TEXT DEFAULT '',
+    patron_author VARCHAR(255) DEFAULT '',
     description TEXT,
     details JSONB DEFAULT '{}'::jsonb,
     colors JSONB DEFAULT '[]'::jsonb,
@@ -133,5 +140,23 @@ CREATE TABLE IF NOT EXISTS categories (
     description TEXT NOT NULL,
     subcategories JSONB DEFAULT '[]'::jsonb,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS instagram_posts (
+    id SERIAL PRIMARY KEY,
+    post_id VARCHAR(100) UNIQUE NOT NULL,
+    media_url TEXT NOT NULL,
+    permalink TEXT NOT NULL,
+    caption TEXT,
+    media_type VARCHAR(50) DEFAULT 'IMAGE',
+    timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS instagram_sync_meta (
+    id SERIAL PRIMARY KEY,
+    handle VARCHAR(100) DEFAULT 'deflores.india',
+    access_token TEXT DEFAULT '',
+    last_synced_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 

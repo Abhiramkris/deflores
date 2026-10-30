@@ -14,6 +14,9 @@ interface StatData {
   uniqueDevices: number;
   uniqueSessions: number;
   totalActivities: number;
+  instagramHandle?: string;
+  instagramLastSynced?: string | null;
+  totalInstagramPosts?: number;
 }
 
 interface LogEntry {
@@ -62,6 +65,13 @@ interface Product {
   category?: string;
   subcategory?: string;
   badge?: string;
+  gender?: string;
+  occasion?: string[];
+  fabric?: string;
+  craft?: string;
+  isPatron?: boolean;
+  patronQuote?: string;
+  patronAuthor?: string;
   description: string;
   colors?: ProductColor[];
   sizes?: string[];
@@ -75,6 +85,40 @@ interface Product {
   lookbookImages?: string[];
   createdAt?: string;
 }
+
+const GENDER_OPTIONS = ["Women", "Men", "Unisex", "Bridal"];
+const OCCASION_PRESETS = [
+  "Bridal",
+  "Reception",
+  "Sangeet & Haldi",
+  "Cocktail & Party",
+  "Festive Heirloom",
+  "Evening Gala",
+  "Bespoke Couture",
+  "Casual Luxury",
+];
+const FABRIC_PRESETS = [
+  "Pure Georgette",
+  "Silk Cotton",
+  "Raw Silk",
+  "Organza",
+  "Chiffon",
+  "Handloom Silk",
+  "Velvet",
+  "Banarasi Brocade",
+  "Crepe",
+  "Tulle & Net",
+];
+const CRAFT_PRESETS = [
+  "Zari Embroidery",
+  "Hand-stitched Sequins",
+  "Cowl Draping",
+  "Aari & Zardozi Work",
+  "Threadwork",
+  "Mirror Work",
+  "Cutwork & Appliqué",
+  "Architectural Pleating",
+];
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -113,6 +157,15 @@ export default function AdminDashboard() {
   const [newColorHex, setNewColorHex] = useState("#f0705e");
   const [pSizes, setPSizes] = useState<string[]>(["S", "M", "L", "XL"]);
   const [pLeadTime, setPLeadTime] = useState("5-7 Working Days");
+  const [pGender, setPGender] = useState<string>("Women");
+  const [pOccasions, setPOccasions] = useState<string[]>(["Bridal", "Reception"]);
+  const [pFabric, setPFabric] = useState<string>("Pure Georgette");
+  const [pCraft, setPCraft] = useState<string>("Zari Embroidery");
+  const [pIsPatron, setPIsPatron] = useState<boolean>(false);
+  const [pPatronQuote, setPPatronQuote] = useState<string>("");
+  const [pPatronAuthor, setPPatronAuthor] = useState<string>("");
+  const [newOccasionInput, setNewOccasionInput] = useState<string>("");
+  const [isSyncingInstagram, setIsSyncingInstagram] = useState<boolean>(false);
   const [slot0File, setSlot0File] = useState<File | null>(null);
   const [slot0Existing, setSlot0Existing] = useState("");
   const [slot1File, setSlot1File] = useState<File | null>(null);
@@ -259,6 +312,14 @@ export default function AdminDashboard() {
     setPSubcategory("");
     setPBadge("Bespoke");
     setPDescription("");
+    setPGender("Women");
+    setPOccasions(["Bridal", "Reception"]);
+    setPFabric("Pure Georgette");
+    setPCraft("Zari Embroidery");
+    setPIsPatron(false);
+    setPPatronQuote("");
+    setPPatronAuthor("");
+    setNewOccasionInput("");
     setPColors([
       { name: "Mint", hex: "#a3ebd6" },
       { name: "Ivory", hex: "#fdfaf2" },
@@ -294,6 +355,15 @@ export default function AdminDashboard() {
     setPSubcategory(p.subcategory || "");
     setPBadge(p.badge || p.category || "Bespoke");
     setPDescription(p.description || "");
+    setPGender(p.gender || "Women");
+    const occList = Array.isArray(p.occasion) ? p.occasion : (typeof p.occasion === "string" ? (() => { try { const parsed = JSON.parse(p.occasion); return Array.isArray(parsed) ? parsed : []; } catch { return []; } })() : []);
+    setPOccasions(occList.length > 0 ? occList : ["Bridal"]);
+    setPFabric(p.fabric || "Pure Georgette");
+    setPCraft(p.craft || "Zari Embroidery");
+    setPIsPatron(Boolean(p.isPatron));
+    setPPatronQuote(p.patronQuote || p.reviewQuote || "");
+    setPPatronAuthor(p.patronAuthor || p.reviewAuthor || "");
+    setNewOccasionInput("");
 
     let parsedColors: ProductColor[] = [];
     if (Array.isArray(p.colors) && p.colors.length > 0) {
@@ -361,6 +431,13 @@ export default function AdminDashboard() {
     formData.append("category", pCategory || "Bespoke");
     formData.append("subcategory", pSubcategory || "");
     formData.append("badge", pBadge || pCategory || "Bespoke");
+    formData.append("gender", pGender);
+    formData.append("occasion", JSON.stringify(pOccasions));
+    formData.append("fabric", pFabric);
+    formData.append("craft", pCraft);
+    formData.append("isPatron", pIsPatron ? "true" : "false");
+    formData.append("patronQuote", pPatronQuote);
+    formData.append("patronAuthor", pPatronAuthor);
     formData.append("description", pDescription || "");
     formData.append("colors", JSON.stringify(pColors));
     formData.append("sizes", JSON.stringify(pSizes));
@@ -900,7 +977,15 @@ export default function AdminDashboard() {
                               </div>
                             </td>
                             <td className="py-3 px-4 font-mono font-bold text-zinc-950">#{p.id}</td>
-                            <td className="py-3 px-4 font-semibold text-zinc-900">{p.title}</td>
+                            <td className="py-3 px-4">
+                              <div className="font-semibold text-zinc-900">{p.title}</div>
+                              <div className="flex flex-wrap gap-1 mt-1">
+                                <span className="px-1.5 py-0.5 bg-zinc-100 text-[8px] font-bold text-zinc-600 uppercase">{p.gender || "Women"}</span>
+                                {p.category && <span className="px-1.5 py-0.5 bg-zinc-100 text-[8px] font-bold text-zinc-600 uppercase">{p.category}</span>}
+                                {p.fabric && <span className="px-1.5 py-0.5 bg-zinc-50 border border-zinc-200 text-[8px] text-zinc-500 uppercase">{p.fabric}</span>}
+                                {p.isPatron && <span className="px-1.5 py-0.5 bg-coral/10 text-coral border border-coral/30 text-[8px] font-bold uppercase">Patron</span>}
+                              </div>
+                            </td>
                             <td className="py-3 px-4">
                               <span className="px-2 py-0.5 text-[8px] font-bold bg-emerald-50 text-emerald-700 tracking-wide rounded-full uppercase border border-emerald-100">Live</span>
                             </td>
@@ -1082,6 +1167,206 @@ export default function AdminDashboard() {
                         {b}
                       </button>
                     ))}
+                  </div>
+
+                  <div className="space-y-6 border-t border-zinc-100 pt-6">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold tracking-widest text-zinc-950 uppercase">
+                        Product Filters & Attributes
+                      </span>
+                      <span className="text-[9px] uppercase tracking-wider text-zinc-400">
+                        System-defined & Custom
+                      </span>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">
+                        Department / Gender *
+                      </label>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        {GENDER_OPTIONS.map((g) => {
+                          const isSelected = pGender === g;
+                          return (
+                            <button
+                              key={g}
+                              type="button"
+                              onClick={() => setPGender(g)}
+                              className={`py-2.5 px-3 text-xs tracking-wider uppercase font-semibold border transition-all cursor-pointer ${
+                                isSelected
+                                  ? "bg-zinc-950 text-white border-zinc-950 shadow-xs"
+                                  : "bg-white text-zinc-600 border-zinc-200 hover:border-zinc-400"
+                              }`}
+                            >
+                              {g}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <label className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">
+                          Occasions / Events (Select One or More)
+                        </label>
+                        <span className="text-[9px] text-zinc-400">
+                          {pOccasions.length} selected
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {OCCASION_PRESETS.map((occ) => {
+                          const isSelected = pOccasions.includes(occ);
+                          return (
+                            <button
+                              key={occ}
+                              type="button"
+                              onClick={() => {
+                                if (isSelected) {
+                                  setPOccasions(pOccasions.filter((o) => o !== occ));
+                                } else {
+                                  setPOccasions([...pOccasions, occ]);
+                                }
+                              }}
+                              className={`text-[10px] tracking-wider uppercase font-medium px-3 py-1.5 border transition-all cursor-pointer ${
+                                isSelected
+                                  ? "bg-zinc-950 text-white border-zinc-950"
+                                  : "bg-zinc-50 text-zinc-700 border-zinc-200 hover:border-zinc-400"
+                              }`}
+                            >
+                              {occ} {isSelected ? "✓" : "+"}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <div className="flex gap-2 pt-2">
+                        <input
+                          type="text"
+                          value={newOccasionInput}
+                          onChange={(e) => setNewOccasionInput(e.target.value)}
+                          placeholder="Add custom occasion (e.g. Sangeet Soirée)"
+                          className="w-full border border-zinc-200 text-xs px-3 py-2 tracking-wider text-zinc-950 focus:outline-none focus:border-zinc-500 rounded-none bg-transparent"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const trimmed = newOccasionInput.trim();
+                            if (trimmed && !pOccasions.includes(trimmed)) {
+                              setPOccasions([...pOccasions, trimmed]);
+                              setNewOccasionInput("");
+                            }
+                          }}
+                          className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-[10px] uppercase font-bold tracking-wider cursor-pointer border border-zinc-200"
+                        >
+                          Add
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">
+                        Fabric / Material
+                      </label>
+                      <input
+                        type="text"
+                        value={pFabric}
+                        onChange={(e) => setPFabric(e.target.value)}
+                        placeholder="e.g. Pure Georgette, Silk Cotton, Banarasi Brocade"
+                        className="w-full border border-zinc-200 text-xs px-4 py-3 tracking-wider text-zinc-950 focus:outline-none focus:border-zinc-500 rounded-none bg-transparent"
+                      />
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {FABRIC_PRESETS.map((fab) => (
+                          <button
+                            key={fab}
+                            type="button"
+                            onClick={() => setPFabric(fab)}
+                            className={`text-[9px] tracking-wider uppercase font-medium px-2 py-0.5 border cursor-pointer transition-colors ${
+                              pFabric === fab
+                                ? "bg-zinc-950 text-white border-zinc-950"
+                                : "bg-zinc-50 text-zinc-600 border-zinc-200 hover:border-zinc-400"
+                            }`}
+                          >
+                            {fab}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">
+                        Craft / Embellishment Technique
+                      </label>
+                      <input
+                        type="text"
+                        value={pCraft}
+                        onChange={(e) => setPCraft(e.target.value)}
+                        placeholder="e.g. Zari Embroidery, Cowl Draping, Hand-stitched Sequins"
+                        className="w-full border border-zinc-200 text-xs px-4 py-3 tracking-wider text-zinc-950 focus:outline-none focus:border-zinc-500 rounded-none bg-transparent"
+                      />
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {CRAFT_PRESETS.map((crf) => (
+                          <button
+                            key={crf}
+                            type="button"
+                            onClick={() => setPCraft(crf)}
+                            className={`text-[9px] tracking-wider uppercase font-medium px-2 py-0.5 border cursor-pointer transition-colors ${
+                              pCraft === crf
+                                ? "bg-zinc-950 text-white border-zinc-950"
+                                : "bg-zinc-50 text-zinc-600 border-zinc-200 hover:border-zinc-400"
+                            }`}
+                          >
+                            {crf}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="border border-zinc-200/80 p-4 bg-zinc-50/50 space-y-3">
+                      <label className="flex items-center gap-3 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={pIsPatron}
+                          onChange={(e) => setPIsPatron(e.target.checked)}
+                          className="rounded border-zinc-300 text-zinc-950 focus:ring-zinc-950 h-4 w-4 cursor-pointer"
+                        />
+                        <div>
+                          <span className="text-xs font-bold uppercase tracking-wider text-zinc-950 block">
+                            Feature this creation in "OUR PATRONS" Section on Homepage
+                          </span>
+                          <span className="text-[10px] text-zinc-500 font-light block">
+                            When enabled, this attire and client testimonial are highlighted in the homepage patrons gallery.
+                          </span>
+                        </div>
+                      </label>
+
+                      {pIsPatron && (
+                        <div className="space-y-3 pt-3 border-t border-zinc-200/60">
+                          <div className="space-y-1">
+                            <label className="text-[9px] font-bold tracking-widest text-zinc-500 uppercase">
+                              Patron / Client Name & Title
+                            </label>
+                            <input
+                              type="text"
+                              value={pPatronAuthor}
+                              onChange={(e) => setPPatronAuthor(e.target.value)}
+                              placeholder="e.g. Meera K., Bridal Client"
+                              className="w-full border border-zinc-200 text-xs px-3 py-2 text-zinc-950 bg-white"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[9px] font-bold tracking-widest text-zinc-500 uppercase">
+                              Patron Words / Review Quote
+                            </label>
+                            <textarea
+                              rows={2}
+                              value={pPatronQuote}
+                              onChange={(e) => setPPatronQuote(e.target.value)}
+                              placeholder="e.g. The fit was unreal — I didn't need a single alteration for my reception evening."
+                              className="w-full border border-zinc-200 text-xs px-3 py-2 text-zinc-950 bg-white"
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   <div className="space-y-2 border-t border-zinc-100 pt-6">
@@ -1510,48 +1795,28 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="space-y-6 text-left">
-                  <div className="grid grid-cols-12 gap-2">
-                    <div className="col-span-6 bg-phBg aspect-[4/3] relative overflow-hidden border border-line flex items-center justify-center">
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="bg-phBg aspect-[9/16] relative overflow-hidden border border-line flex items-center justify-center">
                       {slot0File ? (
                         <img src={URL.createObjectURL(slot0File)} alt="Preview 1" className="w-full h-full object-cover" />
                       ) : slot0Existing ? (
                         <img src={slot0Existing} alt="Preview 1" className="w-full h-full object-cover" />
                       ) : (
-                        <span className="text-[9px] text-grey uppercase tracking-widest">Main 4:3</span>
+                        <span className="text-[9px] text-grey uppercase tracking-widest">Hero 9:16</span>
                       )}
                       <span className="absolute top-2 left-2 bg-paper/95 text-ink text-[7px] font-medium tracking-[0.15em] uppercase px-2 py-0.5 border border-line">
                         {pBadge || pCategory || "Bespoke"}
                       </span>
                     </div>
 
-                    <div className="col-span-6 grid grid-cols-2 gap-2">
-                      <div className="bg-phBg aspect-[4/3] relative overflow-hidden border border-line flex items-center justify-center">
-                        {slot1File ? (
-                          <img src={URL.createObjectURL(slot1File)} alt="Preview 2" className="w-full h-full object-cover" />
-                        ) : slot1Existing ? (
-                          <img src={slot1Existing} alt="Preview 2" className="w-full h-full object-cover" />
-                        ) : (
-                          <span className="text-[8px] text-grey uppercase">Angle 1</span>
-                        )}
-                      </div>
-                      <div className="bg-phBg aspect-[4/3] relative overflow-hidden border border-line flex items-center justify-center">
-                        {slot2File ? (
-                          <img src={URL.createObjectURL(slot2File)} alt="Preview 3" className="w-full h-full object-cover" />
-                        ) : slot2Existing ? (
-                          <img src={slot2Existing} alt="Preview 3" className="w-full h-full object-cover" />
-                        ) : (
-                          <span className="text-[8px] text-grey uppercase">Angle 2</span>
-                        )}
-                      </div>
-                      <div className="col-span-2 bg-phBg aspect-[2/1] relative overflow-hidden border border-line flex items-center justify-center">
-                        {slot3File ? (
-                          <img src={URL.createObjectURL(slot3File)} alt="Preview 4" className="w-full h-full object-cover" />
-                        ) : slot3Existing ? (
-                          <img src={slot3Existing} alt="Preview 4" className="w-full h-full object-cover" />
-                        ) : (
-                          <span className="text-[8px] text-grey uppercase tracking-widest">Detail 2:1</span>
-                        )}
-                      </div>
+                    <div className="bg-phBg aspect-[9/16] relative overflow-hidden border border-line flex items-center justify-center">
+                      {slot1File ? (
+                        <img src={URL.createObjectURL(slot1File)} alt="Preview 2" className="w-full h-full object-cover" />
+                      ) : slot1Existing ? (
+                        <img src={slot1Existing} alt="Preview 2" className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-[8px] text-grey uppercase">Angle 9:16</span>
+                      )}
                     </div>
                   </div>
 
@@ -1565,6 +1830,33 @@ export default function AdminDashboard() {
                     <div className="font-serif text-lg text-ink">
                       {pPrice || "Haute Couture"}
                     </div>
+
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      <span className="text-[8px] uppercase tracking-wider px-2 py-0.5 bg-white border border-line text-zinc-700">
+                        Dept: {pGender}
+                      </span>
+                      {pFabric && (
+                        <span className="text-[8px] uppercase tracking-wider px-2 py-0.5 bg-white border border-line text-zinc-700">
+                          {pFabric}
+                        </span>
+                      )}
+                      {pCraft && (
+                        <span className="text-[8px] uppercase tracking-wider px-2 py-0.5 bg-white border border-line text-zinc-700">
+                          {pCraft}
+                        </span>
+                      )}
+                      {pOccasions.map((occ) => (
+                        <span key={occ} className="text-[8px] uppercase tracking-wider px-2 py-0.5 bg-white border border-line text-zinc-700">
+                          {occ}
+                        </span>
+                      ))}
+                      {pIsPatron && (
+                        <span className="text-[8px] uppercase tracking-wider px-2 py-0.5 bg-coral/10 text-coral border border-coral/30 font-bold">
+                          ★ Featured in Our Patrons
+                        </span>
+                      )}
+                    </div>
+
                     {includeReview && (
                       <div className="flex items-center gap-1.5 text-[10px] text-coral">
                         <span>★</span>
@@ -2374,6 +2666,43 @@ export default function AdminDashboard() {
 
         {activeTab === "cms" && (
           <div className="space-y-8 animate-fade-in">
+            <div className="bg-white border border-zinc-200/60 p-6 rounded-xl shadow-xs flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div>
+                <span className="text-[10px] uppercase tracking-widest font-bold text-coral block mb-1">
+                  Social Automation · 3-Day Auto Refresh
+                </span>
+                <h3 className="font-serif text-lg text-zinc-950 font-normal">
+                  Instagram Feed Sync (@{stats.instagramHandle || "deflores.india"})
+                </h3>
+                <p className="text-xs text-zinc-500 font-light mt-1">
+                  Cached in database. Auto-refreshes every 3 days. Last synced: {stats.instagramLastSynced ? new Date(stats.instagramLastSynced).toLocaleString() : "Never"} ({stats.totalInstagramPosts || 0} posts active)
+                </p>
+              </div>
+              <button
+                type="button"
+                disabled={isSyncingInstagram}
+                onClick={async () => {
+                  try {
+                    setIsSyncingInstagram(true);
+                    const res = await fetch("/api/instagram/sync?force=true");
+                    const data = await res.json();
+                    if (data.success) {
+                      showNotification("Instagram posts synchronized to database!");
+                      fetchDashboardData();
+                    } else {
+                      showNotification(data.error || "Sync failed", true);
+                    }
+                  } catch {
+                    showNotification("Error syncing Instagram", true);
+                  } finally {
+                    setIsSyncingInstagram(false);
+                  }
+                }}
+                className="px-5 py-2.5 bg-zinc-950 text-white hover:bg-coral text-xs uppercase tracking-widest font-semibold transition-colors disabled:opacity-50 cursor-pointer"
+              >
+                {isSyncingInstagram ? "Syncing Feed..." : "Sync Instagram Now"}
+              </button>
+            </div>
             <StorefrontCms showNotification={showNotification} actorEmail="admin@deflores.com" />
           </div>
         )}

@@ -18,6 +18,13 @@ interface ProductDetail {
   category?: string;
   subcategory?: string;
   badge?: string;
+  gender?: string;
+  occasion?: string[];
+  fabric?: string;
+  craft?: string;
+  isPatron?: boolean;
+  patronQuote?: string;
+  patronAuthor?: string;
   description: string;
   colors: ColorSwatch[];
   sizes: string[];
@@ -144,50 +151,27 @@ export default function ProductPage({
             <span className="text-ink font-semibold">{product.title}</span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-16">
-            <div className="md:col-span-6 relative aspect-[4/3] md:aspect-auto md:h-[580px] bg-phBg overflow-hidden border border-line">
-              <Image
-                src={product.images[0]}
-                alt={`${product.title} main view`}
-                fill
-                className="object-cover hover:scale-105 transition-transform duration-700 ease-out"
-                sizes="(max-width: 768px) 100vw, 50vw"
-                priority
-              />
-              <span className="absolute top-4 left-4 bg-paper/95 text-ink text-[10px] font-medium tracking-[0.18em] uppercase px-3.5 py-1.5 border border-line backdrop-blur-xs">
-                {badgeLabel}
-              </span>
-            </div>
-
-            <div className="md:col-span-6 grid grid-cols-2 gap-4">
-              <div className="relative aspect-[4/3] bg-phBg overflow-hidden border border-line">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
+            {product.images.slice(0, 4).map((img, idx) => (
+              <div key={idx} className="relative aspect-[9/16] w-full bg-phBg overflow-hidden border border-line group">
                 <Image
-                  src={product.images[1] || product.images[0]}
-                  alt={`${product.title} silhouette angle`}
+                  src={img}
+                  alt={`${product.title} angle ${idx + 1}`}
                   fill
-                  className="object-cover hover:scale-105 transition-transform duration-700 ease-out"
-                  sizes="(max-width: 768px) 50vw, 25vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  priority={idx === 0}
                 />
+                {idx === 0 && (
+                  <span className="absolute top-4 left-4 bg-paper/95 text-ink text-[10px] font-medium tracking-[0.18em] uppercase px-3.5 py-1.5 border border-line backdrop-blur-xs">
+                    {badgeLabel}
+                  </span>
+                )}
+                <div className="absolute bottom-3 left-3 bg-paper/90 px-2 py-0.5 border border-line text-[9px] uppercase tracking-widest text-grey">
+                  Perspective 0{idx + 1}
+                </div>
               </div>
-              <div className="relative aspect-[4/3] bg-phBg overflow-hidden border border-line">
-                <Image
-                  src={product.images[2] || product.images[0]}
-                  alt={`${product.title} draping angle`}
-                  fill
-                  className="object-cover hover:scale-105 transition-transform duration-700 ease-out"
-                  sizes="(max-width: 768px) 50vw, 25vw"
-                />
-              </div>
-              <div className="col-span-2 relative aspect-[2/1] bg-phBg overflow-hidden border border-line">
-                <Image
-                  src={product.images[3] || product.images[0]}
-                  alt={`${product.title} craftsmanship detail`}
-                  fill
-                  className="object-cover hover:scale-105 transition-transform duration-700 ease-out"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
-              </div>
-            </div>
+            ))}
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
@@ -489,6 +473,42 @@ export default function ProductPage({
             );
           })()}
 
+          {product.lookbookImages && product.lookbookImages.length > 0 && (
+            <div className="mt-20 border-t border-line pt-16">
+              <div className="flex flex-col items-start gap-2 mb-8">
+                <span className="text-[11px] uppercase tracking-[0.18em] font-medium text-grey">
+                  Editorial Perspective & Atelier Archive
+                </span>
+                <h2 className="font-serif text-[clamp(24px,3vw,38px)] font-normal text-ink uppercase tracking-wide">
+                  Lookbook & Detail Studies
+                </h2>
+                <p className="text-grey text-xs tracking-wider max-w-xl font-light">
+                  Architectural drapery, handloom embroideries, and craftsmanship close-ups captured in our atelier.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {product.lookbookImages.map((extraImg, idx) => (
+                  <div
+                    key={idx}
+                    className="relative aspect-[9/16] w-full bg-phBg overflow-hidden border border-line group"
+                  >
+                    <Image
+                      src={extraImg}
+                      alt={`${product.title} lookbook perspective ${idx + 1}`}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 25vw"
+                    />
+                    <div className="absolute bottom-3 left-3 bg-paper/90 px-2 py-0.5 border border-line text-[9px] uppercase tracking-widest text-grey">
+                      Archive 0{idx + 1}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {recommendations.length > 0 && (
             <div className="mt-24 pt-16 border-t border-line">
               <div className="text-center space-y-2 mb-12">
@@ -509,7 +529,7 @@ export default function ProductPage({
                       href={`/product/${rec.id}`}
                       className="group flex flex-col text-left cursor-pointer"
                     >
-                      <div className="aspect-[3/4] w-full mb-4 bg-phBg relative overflow-hidden border border-line">
+                      <div className="aspect-[9/16] w-full mb-4 bg-phBg relative overflow-hidden border border-line">
                         <Image
                           src={recThumb}
                           alt={rec.title}

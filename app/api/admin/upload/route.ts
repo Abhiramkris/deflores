@@ -19,7 +19,8 @@ async function processAndUploadFile(file: File, type: string, index: number): Pr
   const aspect = parseFloat((width / height).toFixed(3));
 
   const webpBuffer = await sharp(buffer)
-    .webp({ quality: 80 })
+    .rotate()
+    .webp({ quality: 88, effort: 5 })
     .toBuffer();
 
   const filename = `${type}_${Date.now()}_${index}.webp`;
@@ -88,14 +89,21 @@ export async function POST(request: Request) {
       const category = (formData.get("category") as string) || "Bespoke";
       const subcategory = (formData.get("subcategory") as string) || "";
       const badge = (formData.get("badge") as string) || category || "Bespoke";
+      const gender = (formData.get("gender") as string) || "Women";
+      const occasionRaw = (formData.get("occasion") as string) || "[]";
+      const fabric = (formData.get("fabric") as string) || "";
+      const craft = (formData.get("craft") as string) || "";
+      const isPatron = formData.get("isPatron") === "true" || formData.get("is_patron") === "true";
+      const patronQuote = (formData.get("patronQuote") as string) || "";
+      const patronAuthor = (formData.get("patronAuthor") as string) || "";
       const description = (formData.get("description") as string) || "";
       const colors = (formData.get("colors") as string) || "[]";
       const sizes = (formData.get("sizes") as string) || "[]";
       const details = (formData.get("details") as string) || "{}";
 
-      const reviewAuthor = (formData.get("reviewAuthor") as string) || "";
+      const reviewAuthor = (formData.get("reviewAuthor") as string) || patronAuthor || "";
       const reviewRating = parseInt(formData.get("reviewRating") as string) || 5;
-      const reviewQuote = (formData.get("reviewQuote") as string) || "";
+      const reviewQuote = (formData.get("reviewQuote") as string) || patronQuote || "";
 
       if (!pId || !title) {
         return NextResponse.json({ error: "Missing product fields (id, title)" }, { status: 400 });
@@ -131,6 +139,13 @@ export async function POST(request: Request) {
         uploadUrls.push(uploadUrls[0]);
       }
 
+      let occasionJson: string[] = [];
+      try {
+        occasionJson = typeof occasionRaw === "string" ? JSON.parse(occasionRaw) : occasionRaw;
+      } catch {
+        occasionJson = occasionRaw.split(",").map((o) => o.trim()).filter(Boolean);
+      }
+
       let colorsJson = [];
       try {
         colorsJson = typeof colors === "string" ? JSON.parse(colors) : colors;
@@ -154,11 +169,13 @@ export async function POST(request: Request) {
 
       await sql`
         INSERT INTO products (
-          id, title, price, category, subcategory, badge, description,
+          id, title, price, category, subcategory, badge, gender, occasion, fabric, craft,
+          is_patron, patron_quote, patron_author, description,
           colors, sizes, details, review_author, review_quote, review_rating, deleted_at
         )
         VALUES (
-          ${pId}, ${title}, ${price}, ${category}, ${subcategory}, ${badge}, ${description},
+          ${pId}, ${title}, ${price}, ${category}, ${subcategory}, ${badge}, ${gender}, ${JSON.stringify(occasionJson)}, ${fabric}, ${craft},
+          ${isPatron}, ${patronQuote}, ${patronAuthor}, ${description},
           ${JSON.stringify(colorsJson)}, ${JSON.stringify(sizesJson)}, ${JSON.stringify(detailsJson)},
           ${reviewAuthor}, ${reviewQuote}, ${reviewRating}, NULL
         )
@@ -168,6 +185,13 @@ export async function POST(request: Request) {
           category = EXCLUDED.category,
           subcategory = EXCLUDED.subcategory,
           badge = EXCLUDED.badge,
+          gender = EXCLUDED.gender,
+          occasion = EXCLUDED.occasion,
+          fabric = EXCLUDED.fabric,
+          craft = EXCLUDED.craft,
+          is_patron = EXCLUDED.is_patron,
+          patron_quote = EXCLUDED.patron_quote,
+          patron_author = EXCLUDED.patron_author,
           description = EXCLUDED.description,
           colors = EXCLUDED.colors,
           sizes = EXCLUDED.sizes,
