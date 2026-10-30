@@ -172,10 +172,10 @@ export default function ExplorePage() {
     <div className="min-h-screen bg-paper text-ink flex flex-col justify-between selection:bg-blush selection:text-ink">
       <Nav />
 
-      <main className="w-full pt-28 md:pt-36 pb-20 md:pb-32">
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12">
+      <main className="w-full pt-4 sm:pt-6 md:pt-10 pb-20 md:pb-32">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 md:px-12">
 
-          <div className="mb-10 flex items-center gap-2 text-[11px] font-medium tracking-[0.18em] uppercase text-grey">
+          <div className="mb-4 md:mb-8 flex items-center gap-2 text-[11px] font-medium tracking-[0.18em] uppercase text-grey">
             <Link href="/" className="hover:text-ink transition-colors">
               Home
             </Link>

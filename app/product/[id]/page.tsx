@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState, useEffect } from "react";
+import { use, useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Nav from "../../../components/Nav";
@@ -63,6 +63,94 @@ export default function ProductPage({
   const [isCraftExpanded, setIsCraftExpanded] = useState(false);
   const [isDeliveryExpanded, setIsDeliveryExpanded] = useState(false);
   const [recommendations, setRecommendations] = useState<any[]>([]);
+  const [mobileImageIdx, setMobileImageIdx] = useState(0);
+  const [incomingMobileImageIdx, setIncomingMobileImageIdx] = useState<number | null>(null);
+  const [isWiping, setIsWiping] = useState(false);
+  const [isSlideshowPaused, setIsSlideshowPaused] = useState(false);
+
+  const wipeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const touchStartXRef = useRef<number | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
+
+  const triggerWipeTo = useCallback(
+    (targetIdx: number) => {
+      if (!product || !product.images || product.images.length <= 1) return;
+      const count = Math.min(product.images.length, 4);
+      if (targetIdx < 0 || targetIdx >= count) return;
+      if (targetIdx === mobileImageIdx && incomingMobileImageIdx === null) return;
+      if (targetIdx === incomingMobileImageIdx) return;
+
+      if (wipeTimeoutRef.current) {
+        clearTimeout(wipeTimeoutRef.current);
+      }
+
+      const currentBase = incomingMobileImageIdx !== null ? incomingMobileImageIdx : mobileImageIdx;
+      setMobileImageIdx(currentBase);
+      setIncomingMobileImageIdx(targetIdx);
+      setIsWiping(false);
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setIsWiping(true);
+        });
+      });
+
+      wipeTimeoutRef.current = setTimeout(() => {
+        setMobileImageIdx(targetIdx);
+        setIncomingMobileImageIdx(null);
+        setIsWiping(false);
+      }, 520);
+    },
+    [product, mobileImageIdx, incomingMobileImageIdx]
+  );
+
+  useEffect(() => {
+    if (!product || !product.images || product.images.length <= 1 || isSlideshowPaused) return;
+    const count = Math.min(product.images.length, 4);
+
+    const timer = setInterval(() => {
+      triggerWipeTo((mobileImageIdx + 1) % count);
+    }, 4500);
+
+    return () => clearInterval(timer);
+  }, [product, isSlideshowPaused, mobileImageIdx, triggerWipeTo]);
+
+  useEffect(() => {
+    return () => {
+      if (wipeTimeoutRef.current) {
+        clearTimeout(wipeTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setIsSlideshowPaused(true);
+    touchStartXRef.current = e.touches[0].clientX;
+    touchStartYRef.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!product || !product.images || product.images.length <= 1) {
+      setIsSlideshowPaused(false);
+      return;
+    }
+    const count = Math.min(product.images.length, 4);
+    if (touchStartXRef.current !== null && touchStartYRef.current !== null) {
+      const diffX = e.changedTouches[0].clientX - touchStartXRef.current;
+      const diffY = e.changedTouches[0].clientY - touchStartYRef.current;
+
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 35) {
+        if (diffX < 0) {
+          triggerWipeTo((mobileImageIdx + 1) % count);
+        } else {
+          triggerWipeTo((mobileImageIdx - 1 + count) % count);
+        }
+      }
+    }
+    touchStartXRef.current = null;
+    touchStartYRef.current = null;
+    setTimeout(() => setIsSlideshowPaused(false), 2500);
+  };
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -164,6 +252,10 @@ export default function ProductPage({
 
   const categoryName = product.category || "Bespoke";
   const badgeLabel = product.badge || product.category || "Bespoke";
+  const galleryImages: string[] = Array.isArray(product.images) && product.images.length > 0
+    ? product.images.slice(0, 4)
+    : ["/crop_green.png"];
+  const selectedActiveThumb = incomingMobileImageIdx !== null ? incomingMobileImageIdx : mobileImageIdx;
 
   const colorsList: ColorSwatch[] = Array.isArray(product.colors)
     ? product.colors
@@ -208,10 +300,10 @@ export default function ProductPage({
     <div className="min-h-screen bg-paper text-ink flex flex-col justify-between selection:bg-blush selection:text-ink">
       <Nav />
 
-      <main className="w-full pt-28 md:pt-36 pb-20 md:pb-32">
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12">
+      <main className="w-full pt-3 sm:pt-6 md:pt-10 pb-20 md:pb-32">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 md:px-12">
           
-          <div className="mb-8 flex items-center gap-2 text-[11px] font-medium tracking-[0.18em] uppercase text-grey">
+          <div className="mb-3 sm:mb-4 md:mb-6 flex items-center gap-2 text-[11px] font-medium tracking-[0.18em] uppercase text-grey">
             <Link href="/" className="hover:text-ink transition-colors">
               Home
             </Link>
@@ -223,16 +315,136 @@ export default function ProductPage({
             <span className="text-ink font-semibold">{product.title}</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
-            {product.images.slice(0, 4).map((img, idx) => (
+          <div
+            className="block md:hidden mb-8"
+            onMouseEnter={() => setIsSlideshowPaused(true)}
+            onMouseLeave={() => setIsSlideshowPaused(false)}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
+            <div className="relative aspect-[9/16] w-full bg-phBg overflow-hidden border border-line">
+              <div className="absolute inset-0 w-full h-full">
+                <Image
+                  src={galleryImages[mobileImageIdx] || "/crop_green.png"}
+                  alt={`${product.title} perspective ${mobileImageIdx + 1}`}
+                  fill
+                  priority
+                  className="object-cover"
+                  sizes="100vw"
+                  unoptimized={typeof galleryImages[mobileImageIdx] === "string" && (galleryImages[mobileImageIdx].startsWith("http") || galleryImages[mobileImageIdx].startsWith("/uploads/"))}
+                />
+              </div>
+
+              {incomingMobileImageIdx !== null && (
+                <div
+                  className="absolute inset-0 w-full h-full z-10"
+                  style={{
+                    transform: isWiping ? "translateX(0%)" : "translateX(100%)",
+                    transition: isWiping ? "transform 500ms cubic-bezier(0.22, 1, 0.36, 1)" : "none",
+                    willChange: "transform",
+                    boxShadow: isWiping ? "-12px 0 28px rgba(0,0,0,0.22)" : "none",
+                  }}
+                >
+                  <Image
+                    src={galleryImages[incomingMobileImageIdx] || "/crop_green.png"}
+                    alt={`${product.title} perspective ${incomingMobileImageIdx + 1}`}
+                    fill
+                    priority
+                    className="object-cover"
+                    sizes="100vw"
+                    unoptimized={typeof galleryImages[incomingMobileImageIdx] === "string" && (galleryImages[incomingMobileImageIdx].startsWith("http") || galleryImages[incomingMobileImageIdx].startsWith("/uploads/"))}
+                  />
+                </div>
+              )}
+
+              <span className="absolute top-3 left-3 z-20 bg-paper/95 text-ink text-[10px] font-medium tracking-[0.18em] uppercase px-3 py-1 border border-line backdrop-blur-xs">
+                {badgeLabel}
+              </span>
+
+              <div className="absolute bottom-3 left-3 z-20 bg-paper/90 px-2 py-0.5 border border-line text-[9px] uppercase tracking-widest text-grey">
+                Perspective 0{selectedActiveThumb + 1} / 0{galleryImages.length}
+              </div>
+
+              {galleryImages.length > 1 && (
+                <div className="absolute bottom-3 right-3 z-20 flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      triggerWipeTo((mobileImageIdx - 1 + galleryImages.length) % galleryImages.length);
+                    }}
+                    aria-label="Previous Perspective"
+                    className="w-7 h-7 bg-paper/90 hover:bg-paper border border-line flex items-center justify-center text-ink hover:text-coral transition-colors cursor-pointer"
+                  >
+                    <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M10 12L6 8L10 4" />
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      triggerWipeTo((mobileImageIdx + 1) % galleryImages.length);
+                    }}
+                    aria-label="Next Perspective"
+                    className="w-7 h-7 bg-paper/90 hover:bg-paper border border-line flex items-center justify-center text-ink hover:text-coral transition-colors cursor-pointer"
+                  >
+                    <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M6 4L10 8L6 12" />
+                    </svg>
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <div
+              className="grid gap-2 sm:gap-2.5 mt-2.5"
+              style={{
+                gridTemplateColumns: `repeat(${Math.max(galleryImages.length, 1)}, minmax(0, 1fr))`,
+              }}
+            >
+              {galleryImages.map((thumbImg, thumbIdx) => {
+                const isSelected = selectedActiveThumb === thumbIdx;
+                return (
+                  <button
+                    key={thumbIdx}
+                    type="button"
+                    onClick={() => triggerWipeTo(thumbIdx)}
+                    aria-label={`View perspective ${thumbIdx + 1}`}
+                    className={`relative aspect-[9/16] w-full bg-phBg overflow-hidden border transition-all duration-300 cursor-pointer ${
+                      isSelected
+                        ? "border-ink ring-2 ring-ink ring-offset-2 ring-offset-paper scale-[1.02] opacity-100 shadow-xs"
+                        : "border-line opacity-60 hover:opacity-100 hover:border-grey scale-100"
+                    }`}
+                  >
+                    <Image
+                      src={thumbImg}
+                      alt={`${product.title} perspective ${thumbIdx + 1}`}
+                      fill
+                      className="object-cover"
+                      sizes="25vw"
+                      unoptimized={typeof thumbImg === "string" && (thumbImg.startsWith("http") || thumbImg.startsWith("/uploads/"))}
+                    />
+                    <span className="absolute bottom-1 right-1 bg-paper/90 px-1 py-0.5 text-[8px] uppercase tracking-wider text-grey font-mono border border-line">
+                      0{thumbIdx + 1}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="hidden md:grid md:grid-cols-4 gap-4 mb-16">
+            {galleryImages.map((img, idx) => (
               <div key={idx} className="relative aspect-[9/16] w-full bg-phBg overflow-hidden border border-line group">
                 <Image
                   src={img}
                   alt={`${product.title} angle ${idx + 1}`}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  sizes="25vw"
                   priority={idx === 0}
+                  unoptimized={typeof img === "string" && (img.startsWith("http") || img.startsWith("/uploads/"))}
                 />
                 {idx === 0 && (
                   <span className="absolute top-4 left-4 bg-paper/95 text-ink text-[10px] font-medium tracking-[0.18em] uppercase px-3.5 py-1.5 border border-line backdrop-blur-xs">
