@@ -9,7 +9,6 @@ const JWT_SECRET = new TextEncoder().encode(
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Protect all /admin/... and /api/admin/... paths except login and auth OTP route itself
   if (
     (pathname.startsWith("/admin") && pathname !== "/admin/login") ||
     (pathname.startsWith("/api/admin") && pathname !== "/api/auth/otp")
@@ -37,5 +36,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/admin/:path*"],
+  matcher: ["/admin/:path*", "/api/admin/((?!upload|cms/upload).*)"],
 };

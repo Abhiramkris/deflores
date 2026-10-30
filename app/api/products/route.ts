@@ -27,19 +27,21 @@ export async function GET(request: Request) {
       }
 
       const images = await sql`
-        SELECT image_url as imageUrl, image_type as imageType 
+        SELECT image_url as "imageUrl", image_type as "imageType" 
         FROM product_images 
         WHERE product_id = ${id}
         ORDER BY id ASC
       `;
 
       const showcaseImages = images
-        .filter((img: any) => img.imageType === "showcase" || !img.imageType)
-        .map((img: any) => img.imageUrl);
+        .filter((img: any) => (img.imageType || img.imagetype) === "showcase" || (!img.imageType && !img.imagetype))
+        .map((img: any) => img.imageUrl || img.imageurl || img.image_url)
+        .filter(Boolean);
 
       const lookbookImages = images
-        .filter((img: any) => img.imageType === "lookbook")
-        .map((img: any) => img.imageUrl);
+        .filter((img: any) => (img.imageType || img.imagetype) === "lookbook")
+        .map((img: any) => img.imageUrl || img.imageurl || img.image_url)
+        .filter(Boolean);
 
       const reviews = await sql`
         SELECT id, author, rating, quote, created_at as createdAt
@@ -143,10 +145,10 @@ export async function GET(request: Request) {
     const listWithImages = [];
     for (const item of activeList) {
       const images = await sql`
-        SELECT image_url as imageUrl FROM product_images WHERE product_id = ${item.id} AND (image_type = 'showcase' OR image_type IS NULL) ORDER BY id ASC LIMIT 4
+        SELECT image_url as "imageUrl" FROM product_images WHERE product_id = ${item.id} AND (image_type = 'showcase' OR image_type IS NULL) ORDER BY id ASC LIMIT 4
       `;
       const fallbackImgs = item.images || ["/crop_green.png"];
-      const dbImgs = images.map((img: any) => img.imageUrl);
+      const dbImgs = images.map((img: any) => img.imageUrl || img.imageurl || img.image_url).filter(Boolean);
       const primary = dbImgs[0] || fallbackImgs[0] || "/crop_green.png";
 
       const parsedOccasion = Array.isArray(item.occasion)

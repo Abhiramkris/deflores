@@ -4,10 +4,18 @@ import { createClient } from "@supabase/supabase-js";
 import sharp from "sharp";
 import { promises as fs } from "fs";
 import path from "path";
+import { jwtVerify } from "jose";
+import { cookies } from "next/headers";
+
+export const dynamic = "force-dynamic";
+export const maxDuration = 60;
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 const supabase = supabaseUrl && supabaseServiceKey ? createClient(supabaseUrl, supabaseServiceKey) : null;
+const JWT_SECRET = new TextEncoder().encode(
+  process.env.JWT_SECRET || "deflores_haute_couture_secret_secure_key_123"
+);
 
 async function processAndUploadFile(file: File, type: string, index: number): Promise<{ url: string; filename: string; aspect: number }> {
   const arrayBuffer = await file.arrayBuffer();
@@ -27,22 +35,24 @@ async function processAndUploadFile(file: File, type: string, index: number): Pr
   let fileUrl = "";
 
   if (supabase) {
-    const { error } = await supabase.storage
-      .from("deflores-bucket")
-      .upload(filename, webpBuffer, {
-        contentType: "image/webp",
-        upsert: true,
-      });
+    try {
+      const { error } = await supabase.storage
+        .from("deflores-bucket")
+        .upload(filename, webpBuffer, {
+          contentType: "image/webp",
+          upsert: true,
+        });
 
-    if (error) {
-      throw new Error(`Supabase Storage Upload Error: ${error.message}`);
-    }
+      if (!error) {
+        const { data: publicUrlData } = supabase.storage
+          .from("deflores-bucket")
+          .getPublicUrl(filename);
+        fileUrl = publicUrlData.publicUrl;
+      }
+    } catch {}
+  }
 
-    const { data: publicUrlData } = supabase.storage
-      .from("deflores-bucket")
-      .getPublicUrl(filename);
-    fileUrl = publicUrlData.publicUrl;
-  } else {
+  if (!fileUrl) {
     const uploadsDir = path.join(process.cwd(), "public", "uploads");
     await fs.mkdir(uploadsDir, { recursive: true });
     const filepath = path.join(uploadsDir, filename);
@@ -54,10 +64,35 @@ async function processAndUploadFile(file: File, type: string, index: number): Pr
 }
 
 export async function POST(request: Request) {
+  const cookieStore = await cookies();
+  const tokenCookie = cookieStore.get("admin_token");
+  if (!tokenCookie) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  let authEmail = "admin@deflores.com";
   try {
-    const formData = await request.formData();
+    const verified = await jwtVerify(tokenCookie.value, JWT_SECRET);
+    if (verified.payload && typeof verified.payload.email === "string") {
+      authEmail = verified.payload.email;
+    }
+  } catch {
+    return NextResponse.json({ error: "Invalid Session" }, { status: 401 });
+  }
+
+  let formData: FormData;
+  try {
+    formData = await request.formData();
+  } catch {
+    return NextResponse.json(
+      { error: "Failed to parse upload form data. The total file payload may exceed server limits or the upload was interrupted." },
+      { status: 400 }
+    );
+  }
+
+  try {
     const type = formData.get("type") as string;
-    const email = (formData.get("email") as string) || "admin@deflores.com";
+    const email = (formData.get("email") as string) || authEmail;
 
     if (type === "gallery") {
       const file = formData.get("file") as File;

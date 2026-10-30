@@ -45,18 +45,20 @@ export async function GET() {
     `;
 
     const productImages = await sql`
-      SELECT product_id as productId, image_url as imageUrl, image_type as imageType
+      SELECT product_id as "productId", image_url as "imageUrl", image_type as "imageType"
       FROM product_images
       ORDER BY id ASC
     `;
 
     const products = productsRaw.map((p) => {
       const showcaseImgs = productImages
-        .filter((img: any) => img.productId === p.id && (img.imageType === "showcase" || !img.imageType))
-        .map((img: any) => img.imageUrl);
+        .filter((img: any) => (img.productId === p.id || img.productid === p.id) && ((img.imageType || img.imagetype) === "showcase" || (!img.imageType && !img.imagetype)))
+        .map((img: any) => img.imageUrl || img.imageurl || img.image_url)
+        .filter(Boolean);
       const lookbookImgs = productImages
-        .filter((img: any) => img.productId === p.id && img.imageType === "lookbook")
-        .map((img: any) => img.imageUrl);
+        .filter((img: any) => (img.productId === p.id || img.productid === p.id) && (img.imageType || img.imagetype) === "lookbook")
+        .map((img: any) => img.imageUrl || img.imageurl || img.image_url)
+        .filter(Boolean);
 
       const parsedOccasion = Array.isArray(p.occasion)
         ? p.occasion

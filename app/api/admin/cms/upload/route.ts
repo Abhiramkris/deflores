@@ -5,14 +5,32 @@ import path from "path";
 import { createClient } from "@supabase/supabase-js";
 import { getMasterSchema } from "../../../../../lib/cms";
 
+import { jwtVerify } from "jose";
+import { cookies } from "next/headers";
+
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 const supabase = supabaseUrl && supabaseServiceKey ? createClient(supabaseUrl, supabaseServiceKey) : null;
+const JWT_SECRET = new TextEncoder().encode(
+  process.env.JWT_SECRET || "deflores_haute_couture_secret_secure_key_123"
+);
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 export async function POST(request: Request) {
+  const cookieStore = await cookies();
+  const tokenCookie = cookieStore.get("admin_token");
+  if (!tokenCookie) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    await jwtVerify(tokenCookie.value, JWT_SECRET);
+  } catch {
+    return NextResponse.json({ error: "Invalid Session" }, { status: 401 });
+  }
+
   let formData: FormData;
   try {
     formData = await request.formData();
