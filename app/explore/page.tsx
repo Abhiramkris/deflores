@@ -425,6 +425,7 @@ export default function ExplorePage() {
                           fill
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                           className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                          unoptimized={typeof thumb === "string" && (thumb.startsWith("http") || thumb.startsWith("/uploads/"))}
                         />
                         <span className="absolute top-3 left-3 bg-paper/95 text-ink text-[9px] font-medium tracking-[0.15em] uppercase px-2.5 py-1 border border-line">
                           {item.badge || item.category || "Atelier"}
