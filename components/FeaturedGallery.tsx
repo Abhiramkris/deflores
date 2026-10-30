@@ -82,7 +82,6 @@ export default function FeaturedGallery(props: FeaturedGalleryProps = {}) {
 
   useEffect(() => {
     if (prefersReducedMotion) return;
-    if (window.innerWidth < 768) return;
 
     let isVisible = false;
     let cachedTop = 0;
@@ -119,7 +118,6 @@ export default function FeaturedGallery(props: FeaturedGalleryProps = {}) {
     };
 
     const compute = () => {
-      if (window.innerWidth < 768) return;
       if (
         !containerRef.current ||
         !stickyRef.current ||
@@ -273,94 +271,51 @@ export default function FeaturedGallery(props: FeaturedGalleryProps = {}) {
   }
 
   return (
-    <>
-      <section
-        aria-label="Featured Gallery Mobile"
-        className="block md:hidden w-full py-12 px-6 bg-paper border-t border-line"
-      >
-        <div className="text-center mb-8">
-          <span className="block text-xs tracking-widest uppercase mb-2 font-sans font-medium text-grey">
-            {eyebrowText}
-          </span>
-          <h2 className="font-serif text-2xl sm:text-3xl uppercase leading-tight tracking-tight text-ink">
-            {headline1Text}
-            <br />
-            {headline2Text}
-          </h2>
-        </div>
-        <div className="columns-2 gap-3 max-w-[1400px] mx-auto">
-          <div className="mb-3 break-inside-avoid">
-            <Placeholder ratio="4/5" label="ATELIER" src={heroSrc} />
-          </div>
-          <div className="mb-3 break-inside-avoid">
-            <Placeholder ratio="1/1" label="SILHOUETTE" src={img1} />
-          </div>
-          <div className="mb-3 break-inside-avoid">
-            <Placeholder ratio="3/4" label="TEXTURE" src={img2} />
-          </div>
-          <div className="mb-3 break-inside-avoid">
-            <Placeholder ratio="4/5" label="ARCHIVE" src={img3} />
-          </div>
-          <div className="mb-3 break-inside-avoid">
-            <Placeholder ratio="2/3" label="DETAIL" src={img4} />
-          </div>
-          <div className="mb-3 break-inside-avoid">
-            <Placeholder ratio="3/4" label="CRAFT" src={img5} />
-          </div>
-          <div className="mb-3 break-inside-avoid">
-            <Placeholder ratio="4/5" label="HERITAGE" src={img6} />
-          </div>
-          <div className="mb-3 break-inside-avoid">
-            <Placeholder ratio="1/1" label="RUNWAY" src={img7} />
-          </div>
-        </div>
-      </section>
-
-      <section
-        ref={containerRef}
-        id="featured-gallery"
-        aria-label="Featured Gallery"
-        style={{ height: "250vh" }}
-        className="hidden md:block relative w-full bg-paper border-t border-line"
+    <section
+      ref={containerRef}
+      id="featured-gallery"
+      aria-label="Featured Gallery"
+      style={{ height: "240vh" }}
+      className="relative w-full bg-paper border-t border-line"
+    >
+      <div
+        ref={stickyRef}
+        className="sticky top-0 h-[100dvh] w-full overflow-hidden flex items-center justify-center"
       >
         <div
-          ref={stickyRef}
-          className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center"
+          ref={galleryRef}
+          style={{ willChange: "transform, opacity" }}
+          className="absolute inset-0 pt-20 sm:pt-24 px-4 sm:px-6 md:px-12 overflow-hidden"
         >
-          <div
-            ref={galleryRef}
-            style={{ willChange: "transform, opacity" }}
-            className="absolute inset-0 pt-24 px-6 md:px-12 overflow-hidden"
-          >
-            <div className="columns-2 md:columns-3 lg:columns-4 gap-4 max-w-[1400px] mx-auto">
-              <div
-                ref={slotRef}
-                id="target-slot"
-                className="aspect-[4/5] mb-4 bg-transparent break-inside-avoid"
-              />
-              <div className="mb-4 break-inside-avoid">
-                <Placeholder ratio="1/1" label="SILHOUETTE" src={img1} />
-              </div>
-              <div className="mb-4 break-inside-avoid">
-                <Placeholder ratio="3/4" label="TEXTURE" src={img2} />
-              </div>
-              <div className="mb-4 break-inside-avoid">
-                <Placeholder ratio="4/5" label="ARCHIVE" src={img3} />
-              </div>
-              <div className="mb-4 break-inside-avoid">
-                <Placeholder ratio="2/3" label="DETAIL" src={img4} />
-              </div>
-              <div className="mb-4 break-inside-avoid">
-                <Placeholder ratio="3/4" label="CRAFT" src={img5} />
-              </div>
-              <div className="mb-4 break-inside-avoid">
-                <Placeholder ratio="4/5" label="HERITAGE" src={img6} />
-              </div>
-              <div className="mb-4 break-inside-avoid">
-                <Placeholder ratio="1/1" label="RUNWAY" src={img7} />
-              </div>
+          <div className="columns-2 md:columns-3 lg:columns-4 gap-3 sm:gap-4 max-w-[1400px] mx-auto">
+            <div
+              ref={slotRef}
+              id="target-slot"
+              className="aspect-[4/5] mb-3 sm:mb-4 bg-transparent break-inside-avoid"
+            />
+            <div className="mb-3 sm:mb-4 break-inside-avoid">
+              <Placeholder ratio="1/1" label="SILHOUETTE" src={img1} />
+            </div>
+            <div className="mb-3 sm:mb-4 break-inside-avoid">
+              <Placeholder ratio="3/4" label="TEXTURE" src={img2} />
+            </div>
+            <div className="mb-3 sm:mb-4 break-inside-avoid">
+              <Placeholder ratio="4/5" label="ARCHIVE" src={img3} />
+            </div>
+            <div className="mb-3 sm:mb-4 break-inside-avoid">
+              <Placeholder ratio="2/3" label="DETAIL" src={img4} />
+            </div>
+            <div className="mb-3 sm:mb-4 break-inside-avoid">
+              <Placeholder ratio="3/4" label="CRAFT" src={img5} />
+            </div>
+            <div className="mb-3 sm:mb-4 break-inside-avoid">
+              <Placeholder ratio="4/5" label="HERITAGE" src={img6} />
+            </div>
+            <div className="mb-3 sm:mb-4 break-inside-avoid">
+              <Placeholder ratio="1/1" label="RUNWAY" src={img7} />
             </div>
           </div>
+        </div>
 
           <div
             ref={heroRef}
@@ -418,6 +373,5 @@ export default function FeaturedGallery(props: FeaturedGalleryProps = {}) {
           </div>
         </div>
       </section>
-    </>
   );
 }
