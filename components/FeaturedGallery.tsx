@@ -82,6 +82,18 @@ export default function FeaturedGallery(props: FeaturedGalleryProps = {}) {
 
   useEffect(() => {
     if (prefersReducedMotion) return;
+    if (window.innerWidth < 768) return;
+
+    let isVisible = false;
+    let cachedTop = 0;
+    let cachedHeight = 0;
+
+    const updateMetrics = () => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      cachedTop = rect.top + window.scrollY;
+      cachedHeight = rect.height;
+    };
 
     const apply = (p: number) => {
       const m = metricsRef.current;
@@ -107,6 +119,7 @@ export default function FeaturedGallery(props: FeaturedGalleryProps = {}) {
     };
 
     const compute = () => {
+      if (window.innerWidth < 768) return;
       if (
         !containerRef.current ||
         !stickyRef.current ||
@@ -159,29 +172,43 @@ export default function FeaturedGallery(props: FeaturedGalleryProps = {}) {
         ready: true,
       };
 
-      const containerRect = containerRef.current.getBoundingClientRect();
-      const totalScroll = containerRect.height - window.innerHeight;
-      const currentScroll = -containerRect.top;
+      updateMetrics();
+      const totalScroll = cachedHeight - window.innerHeight;
+      const currentScroll = window.scrollY - cachedTop;
       const p = totalScroll > 0 ? Math.max(0, Math.min(1, currentScroll / totalScroll)) : 0;
       apply(p);
     };
 
     let ticking = false;
     const onScroll = () => {
+      if (!isVisible) return;
       if (!ticking) {
         requestAnimationFrame(() => {
-          if (containerRef.current) {
-            const containerRect = containerRef.current.getBoundingClientRect();
-            const totalScroll = containerRect.height - window.innerHeight;
-            const currentScroll = -containerRect.top;
-            const p = totalScroll > 0 ? Math.max(0, Math.min(1, currentScroll / totalScroll)) : 0;
-            apply(p);
-          }
+          const totalScroll = cachedHeight - window.innerHeight;
+          const currentScroll = window.scrollY - cachedTop;
+          const p = totalScroll > 0 ? Math.max(0, Math.min(1, currentScroll / totalScroll)) : 0;
+          apply(p);
           ticking = false;
         });
         ticking = true;
       }
     };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        isVisible = entry ? entry.isIntersecting : false;
+        if (isVisible) {
+          updateMetrics();
+          onScroll();
+        }
+      },
+      { rootMargin: "200px 0px" }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
 
     compute();
     const rafId = requestAnimationFrame(compute);
@@ -189,6 +216,7 @@ export default function FeaturedGallery(props: FeaturedGalleryProps = {}) {
     window.addEventListener("resize", compute, { passive: true });
 
     return () => {
+      observer.disconnect();
       cancelAnimationFrame(rafId);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", compute);
@@ -245,107 +273,151 @@ export default function FeaturedGallery(props: FeaturedGalleryProps = {}) {
   }
 
   return (
-    <section
-      ref={containerRef}
-      id="featured-gallery"
-      aria-label="Featured Gallery"
-      style={{ height: "250vh" }}
-      className="relative w-full bg-paper border-t border-line"
-    >
-      <div
-        ref={stickyRef}
-        className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center"
+    <>
+      <section
+        aria-label="Featured Gallery Mobile"
+        className="block md:hidden w-full py-12 px-6 bg-paper border-t border-line"
+      >
+        <div className="text-center mb-8">
+          <span className="block text-xs tracking-widest uppercase mb-2 font-sans font-medium text-grey">
+            {eyebrowText}
+          </span>
+          <h2 className="font-serif text-2xl sm:text-3xl uppercase leading-tight tracking-tight text-ink">
+            {headline1Text}
+            <br />
+            {headline2Text}
+          </h2>
+        </div>
+        <div className="columns-2 gap-3 max-w-[1400px] mx-auto">
+          <div className="mb-3 break-inside-avoid">
+            <Placeholder ratio="4/5" label="ATELIER" src={heroSrc} />
+          </div>
+          <div className="mb-3 break-inside-avoid">
+            <Placeholder ratio="1/1" label="SILHOUETTE" src={img1} />
+          </div>
+          <div className="mb-3 break-inside-avoid">
+            <Placeholder ratio="3/4" label="TEXTURE" src={img2} />
+          </div>
+          <div className="mb-3 break-inside-avoid">
+            <Placeholder ratio="4/5" label="ARCHIVE" src={img3} />
+          </div>
+          <div className="mb-3 break-inside-avoid">
+            <Placeholder ratio="2/3" label="DETAIL" src={img4} />
+          </div>
+          <div className="mb-3 break-inside-avoid">
+            <Placeholder ratio="3/4" label="CRAFT" src={img5} />
+          </div>
+          <div className="mb-3 break-inside-avoid">
+            <Placeholder ratio="4/5" label="HERITAGE" src={img6} />
+          </div>
+          <div className="mb-3 break-inside-avoid">
+            <Placeholder ratio="1/1" label="RUNWAY" src={img7} />
+          </div>
+        </div>
+      </section>
+
+      <section
+        ref={containerRef}
+        id="featured-gallery"
+        aria-label="Featured Gallery"
+        style={{ height: "250vh" }}
+        className="hidden md:block relative w-full bg-paper border-t border-line"
       >
         <div
-          ref={galleryRef}
-          style={{ willChange: "transform, opacity" }}
-          className="absolute inset-0 pt-24 px-6 md:px-12 overflow-hidden"
+          ref={stickyRef}
+          className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center"
         >
-          <div className="columns-2 md:columns-3 lg:columns-4 gap-4 max-w-[1400px] mx-auto">
-            <div
-              ref={slotRef}
-              id="target-slot"
-              className="aspect-[4/5] mb-4 bg-transparent break-inside-avoid"
-            />
-            <div className="mb-4 break-inside-avoid">
-              <Placeholder ratio="1/1" label="SILHOUETTE" src={img1} />
-            </div>
-            <div className="mb-4 break-inside-avoid">
-              <Placeholder ratio="3/4" label="TEXTURE" src={img2} />
-            </div>
-            <div className="mb-4 break-inside-avoid">
-              <Placeholder ratio="4/5" label="ARCHIVE" src={img3} />
-            </div>
-            <div className="mb-4 break-inside-avoid">
-              <Placeholder ratio="2/3" label="DETAIL" src={img4} />
-            </div>
-            <div className="mb-4 break-inside-avoid">
-              <Placeholder ratio="3/4" label="CRAFT" src={img5} />
-            </div>
-            <div className="mb-4 break-inside-avoid">
-              <Placeholder ratio="4/5" label="HERITAGE" src={img6} />
-            </div>
-            <div className="mb-4 break-inside-avoid">
-              <Placeholder ratio="1/1" label="RUNWAY" src={img7} />
-            </div>
-          </div>
-        </div>
-
-        <div
-          ref={heroRef}
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            zIndex: 20,
-            backgroundColor: "var(--phBg)",
-            transformOrigin: "0 0",
-            willChange: "transform",
-          }}
-          className="flex items-center justify-center pointer-events-none overflow-hidden"
-        >
-          {heroSrc && (
-            <Image
-              src={heroSrc}
-              alt={eyebrowText}
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover object-center select-none"
-              unoptimized={heroSrc.startsWith("/uploads/") || heroSrc.startsWith("http")}
-            />
-          )}
-
           <div
-            ref={textRef}
-            className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-4 sm:px-6 z-10"
+            ref={galleryRef}
+            style={{ willChange: "transform, opacity" }}
+            className="absolute inset-0 pt-24 px-6 md:px-12 overflow-hidden"
           >
-            <div className="absolute inset-0 bg-black/45 pointer-events-none" />
-            <div className="relative z-10">
-              <span className="block text-xs sm:text-sm tracking-widest uppercase mb-3 sm:mb-4 font-sans font-medium">
-                {eyebrowText}
-              </span>
-              <h2 className="font-serif text-[clamp(24px,6.2vw,72px)] uppercase leading-[1.05] tracking-tight">
-                {headline1Text}
-                <br />
-                {headline2Text}
-              </h2>
+            <div className="columns-2 md:columns-3 lg:columns-4 gap-4 max-w-[1400px] mx-auto">
+              <div
+                ref={slotRef}
+                id="target-slot"
+                className="aspect-[4/5] mb-4 bg-transparent break-inside-avoid"
+              />
+              <div className="mb-4 break-inside-avoid">
+                <Placeholder ratio="1/1" label="SILHOUETTE" src={img1} />
+              </div>
+              <div className="mb-4 break-inside-avoid">
+                <Placeholder ratio="3/4" label="TEXTURE" src={img2} />
+              </div>
+              <div className="mb-4 break-inside-avoid">
+                <Placeholder ratio="4/5" label="ARCHIVE" src={img3} />
+              </div>
+              <div className="mb-4 break-inside-avoid">
+                <Placeholder ratio="2/3" label="DETAIL" src={img4} />
+              </div>
+              <div className="mb-4 break-inside-avoid">
+                <Placeholder ratio="3/4" label="CRAFT" src={img5} />
+              </div>
+              <div className="mb-4 break-inside-avoid">
+                <Placeholder ratio="4/5" label="HERITAGE" src={img6} />
+              </div>
+              <div className="mb-4 break-inside-avoid">
+                <Placeholder ratio="1/1" label="RUNWAY" src={img7} />
+              </div>
             </div>
           </div>
 
           <div
-            ref={settledLabelRef}
-            style={{ opacity: 0 }}
-            className="absolute inset-0 flex items-center justify-center pointer-events-none z-10"
+            ref={heroRef}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              zIndex: 20,
+              backgroundColor: "var(--phBg)",
+              transformOrigin: "0 0",
+              willChange: "transform",
+            }}
+            className="flex items-center justify-center pointer-events-none overflow-hidden"
           >
-            {!heroSrc && (
-              <span className="text-[11px] uppercase tracking-[0.2em] text-grey font-medium text-center px-4">
-                {eyebrowText}
-              </span>
+            {heroSrc && (
+              <Image
+                src={heroSrc}
+                alt={eyebrowText}
+                fill
+                priority
+                sizes="100vw"
+                className="object-cover object-center select-none"
+                unoptimized={heroSrc.startsWith("/uploads/") || heroSrc.startsWith("http")}
+              />
             )}
+
+            <div
+              ref={textRef}
+              className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-4 sm:px-6 z-10"
+            >
+              <div className="absolute inset-0 bg-black/45 pointer-events-none" />
+              <div className="relative z-10">
+                <span className="block text-xs sm:text-sm tracking-widest uppercase mb-3 sm:mb-4 font-sans font-medium">
+                  {eyebrowText}
+                </span>
+                <h2 className="font-serif text-[clamp(24px,6.2vw,72px)] uppercase leading-[1.05] tracking-tight">
+                  {headline1Text}
+                  <br />
+                  {headline2Text}
+                </h2>
+              </div>
+            </div>
+
+            <div
+              ref={settledLabelRef}
+              style={{ opacity: 0 }}
+              className="absolute inset-0 flex items-center justify-center pointer-events-none z-10"
+            >
+              {!heroSrc && (
+                <span className="text-[11px] uppercase tracking-[0.2em] text-grey font-medium text-center px-4">
+                  {eyebrowText}
+                </span>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }

@@ -32,8 +32,9 @@ export default function Placeholder({
           src={validSrc}
           alt={alt || label}
           fill
-          sizes="(max-width: 900px) 100vw, 50vw"
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           style={{ objectPosition: focalPoint }}
+          loading="lazy"
           className="object-cover select-none"
           unoptimized={validSrc.startsWith("/uploads/") || validSrc.startsWith("http")}
         />
