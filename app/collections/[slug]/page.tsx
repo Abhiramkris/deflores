@@ -236,6 +236,7 @@ export default async function CollectionPage({
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        unoptimized={typeof product.image === "string" && (product.image.startsWith("http") || product.image.startsWith("/uploads/"))}
                       />
                       <div className="absolute top-3 left-3 bg-paper/95 text-ink text-[9px] font-bold tracking-widest uppercase px-2.5 py-1 border border-line backdrop-blur-xs">
                         {product.badge || product.category || "Bespoke"}
