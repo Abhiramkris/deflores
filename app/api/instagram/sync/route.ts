@@ -4,42 +4,42 @@ import { sql } from "../../../lib/db";
 const DEFAULT_POSTS = [
   {
     post_id: "atelier-ig-01",
-    media_url: "/crop_green.png",
+    media_url: "/newimages/IMG_1058.webp",
     permalink: "https://instagram.com/deflores.india",
     caption: "Intricate zari geometry in motion. An ode to artisanal precision.",
     media_type: "IMAGE"
   },
   {
     post_id: "atelier-ig-02",
-    media_url: "/crop_white.png",
+    media_url: "/newimages/IMG_1060.webp",
     permalink: "https://instagram.com/deflores.india",
     caption: "Purity of form in ivory silk cotton. Hand-finished draping details.",
     media_type: "IMAGE"
   },
   {
     post_id: "atelier-ig-03",
-    media_url: "/crop_red.png",
+    media_url: "/newimages/IMG_1061.webp",
     permalink: "https://instagram.com/deflores.india",
     caption: "Architectural cowl lines in deep scarlet georgette.",
     media_type: "IMAGE"
   },
   {
     post_id: "atelier-ig-04",
-    media_url: "/gallery_purple.jpg",
+    media_url: "/newimages/IMG_1062.webp",
     permalink: "https://instagram.com/deflores.india",
     caption: "Bespoke bridal heirlooms crafted with enduring tradition.",
     media_type: "IMAGE"
   },
   {
     post_id: "atelier-ig-05",
-    media_url: "/crop_green.png",
+    media_url: "/new_images2/IMG_1076.webp",
     permalink: "https://instagram.com/deflores.india",
     caption: "Runway reflections. Structured confidence tailored for the individual.",
     media_type: "IMAGE"
   },
   {
     post_id: "atelier-ig-06",
-    media_url: "/crop_white.png",
+    media_url: "/new_images2/IMG_1077.webp",
     permalink: "https://instagram.com/deflores.india",
     caption: "Atelier fitting notes. Every seam calibrated to personal silhouette.",
     media_type: "IMAGE"
@@ -98,39 +98,49 @@ export async function GET(request: Request) {
     const force = searchParams.get("force") === "true";
 
     const meta = await sql`
-      SELECT handle, access_token as accessToken, last_synced_at as lastSyncedAt
+      SELECT handle, access_token as "accessToken", last_synced_at as "lastSyncedAt"
       FROM instagram_sync_meta
       WHERE id = 1
     `;
 
-    const lastSyncedAt = meta[0]?.lastSyncedAt ? new Date(meta[0].lastSyncedAt).getTime() : 0;
+    const lastSyncedAt = (meta[0]?.lastSyncedAt || meta[0]?.lastsyncedat) ? new Date(meta[0].lastSyncedAt || meta[0].lastsyncedat).getTime() : 0;
     const threeDaysMs = 3 * 24 * 60 * 60 * 1000;
     const isDue = Date.now() - lastSyncedAt > threeDaysMs;
 
     const existingCount = await sql`SELECT COUNT(*)::int as count FROM instagram_posts`;
 
     if (force || isDue || existingCount[0]?.count === 0) {
-      await syncFromSource(meta[0]?.accessToken);
+      await syncFromSource(meta[0]?.accessToken || meta[0]?.accesstoken);
     }
 
     const posts = await sql`
-      SELECT id, post_id as postId, media_url as mediaUrl, permalink, caption, media_type as mediaType, timestamp
+      SELECT id, post_id as "postId", media_url as "mediaUrl", permalink, caption, media_type as "mediaType", timestamp
       FROM instagram_posts
       ORDER BY timestamp DESC, id DESC
       LIMIT 12
     `;
 
     const updatedMeta = await sql`
-      SELECT handle, last_synced_at as lastSyncedAt
+      SELECT handle, last_synced_at as "lastSyncedAt"
       FROM instagram_sync_meta
       WHERE id = 1
     `;
 
+    const mappedPosts = posts.map((p: any) => ({
+      id: p.id,
+      postId: p.postId || p.postid || p.post_id,
+      mediaUrl: p.mediaUrl || p.mediaurl || p.media_url,
+      permalink: p.permalink,
+      caption: p.caption,
+      mediaType: p.mediaType || p.mediatype || p.media_type,
+      timestamp: p.timestamp,
+    }));
+
     return NextResponse.json({
       success: true,
-      posts,
+      posts: mappedPosts,
       handle: updatedMeta[0]?.handle || "deflores.india",
-      lastSyncedAt: updatedMeta[0]?.lastSyncedAt || new Date().toISOString(),
+      lastSyncedAt: updatedMeta[0]?.lastSyncedAt || updatedMeta[0]?.lastsyncedat || new Date().toISOString(),
     });
   } catch (error: any) {
     console.error("Instagram GET error:", error);

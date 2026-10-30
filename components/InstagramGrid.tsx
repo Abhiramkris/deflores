@@ -24,28 +24,35 @@ export default function InstagramGrid({
   profile_url = "https://instagram.com/deflores.india",
 }: InstagramGridProps) {
   const [posts, setPosts] = useState<InstagramPost[]>([
-    { id: 1, postId: "1", mediaUrl: "/crop_green.png", permalink: profile_url, caption: "Artisanal lehenga silhouette in pure georgette." },
-    { id: 2, postId: "2", mediaUrl: "/crop_white.png", permalink: profile_url, caption: "Hand-finished silk cotton festive chic." },
-    { id: 3, postId: "3", mediaUrl: "/crop_red.png", permalink: profile_url, caption: "Dramatic scarlet cowl drape gown." },
-    { id: 4, postId: "4", mediaUrl: "/gallery_purple.jpg", permalink: profile_url, caption: "Bespoke bridal heirlooms tailored to perfection." },
-    { id: 5, postId: "5", mediaUrl: "/crop_green.png", permalink: profile_url, caption: "Runway couture and architectural drape." },
-    { id: 6, postId: "6", mediaUrl: "/crop_white.png", permalink: profile_url, caption: "Atelier details. Hand-stitched precision." },
+    { id: 1, postId: "1", mediaUrl: "/newimages/IMG_1058.webp", permalink: profile_url, caption: "Artisanal lehenga silhouette in pure georgette." },
+    { id: 2, postId: "2", mediaUrl: "/newimages/IMG_1060.webp", permalink: profile_url, caption: "Hand-finished silk cotton festive chic." },
+    { id: 3, postId: "3", mediaUrl: "/newimages/IMG_1061.webp", permalink: profile_url, caption: "Dramatic scarlet cowl drape gown." },
+    { id: 4, postId: "4", mediaUrl: "/newimages/IMG_1062.webp", permalink: profile_url, caption: "Bespoke bridal heirlooms tailored to perfection." },
+    { id: 5, postId: "5", mediaUrl: "/new_images2/IMG_1076.webp", permalink: profile_url, caption: "Runway couture and architectural drape." },
+    { id: 6, postId: "6", mediaUrl: "/new_images2/IMG_1077.webp", permalink: profile_url, caption: "Atelier details. Hand-stitched precision." },
   ]);
-
   useEffect(() => {
     const fetchInstagram = async () => {
       try {
         const res = await fetch("/api/instagram/sync");
         const data = await res.json();
         if (data.success && Array.isArray(data.posts) && data.posts.length > 0) {
-          setPosts(data.posts.slice(0, 6));
+          const mapped = data.posts.map((p: any) => ({
+            id: p.id,
+            postId: p.postId || p.postid || p.post_id || String(p.id),
+            mediaUrl: p.mediaUrl || p.mediaurl || p.media_url || "/newimages/IMG_1058.webp",
+            permalink: p.permalink || profile_url,
+            caption: p.caption,
+            mediaType: p.mediaType || p.mediatype || p.media_type,
+          }));
+          setPosts(mapped.slice(0, 6));
         }
       } catch (err) {
         console.error("Failed to fetch synced Instagram posts:", err);
       }
     };
     fetchInstagram();
-  }, []);
+  }, [profile_url]);
 
   return (
     <section
@@ -79,7 +86,7 @@ export default function InstagramGrid({
               className="group block relative aspect-square overflow-hidden bg-phBg select-none border border-line"
             >
               <Image
-                src={post.mediaUrl}
+                src={post.mediaUrl || (post as any).mediaurl || "/newimages/IMG_1058.webp"}
                 alt={post.caption || "De Flores Instagram post"}
                 fill
                 sizes="(max-width: 640px) 50vw, (max-width: 900px) 33vw, 16vw"
