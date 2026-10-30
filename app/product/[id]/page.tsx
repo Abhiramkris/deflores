@@ -709,6 +709,7 @@ export default function ProductPage({
                                   fill
                                   className="object-cover"
                                   sizes="60px"
+                                  unoptimized={typeof img === "string" && (img.startsWith("http") || img.startsWith("/uploads/"))}
                                 />
                               </div>
                             ))}
@@ -748,6 +749,7 @@ export default function ProductPage({
                         fill
                         className="object-cover hover:scale-105 transition-transform duration-1000 ease-out"
                         sizes="(max-width: 768px) 100vw, 50vw"
+                        unoptimized={typeof img === "string" && (img.startsWith("http") || img.startsWith("/uploads/"))}
                       />
                     </div>
                   ))}
@@ -782,6 +784,7 @@ export default function ProductPage({
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                       sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 25vw"
+                      unoptimized={typeof extraImg === "string" && (extraImg.startsWith("http") || extraImg.startsWith("/uploads/"))}
                     />
                     <div className="absolute bottom-3 left-3 bg-paper/90 px-2 py-0.5 border border-line text-[9px] uppercase tracking-widest text-grey">
                       Archive 0{idx + 1}
@@ -819,6 +822,7 @@ export default function ProductPage({
                           fill
                           className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                           sizes="(max-width: 768px) 100vw, 33vw"
+                          unoptimized={typeof recThumb === "string" && (recThumb.startsWith("http") || recThumb.startsWith("/uploads/"))}
                         />
                         <span className="absolute top-3 left-3 bg-paper/95 text-ink text-[9px] font-medium tracking-[0.15em] uppercase px-2.5 py-1 border border-line">
                           {rec.badge || rec.category || "Atelier"}
