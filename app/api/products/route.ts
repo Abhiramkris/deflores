@@ -70,10 +70,49 @@ export async function GET(request: Request) {
               const parsed = JSON.parse(item.occasion);
               return Array.isArray(parsed) ? parsed : [];
             } catch {
-              return [];
+              return item.occasion.split(",").map((s: string) => s.trim()).filter(Boolean);
             }
           })()
         : [];
+
+      const parsedColors = Array.isArray(item.colors)
+        ? item.colors
+        : typeof item.colors === "string"
+        ? (() => {
+            try {
+              const parsed = JSON.parse(item.colors);
+              return Array.isArray(parsed) ? parsed : [];
+            } catch {
+              return item.colors.split(",").map((s: string) => ({ name: s.trim(), hex: "#ffffff" })).filter((c: any) => c.name);
+            }
+          })()
+        : [];
+
+      const parsedSizes = Array.isArray(item.sizes)
+        ? item.sizes
+        : typeof item.sizes === "string"
+        ? (() => {
+            try {
+              const parsed = JSON.parse(item.sizes);
+              return Array.isArray(parsed) ? parsed : [];
+            } catch {
+              return item.sizes.split(",").map((s: string) => s.trim()).filter(Boolean);
+            }
+          })()
+        : [];
+
+      const parsedDetails = typeof item.details === "object" && item.details !== null
+        ? item.details
+        : typeof item.details === "string"
+        ? (() => {
+            try {
+              const parsed = JSON.parse(item.details);
+              return typeof parsed === "object" && parsed !== null ? parsed : {};
+            } catch {
+              return {};
+            }
+          })()
+        : {};
 
       const formattedProduct = {
         id: item.id,
@@ -90,17 +129,17 @@ export async function GET(request: Request) {
         patronQuote: item.patron_quote || item.patronQuote || "",
         patronAuthor: item.patron_author || item.patronAuthor || "",
         description: item.description || "",
-        details: item.details || {},
-        colors: item.colors || [],
-        sizes: item.sizes && item.sizes.length > 0 ? item.sizes : ["XS", "S", "M", "L", "XL", "Custom"],
+        details: parsedDetails,
+        colors: parsedColors.length > 0 ? parsedColors : [{ name: "Ivory", hex: "#fdfaf2" }],
+        sizes: parsedSizes.length > 0 ? parsedSizes : ["XS", "S", "M", "L", "XL", "Custom"],
         rating: parseFloat(item.rating || "5.0"),
         reviewCount: reviews.length > 0 ? reviews.length : (item.reviewCount || item.review_count || 1),
         images: fourImages,
         lookbookImages: lookbookImages.length > 0 ? lookbookImages : (item.lookbookImages || [fourImages[2], fourImages[3]]),
-        shipping: (item.details && item.details.shipping) || item.shipping || {
+        shipping: (parsedDetails && parsedDetails.shipping) || item.shipping || {
           discount: "Complimentary Delivery",
           package: "Atelier Silk Protective Packaging",
-          deliveryTime: "5-7 Working Days",
+          deliveryTime: parsedDetails.leadTime || "5-7 Working Days",
           estimationArrive: "Made to Measure & Dispatched"
         },
         reviews: reviews.length > 0 ? reviews.map((r: any) => ({
@@ -164,6 +203,32 @@ export async function GET(request: Request) {
           })()
         : [];
 
+      const parsedColors = Array.isArray(item.colors)
+        ? item.colors
+        : typeof item.colors === "string"
+        ? (() => {
+            try {
+              const parsed = JSON.parse(item.colors);
+              return Array.isArray(parsed) ? parsed : [];
+            } catch {
+              return item.colors.split(",").map((s: string) => ({ name: s.trim(), hex: "#ffffff" })).filter((c: any) => c.name);
+            }
+          })()
+        : [];
+
+      const parsedSizes = Array.isArray(item.sizes)
+        ? item.sizes
+        : typeof item.sizes === "string"
+        ? (() => {
+            try {
+              const parsed = JSON.parse(item.sizes);
+              return Array.isArray(parsed) ? parsed : [];
+            } catch {
+              return item.sizes.split(",").map((s: string) => s.trim()).filter(Boolean);
+            }
+          })()
+        : [];
+
       listWithImages.push({
         id: item.id,
         title: item.title,
@@ -179,6 +244,8 @@ export async function GET(request: Request) {
         patronQuote: item.patron_quote || item.patronQuote || "",
         patronAuthor: item.patron_author || item.patronAuthor || "",
         description: item.description,
+        colors: parsedColors,
+        sizes: parsedSizes,
         images: dbImgs.length > 0 ? dbImgs : fallbackImgs,
         thumbnail: primary
       });

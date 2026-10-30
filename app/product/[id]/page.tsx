@@ -71,12 +71,45 @@ export default function ProductPage({
         const res = await fetch(`/api/products?id=${id}`);
         const data = await res.json();
         if (data.success && data.product) {
-          setProduct(data.product);
-          if (data.product.colors && data.product.colors.length > 0) {
-            setSelectedColor(data.product.colors[0].name);
+          const p = data.product;
+          const parsedColors: ColorSwatch[] = Array.isArray(p.colors)
+            ? p.colors
+            : typeof p.colors === "string"
+            ? (() => {
+                try {
+                  const parsed = JSON.parse(p.colors);
+                  return Array.isArray(parsed) ? parsed : [];
+                } catch {
+                  return p.colors.split(",").map((s: string) => ({ name: s.trim(), hex: "#ffffff" })).filter((c: any) => c.name);
+                }
+              })()
+            : [];
+
+          const parsedSizes: string[] = Array.isArray(p.sizes)
+            ? p.sizes
+            : typeof p.sizes === "string"
+            ? (() => {
+                try {
+                  const parsed = JSON.parse(p.sizes);
+                  return Array.isArray(parsed) ? parsed : [];
+                } catch {
+                  return p.sizes.split(",").map((s: string) => s.trim()).filter(Boolean);
+                }
+              })()
+            : [];
+
+          const normalizedProduct = {
+            ...p,
+            colors: parsedColors,
+            sizes: parsedSizes,
+          };
+
+          setProduct(normalizedProduct);
+          if (parsedColors.length > 0 && parsedColors[0]?.name) {
+            setSelectedColor(parsedColors[0].name);
           }
-          if (data.product.sizes && data.product.sizes.length > 0) {
-            setSelectedSize(data.product.sizes[0]);
+          if (parsedSizes.length > 0 && parsedSizes[0]) {
+            setSelectedSize(parsedSizes[0]);
           }
         }
 
@@ -131,6 +164,45 @@ export default function ProductPage({
 
   const categoryName = product.category || "Bespoke";
   const badgeLabel = product.badge || product.category || "Bespoke";
+
+  const colorsList: ColorSwatch[] = Array.isArray(product.colors)
+    ? product.colors
+    : typeof product.colors === "string"
+    ? (() => {
+        try {
+          const parsed = JSON.parse(product.colors);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return (product.colors as string).split(",").map((s) => ({ name: s.trim(), hex: "#ffffff" })).filter((c) => c.name);
+        }
+      })()
+    : [];
+
+  const sizesList: string[] = Array.isArray(product.sizes)
+    ? product.sizes
+    : typeof product.sizes === "string"
+    ? (() => {
+        try {
+          const parsed = JSON.parse(product.sizes);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return (product.sizes as string).split(",").map((s) => s.trim()).filter(Boolean);
+        }
+      })()
+    : [];
+
+  const lookbookImagesList: string[] = Array.isArray(product.lookbookImages)
+    ? product.lookbookImages
+    : typeof product.lookbookImages === "string"
+    ? (() => {
+        try {
+          const parsed = JSON.parse(product.lookbookImages);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return [];
+        }
+      })()
+    : [];
 
   return (
     <div className="min-h-screen bg-paper text-ink flex flex-col justify-between selection:bg-blush selection:text-ink">
@@ -206,13 +278,13 @@ export default function ProductPage({
                 </div>
               </div>
 
-              {product.colors && product.colors.length > 0 && (
+              {colorsList.length > 0 && (
                 <div className="space-y-3 border-t border-line pt-6">
                   <span className="text-[11px] uppercase tracking-[0.18em] font-medium text-grey block">
                     COLOR — <span className="text-ink font-semibold">{selectedColor}</span>
                   </span>
                   <div className="flex flex-wrap gap-3 items-center">
-                    {product.colors.map((color) => {
+                    {colorsList.map((color) => {
                       const isSelected = selectedColor === color.name;
                       return (
                         <button
@@ -237,7 +309,7 @@ export default function ProductPage({
                 </div>
               )}
 
-              {product.sizes && product.sizes.length > 0 && (
+              {sizesList.length > 0 && (
                 <div className="space-y-3 border-t border-line pt-6">
                   <div className="flex justify-between items-center">
                     <span className="text-[11px] uppercase tracking-[0.18em] font-medium text-grey block">
@@ -252,7 +324,7 @@ export default function ProductPage({
                     </button>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {product.sizes.map((size) => {
+                    {sizesList.map((size) => {
                       const isSelected = selectedSize === size;
                       return (
                         <button
@@ -439,11 +511,10 @@ export default function ProductPage({
           </div>
 
           {(() => {
-            const lookbookList = product.lookbookImages && product.lookbookImages.length > 0
-              ? product.lookbookImages
-              : [product.images[2], product.images[3]].filter(Boolean);
+            const fallbackLookbook = [product.images[2], product.images[3]].filter(Boolean);
+            const activeLookbook = lookbookImagesList.length > 0 ? lookbookImagesList : fallbackLookbook;
 
-            if (lookbookList.length === 0) return null;
+            if (activeLookbook.length === 0) return null;
 
             return (
               <div className="mt-24 pt-16 border-t border-line space-y-8">
@@ -457,7 +528,7 @@ export default function ProductPage({
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {lookbookList.map((img: string, idx: number) => (
+                  {activeLookbook.map((img: string, idx: number) => (
                     <div key={idx} className="relative aspect-[3/4] md:aspect-[4/5] bg-phBg overflow-hidden border border-line">
                       <Image
                         src={img}
@@ -473,7 +544,7 @@ export default function ProductPage({
             );
           })()}
 
-          {product.lookbookImages && product.lookbookImages.length > 0 && (
+          {lookbookImagesList.length > 0 && (
             <div className="mt-20 border-t border-line pt-16">
               <div className="flex flex-col items-start gap-2 mb-8">
                 <span className="text-[11px] uppercase tracking-[0.18em] font-medium text-grey">
@@ -488,7 +559,7 @@ export default function ProductPage({
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {product.lookbookImages.map((extraImg, idx) => (
+                {lookbookImagesList.map((extraImg, idx) => (
                   <div
                     key={idx}
                     className="relative aspect-[9/16] w-full bg-phBg overflow-hidden border border-line group"
