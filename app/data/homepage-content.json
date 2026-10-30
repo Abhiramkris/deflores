@@ -89,7 +89,13 @@
     "is_visible": true,
     "eyebrow": "FOLLOW ALONG",
     "headline": "@deflores.india",
-    "profile_url": "https://instagram.com/deflores.india"
+    "profile_url": "https://instagram.com/deflores.india",
+    "image_1": "/newimages/IMG_1058.webp",
+    "image_2": "/newimages/IMG_1060.webp",
+    "image_3": "/newimages/IMG_1061.webp",
+    "image_4": "/newimages/IMG_1062.webp",
+    "image_5": "/new_images2/IMG_1076.webp",
+    "image_6": "/new_images2/IMG_1077.webp"
   },
   "store_locator": {
     "is_visible": true,

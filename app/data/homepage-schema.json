@@ -525,6 +525,60 @@
           "max_chars": 100,
           "placeholder": "https://instagram.com/deflores.india",
           "required": true
+        },
+        "image_1": {
+          "type": "image",
+          "label": "Showcase Tile 1 Image",
+          "aspect_ratio": "1/1",
+          "cover_mode": true,
+          "min_width": 400,
+          "recommended": "1:1 Square (e.g. 800×800px)",
+          "required": false
+        },
+        "image_2": {
+          "type": "image",
+          "label": "Showcase Tile 2 Image",
+          "aspect_ratio": "1/1",
+          "cover_mode": true,
+          "min_width": 400,
+          "recommended": "1:1 Square (e.g. 800×800px)",
+          "required": false
+        },
+        "image_3": {
+          "type": "image",
+          "label": "Showcase Tile 3 Image",
+          "aspect_ratio": "1/1",
+          "cover_mode": true,
+          "min_width": 400,
+          "recommended": "1:1 Square (e.g. 800×800px)",
+          "required": false
+        },
+        "image_4": {
+          "type": "image",
+          "label": "Showcase Tile 4 Image",
+          "aspect_ratio": "1/1",
+          "cover_mode": true,
+          "min_width": 400,
+          "recommended": "1:1 Square (e.g. 800×800px)",
+          "required": false
+        },
+        "image_5": {
+          "type": "image",
+          "label": "Showcase Tile 5 Image",
+          "aspect_ratio": "1/1",
+          "cover_mode": true,
+          "min_width": 400,
+          "recommended": "1:1 Square (e.g. 800×800px)",
+          "required": false
+        },
+        "image_6": {
+          "type": "image",
+          "label": "Showcase Tile 6 Image",
+          "aspect_ratio": "1/1",
+          "cover_mode": true,
+          "min_width": 400,
+          "recommended": "1:1 Square (e.g. 800×800px)",
+          "required": false
         }
       }
     },
@@ -581,7 +635,7 @@
           "type": "text",
           "label": "Google Maps Link",
           "min_chars": 10,
-          "max_chars": 120,
+          "max_chars": 500,
           "placeholder": "https://maps.google.com/?q=Cochin+International+Airport+Kerala",
           "required": true
         },

@@ -241,12 +241,12 @@ Flat `--phBg`, no radius, no shadow. Label: 11px / 0.2em / `--grey` / uppercase 
 - Lifestyle and behind-the-scenes showcase without standard rounded Instagram chrome.
 - **Layout:** Edge-to-edge grid with tight `gap-1` (`grid-cols-2 sm:grid-cols-3 min-[900px]:grid-cols-6`).
 - **Header:** Eyebrow `FOLLOW ALONG`, Headline `@deflores.india` (linking directly to Instagram).
-- **Design:** Clean, sharp 0px corners, square placeholders (`ratio="1/1"`). Hover state brightens the grey placeholder (`hover:brightness-110`).
+- **Design:** Clean, sharp 0px corners, square tiles (`ratio="1/1"`). Hover state brightens with caption overlay. Supports custom uploaded images (`image_1` to `image_6`) configured via Storefront CMS with fallback to synced Instagram feed.
 
 ### 5.14 `<StoreLocator />` — The Flagship Showroom
 - Functional physical atelier discovery block for prospective patrons.
 - **Layout:** 50/50 split on desktop (`min-[900px]:grid-cols-2`), single column stack on mobile.
-- **Left:** Square placeholder (`ratio="1/1"`) with centered `MAP` label.
+- **Left:** Interactive embedded Google Map (`iframe`) derived from `directions_url`, with lazy loading and 1:1 aspect ratio.
 - **Right:**
   - Eyebrow: `THE SHOWROOM`
   - Headline: `Visit the Atelier.`

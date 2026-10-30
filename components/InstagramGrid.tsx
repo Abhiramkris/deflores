@@ -16,43 +16,78 @@ interface InstagramGridProps {
   eyebrow?: string;
   headline?: string;
   profile_url?: string;
+  image?: string;
+  image_1?: string;
+  image_2?: string;
+  image_3?: string;
+  image_4?: string;
+  image_5?: string;
+  image_6?: string;
 }
 
 export default function InstagramGrid({
   eyebrow = "FOLLOW ALONG",
   headline = "@deflores.india",
   profile_url = "https://instagram.com/deflores.india",
+  image,
+  image_1,
+  image_2,
+  image_3,
+  image_4,
+  image_5,
+  image_6,
 }: InstagramGridProps) {
-  const [posts, setPosts] = useState<InstagramPost[]>([
-    { id: 1, postId: "1", mediaUrl: "/newimages/IMG_1058.webp", permalink: profile_url, caption: "Artisanal lehenga silhouette in pure georgette." },
-    { id: 2, postId: "2", mediaUrl: "/newimages/IMG_1060.webp", permalink: profile_url, caption: "Hand-finished silk cotton festive chic." },
-    { id: 3, postId: "3", mediaUrl: "/newimages/IMG_1061.webp", permalink: profile_url, caption: "Dramatic scarlet cowl drape gown." },
-    { id: 4, postId: "4", mediaUrl: "/newimages/IMG_1062.webp", permalink: profile_url, caption: "Bespoke bridal heirlooms tailored to perfection." },
-    { id: 5, postId: "5", mediaUrl: "/new_images2/IMG_1076.webp", permalink: profile_url, caption: "Runway couture and architectural drape." },
-    { id: 6, postId: "6", mediaUrl: "/new_images2/IMG_1077.webp", permalink: profile_url, caption: "Atelier details. Hand-stitched precision." },
-  ]);
+  const customImages = [image_1 || image, image_2, image_3, image_4, image_5, image_6];
+
+  const defaultPosts: InstagramPost[] = [
+    { id: 1, postId: "1", mediaUrl: customImages[0] || "/newimages/IMG_1058.webp", permalink: profile_url, caption: "Artisanal lehenga silhouette in pure georgette." },
+    { id: 2, postId: "2", mediaUrl: customImages[1] || "/newimages/IMG_1060.webp", permalink: profile_url, caption: "Hand-finished silk cotton festive chic." },
+    { id: 3, postId: "3", mediaUrl: customImages[2] || "/newimages/IMG_1061.webp", permalink: profile_url, caption: "Dramatic scarlet cowl drape gown." },
+    { id: 4, postId: "4", mediaUrl: customImages[3] || "/newimages/IMG_1062.webp", permalink: profile_url, caption: "Bespoke bridal heirlooms tailored to perfection." },
+    { id: 5, postId: "5", mediaUrl: customImages[4] || "/new_images2/IMG_1076.webp", permalink: profile_url, caption: "Runway couture and architectural drape." },
+    { id: 6, postId: "6", mediaUrl: customImages[5] || "/new_images2/IMG_1077.webp", permalink: profile_url, caption: "Atelier details. Hand-stitched precision." },
+  ];
+
+  const [posts, setPosts] = useState<InstagramPost[]>(defaultPosts);
+
   useEffect(() => {
     const fetchInstagram = async () => {
       try {
         const res = await fetch("/api/instagram/sync");
         const data = await res.json();
         if (data.success && Array.isArray(data.posts) && data.posts.length > 0) {
-          const mapped = data.posts.map((p: any) => ({
-            id: p.id,
-            postId: p.postId || p.postid || p.post_id || String(p.id),
-            mediaUrl: p.mediaUrl || p.mediaurl || p.media_url || "/newimages/IMG_1058.webp",
-            permalink: p.permalink || profile_url,
-            caption: p.caption,
-            mediaType: p.mediaType || p.mediatype || p.media_type,
-          }));
-          setPosts(mapped.slice(0, 6));
+          const mapped = data.posts.slice(0, 6).map((p: any, idx: number) => {
+            const custom = customImages[idx]?.trim();
+            return {
+              id: p.id || idx + 1,
+              postId: p.postId || p.postid || p.post_id || String(p.id || idx + 1),
+              mediaUrl: custom || p.mediaUrl || p.mediaurl || p.media_url || defaultPosts[idx].mediaUrl,
+              permalink: p.permalink || profile_url,
+              caption: p.caption || defaultPosts[idx].caption,
+              mediaType: p.mediaType || p.mediatype || p.media_type,
+            };
+          });
+
+          while (mapped.length < 6) {
+            const idx = mapped.length;
+            const custom = customImages[idx]?.trim();
+            mapped.push({
+              ...defaultPosts[idx],
+              mediaUrl: custom || defaultPosts[idx].mediaUrl,
+            });
+          }
+
+          setPosts(mapped);
+        } else {
+          setPosts(defaultPosts);
         }
       } catch (err) {
         console.error("Failed to fetch synced Instagram posts:", err);
+        setPosts(defaultPosts);
       }
     };
     fetchInstagram();
-  }, [profile_url]);
+  }, [profile_url, image, image_1, image_2, image_3, image_4, image_5, image_6]);
 
   return (
     <section
@@ -91,6 +126,7 @@ export default function InstagramGrid({
                 fill
                 sizes="(max-width: 640px) 50vw, (max-width: 900px) 33vw, 16vw"
                 className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                unoptimized={typeof post.mediaUrl === "string" && (post.mediaUrl.startsWith("/uploads/") || post.mediaUrl.startsWith("http"))}
               />
               <div className="absolute inset-0 bg-ink/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-3.5 text-white">
                 <div className="flex justify-end">
