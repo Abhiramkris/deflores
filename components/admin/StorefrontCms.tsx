@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import type { CmsSchema, CmsSectionDef, CmsFieldDef, CmsHistoryItem } from "../../lib/cms";
+import HomepageVideoManager from "./HomepageVideoManager";
 
 interface SectionMeta {
   content: Record<string, string | number | boolean>;
@@ -336,7 +337,13 @@ export default function StorefrontCms({ showNotification, actorEmail = "admin@de
         })}
       </div>
 
-      {currentSectionSchema && (
+      {selectedSectionKey === "ramp_videos" ? (
+        <HomepageVideoManager
+          actorEmail={actorEmail}
+          showNotification={showNotification}
+          onSaved={() => reloadData("ramp_videos")}
+        />
+      ) : currentSectionSchema ? (
         <div className="bg-white border border-zinc-200 rounded-xl p-6 md:p-8 flex flex-col gap-8 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-zinc-100">
             <div>
@@ -383,7 +390,10 @@ export default function StorefrontCms({ showNotification, actorEmail = "admin@de
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {Object.entries(currentSectionSchema.fields || {}).map(([fieldKey, fieldDef]: [string, CmsFieldDef]) => {
-              const val = formData[fieldKey] ?? "";
+              const rawVal = formData[fieldKey];
+              const val = typeof rawVal === "object" && rawVal !== null
+                ? (rawVal as any).url || ""
+                : rawVal ?? "";
 
               if (fieldDef.type === "boolean") {
                 const checked = formData[fieldKey] !== false;
@@ -561,7 +571,7 @@ export default function StorefrontCms({ showNotification, actorEmail = "admin@de
             })}
           </div>
         </div>
-      )}
+      ) : null}
 
       {isHistoryOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">

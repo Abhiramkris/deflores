@@ -2769,7 +2769,7 @@ export default function AdminDashboard() {
 
         {activeTab === "videos" && (
           <div className="space-y-8 animate-fade-in">
-            <HomepageVideoManager />
+            <HomepageVideoManager showNotification={showNotification} actorEmail="admin@deflores.com" />
           </div>
         )}
 

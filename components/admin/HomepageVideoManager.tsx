@@ -17,7 +17,17 @@ interface VerifyResult {
   optimizedUrl?: string;
 }
 
-export default function HomepageVideoManager() {
+interface HomepageVideoManagerProps {
+  actorEmail?: string;
+  onSaved?: () => void;
+  showNotification?: (msg: string, isError?: boolean) => void;
+}
+
+export default function HomepageVideoManager({
+  actorEmail = "admin@deflores.com",
+  onSaved,
+  showNotification,
+}: HomepageVideoManagerProps = {}) {
   const [video1, setVideo1] = useState<VideoConfig>({
     url: "/ramp_video_1.mp4",
     eyebrow: "THE RAMP",
@@ -55,20 +65,38 @@ export default function HomepageVideoManager() {
         const data = await res.json();
         if (data.success && data.videos) {
           if (data.videos.video_1) {
+            const v1Url = data.videos.video_1.url || "/ramp_video_1.mp4";
             setVideo1({
-              url: data.videos.video_1.url || "/ramp_video_1.mp4",
+              url: v1Url,
               eyebrow: data.videos.video_1.eyebrow || "THE RAMP",
               title: data.videos.video_1.title || "Couture in motion.",
               is_visible: data.videos.video_1.is_visible !== false,
             });
+            if (v1Url) {
+              setVerifyResult1({
+                verified: true,
+                permissionOk: true,
+                message: "Current video URL loaded from database.",
+                optimizedUrl: v1Url,
+              });
+            }
           }
           if (data.videos.video_2) {
+            const v2Url = data.videos.video_2.url || "/ramp_video_2.mp4";
             setVideo2({
-              url: data.videos.video_2.url || "/ramp_video_2.mp4",
+              url: v2Url,
               eyebrow: data.videos.video_2.eyebrow || "SECOND LOOK",
               title: data.videos.video_2.title || "The runway, again.",
               is_visible: data.videos.video_2.is_visible !== false,
             });
+            if (v2Url) {
+              setVerifyResult2({
+                verified: true,
+                permissionOk: true,
+                message: "Current video URL loaded from database.",
+                optimizedUrl: v2Url,
+              });
+            }
           }
         }
       } catch (err) {
@@ -218,6 +246,7 @@ export default function HomepageVideoManager() {
         body: JSON.stringify({
           video_1: video1,
           video_2: video2,
+          actorEmail,
         }),
       });
 
@@ -227,6 +256,12 @@ export default function HomepageVideoManager() {
           text: "Both Video 1 and Video 2 have been verified, optimized, and saved to the database. The homepage is now updated!",
           isError: false,
         });
+        if (showNotification) {
+          showNotification("Homepage videos saved to database!");
+        }
+        if (onSaved) {
+          onSaved();
+        }
       } else {
         setSaveMessage({
           text: data.error || "Failed to save video configuration.",
