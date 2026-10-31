@@ -60,6 +60,9 @@ export default async function HomePage() {
   const instagram = data.instagram_grid || {};
   const showroom = data.store_locator || {};
   const bespoke = data.bespoke || {};
+  const rampVideos = (data.ramp_videos as Record<string, any>) || {};
+  const video1 = (rampVideos.video_1 as Record<string, any>) || {};
+  const video2 = (rampVideos.video_2 as Record<string, any>) || {};
 
   let featuredProducts: Array<{ id: string; name: string; price: string; image?: string; href: string }> = [];
   let patronItems = undefined;
@@ -115,11 +118,11 @@ export default async function HomePage() {
         {hero.is_visible !== false && <Hero {...hero} />}
         {story.is_visible !== false && <Story {...story} />}
         {featured.is_visible !== false && <FeaturedRelease {...featured} items={featuredProducts} />}
-        <RampVideoOne />
+        <RampVideoOne {...video1} />
         <Collections categories={categories} />
         {founder.is_visible !== false && <Founder {...founder} />}
         {gallery.is_visible !== false && <FeaturedGallery {...gallery} />}
-        <RampVideoTwo />
+        <RampVideoTwo {...video2} />
         {patrons.is_visible !== false && (
           <Testimonials
             eyebrow={typeof patrons.eyebrow === "string" ? patrons.eyebrow : undefined}

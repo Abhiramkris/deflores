@@ -2,7 +2,19 @@
 
 import { useEffect, useRef, useState } from "react";
 
-export default function RampVideoOne() {
+interface RampVideoProps {
+  url?: string;
+  eyebrow?: string;
+  title?: string;
+  is_visible?: boolean;
+}
+
+export default function RampVideoOne({
+  url = "/ramp_video_1.mp4",
+  eyebrow = "THE RAMP",
+  title = "Couture in motion.",
+  is_visible = true,
+}: RampVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isMuted, setIsMuted] = useState(true);
 
@@ -12,7 +24,7 @@ export default function RampVideoOne() {
 
     video.muted = true;
     video.play().catch(() => {});
-  }, []);
+  }, [url]);
 
   const toggleSound = (e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
@@ -26,6 +38,8 @@ export default function RampVideoOne() {
     }
   };
 
+  if (is_visible === false) return null;
+
   return (
     <section
       aria-labelledby="ramp-one-heading"
@@ -33,13 +47,13 @@ export default function RampVideoOne() {
     >
       <div className="max-w-[1280px] mx-auto px-6 min-[900px]:px-12 mb-8 text-center flex flex-col items-center gap-3">
         <span className="text-[11px] uppercase tracking-[0.18em] font-medium text-grey">
-          THE RAMP
+          {eyebrow}
         </span>
         <h2
           id="ramp-one-heading"
           className="text-[clamp(28px,4vw,48px)] font-serif font-normal text-ink"
         >
-          Couture in motion.
+          {title}
         </h2>
       </div>
 
@@ -50,7 +64,7 @@ export default function RampVideoOne() {
         >
           <video
             ref={videoRef}
-            src="/ramp_video_1.mp4"
+            src={url || "/ramp_video_1.mp4"}
             autoPlay
             loop
             playsInline

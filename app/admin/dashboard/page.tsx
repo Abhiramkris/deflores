@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import StorefrontCms from "../../../components/admin/StorefrontCms";
+import HomepageVideoManager from "../../../components/admin/HomepageVideoManager";
 
 interface StatData {
   totalLogs: number;
@@ -122,7 +123,7 @@ const CRAFT_PRESETS = [
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<"stats" | "product" | "gallery" | "newsletter" | "logs" | "categories" | "cms">("stats");
+  const [activeTab, setActiveTab] = useState<"stats" | "product" | "gallery" | "newsletter" | "logs" | "categories" | "cms" | "videos">("stats");
   const [activeLogSubTab, setActiveLogSubTab] = useState<"admin" | "user">("admin");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
@@ -699,6 +700,16 @@ export default function AdminDashboard() {
                 icon: (
                   <svg className="w-4 h-4 stroke-current fill-none" strokeWidth="2" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 4.5v15m6-15v15m-10.875 0h17.75c.621 0 1.125-.504 1.125-1.125V5.625c0-.621-.504-1.125-1.125-1.125H4.125C3.504 4.5 3 5.004 3 5.625v12.75c0 .621.504 1.125 1.125 1.125z" />
+                  </svg>
+                ) 
+              },
+              { 
+                id: "videos", 
+                label: "Homepage Videos (The Ramp)", 
+                icon: (
+                  <svg className="w-4 h-4 stroke-current fill-none" strokeWidth="2" viewBox="0 0 24 24">
+                    <polygon points="5 3 19 12 5 21 5 3" fill="currentColor" fillOpacity="0.2" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
                   </svg>
                 ) 
               }
@@ -2753,6 +2764,12 @@ export default function AdminDashboard() {
               </button>
             </div>
             <StorefrontCms showNotification={showNotification} actorEmail="admin@deflores.com" />
+          </div>
+        )}
+
+        {activeTab === "videos" && (
+          <div className="space-y-8 animate-fade-in">
+            <HomepageVideoManager />
           </div>
         )}
 

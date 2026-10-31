@@ -133,6 +133,10 @@ export function validateSection(sectionKey: string, content: Record<string, unkn
     return { valid: false, errors: [`Unknown section: ${sectionKey}`] };
   }
 
+  if (sectionKey === "ramp_videos") {
+    return { valid: true, errors: [] };
+  }
+
   const errors: string[] = [];
   const fields = sectionSchema.fields || {};
 

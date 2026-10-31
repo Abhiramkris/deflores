@@ -717,6 +717,24 @@
           "required": true
         }
       }
+    },
+    "ramp_videos": {
+      "title": "10. Homepage Ramp Videos",
+      "description": "Video 1 (The Ramp) and Video 2 (Second Look) looping runway motion videos",
+      "fields": {
+        "video_1": {
+          "type": "text",
+          "label": "Video 1 URL",
+          "placeholder": "/ramp_video_1.mp4",
+          "required": false
+        },
+        "video_2": {
+          "type": "text",
+          "label": "Video 2 URL",
+          "placeholder": "/ramp_video_2.mp4",
+          "required": false
+        }
+      }
     }
   }
 }

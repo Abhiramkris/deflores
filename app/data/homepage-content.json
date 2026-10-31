@@ -20,8 +20,8 @@
     "image_4": "https://dstnndwcabofckwpjjqa.supabase.co/storage/v1/object/public/deflores-bucket/cms/cms_hero_image_4_1792652323370.webp",
     "image1": "https://dstnndwcabofckwpjjqa.supabase.co/storage/v1/object/public/deflores-bucket/cms/cms_hero_image_1_1792652007146.webp",
     "image2": "",
-    "image3": "https://dstnndwcabofckwpjjqa.supabase.co/storage/v1/object/public/deflores-bucket/cms/cms_hero_image_3_1792652040928.webp",
-    "image4": "",
+    "image3": "",
+    "image4": "https://dstnndwcabofckwpjjqa.supabase.co/storage/v1/object/public/deflores-bucket/cms/cms_hero_image_4_1792652323370.webp",
     "ctaLink": "/collections/new-arrivals",
     "ctaText": "VIEW COLLECTIONS →",
     "isVisible": true,
@@ -116,5 +116,19 @@
     "description": "Every De Flores commission begins with a conversation. Choose your silhouette, fabric, and finish — we tailor the rest.",
     "cta_text": "BOOK A CONSULTATION",
     "note": "Consultations available in-studio and virtually."
+  },
+  "ramp_videos": {
+    "video_1": {
+      "url": "https://drive.usercontent.google.com/download?id=1_WZtXfS70SJwyiO094XZjdcQAVvo90Cn&export=download",
+      "eyebrow": "THE RAMP",
+      "title": "Couture in motion.",
+      "is_visible": true
+    },
+    "video_2": {
+      "url": "https://drive.usercontent.google.com/download?id=1tXCU91L1fAR2c9XF-Df2rBfkgRIipV_Y&export=download",
+      "eyebrow": "SECOND LOOK",
+      "title": "The runway, again.",
+      "is_visible": true
+    }
   }
 }
